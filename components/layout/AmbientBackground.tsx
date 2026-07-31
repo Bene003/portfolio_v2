@@ -18,16 +18,23 @@ type Star = {
 const STARS: Star[] = Array.from({ length: 46 }, (_, index) => ({
   x: (index * 47 + (index % 5) * 13) % 100,
   y: (index * 71 + (index % 7) * 9) % 100,
-  size: 0.7 + ((index * 17) % 18) / 10,
+  size: 1 + ((index * 17) % 22) / 10,
   delay: -((index * 1.37) % 12),
   duration: 4.8 + ((index * 29) % 65) / 10,
   warmth: index % 6,
 }));
 
-const SHOOTING_STARS = [
-  { top: "12%", left: "18%", delay: "-3s", duration: "13s", scale: 0.8 },
-  { top: "38%", left: "68%", delay: "-9s", duration: "17s", scale: 1.05 },
-  { top: "72%", left: "8%", delay: "-14s", duration: "21s", scale: 0.65 },
+const SKILL_COMETS = [
+  { label: "Product Strategy", top: "6%", left: "-24%", delay: "0s", duration: "60s", angle: 20, scale: 1, path: "se" },
+  { label: "Entrepreneurial Thinking", top: "14%", left: "112%", delay: "-6s", duration: "60s", angle: 160, scale: 0.82, path: "sw" },
+  { label: "Digital Marketing", top: "108%", left: "-18%", delay: "-12s", duration: "60s", angle: -22, scale: 0.92, path: "ne" },
+  { label: "Business Strategy", top: "110%", left: "116%", delay: "-18s", duration: "60s", angle: -158, scale: 0.86, path: "nw" },
+  { label: "AI Product Design", top: "38%", left: "-32%", delay: "-24s", duration: "60s", angle: 17, scale: 0.9, path: "se" },
+  { label: "Full-Stack Product Development", top: "48%", left: "120%", delay: "-30s", duration: "60s", angle: 164, scale: 0.78, path: "sw" },
+  { label: "Systems Thinking", top: "114%", left: "12%", delay: "-36s", duration: "60s", angle: -18, scale: 0.84, path: "ne" },
+  { label: "Product Vision", top: "112%", left: "92%", delay: "-42s", duration: "60s", angle: -162, scale: 0.8, path: "nw" },
+  { label: "Strategic Decision Making", top: "76%", left: "-38%", delay: "-48s", duration: "60s", angle: 14, scale: 0.76, path: "se" },
+  { label: "Opportunity Identification", top: "73%", left: "116%", delay: "-54s", duration: "60s", angle: 166, scale: 0.74, path: "sw" },
 ] as const;
 
 const DUST = [
@@ -38,7 +45,7 @@ const DUST = [
 
 function StarField() {
   return (
-    <div className="absolute inset-0 motion-reduce:hidden">
+    <div className="absolute inset-0 mix-blend-screen">
       {STARS.map((star, index) => {
         const color =
           star.warmth === 0
@@ -50,7 +57,7 @@ function StarField() {
         return (
           <span
             key={index}
-            className="absolute animate-star-pulse rounded-full opacity-0"
+            className="absolute animate-star-pulse rounded-full opacity-0 motion-reduce:animate-none motion-reduce:opacity-70"
             style={{
               left: `${star.x}%`,
               top: `${star.y}%`,
@@ -71,25 +78,33 @@ function StarField() {
   );
 }
 
-function ShootingStars() {
+function SkillComets() {
   return (
     <div className="absolute inset-0 overflow-hidden motion-reduce:hidden">
-      {SHOOTING_STARS.map((star) => (
+      {SKILL_COMETS.map((skill, index) => (
         <span
-          key={`${star.top}-${star.left}`}
-          className="absolute h-px w-28 origin-left animate-shooting-star opacity-0"
+          key={skill.label}
+          className={`skill-comet skill-comet--${skill.path} absolute opacity-0`}
           style={{
-            top: star.top,
-            left: star.left,
-            scale: star.scale,
-            animationDelay: star.delay,
-            animationDuration: star.duration,
-            background:
-              "linear-gradient(90deg, rgb(255 177 92 / 0), rgb(255 177 92 / .8) 74%, white)",
-            filter: "drop-shadow(0 0 5px rgb(255 106 43 / .65))",
+            top: skill.top,
+            left: skill.left,
+            scale: skill.scale,
+            animationDelay: skill.delay,
+            animationDuration: skill.duration,
+            color: index % 3 === 1 ? "var(--color-accent-2)" : index % 3 === 2 ? "#aebbd4" : "var(--color-accent)",
           }}
         >
-          <span className="absolute -right-0.5 -top-0.5 size-1 rounded-full bg-white shadow-[0_0_10px_var(--color-accent-2)]" />
+          <span
+            className="skill-comet__trail"
+            style={{ transform: `translateY(-50%) rotate(${skill.angle}deg)` }}
+          />
+          <span className="skill-comet__core">
+            <span className="skill-comet__spark" />
+          </span>
+          <span className="skill-comet__label">
+            <span aria-hidden className="text-accent-2/70">✦</span>
+            {skill.label}
+          </span>
         </span>
       ))}
     </div>
@@ -119,9 +134,9 @@ export default function AmbientBackground() {
       {/* Deep star maps: dense but deliberately dim behind the content. */}
       <m.div
         style={{ x: farX, y: scrollFar }}
-        className="absolute -inset-24 opacity-35 motion-reduce:hidden"
+        className="absolute -inset-24 opacity-65"
       >
-        <div className="size-full animate-cosmic-drift [background-image:radial-gradient(1px_1px_at_20%_30%,var(--color-fg)_55%,transparent_60%),radial-gradient(1px_1px_at_72%_18%,var(--color-fg)_45%,transparent_60%),radial-gradient(1px_1px_at_45%_78%,var(--color-cool)_60%,transparent_62%),radial-gradient(1px_1px_at_88%_62%,var(--color-fg)_40%,transparent_60%)] [background-size:270px_270px,410px_410px,350px_350px,520px_520px]" />
+        <div className="size-full animate-cosmic-drift [background-image:radial-gradient(1px_1px_at_20%_30%,var(--color-fg)_55%,transparent_60%),radial-gradient(1px_1px_at_72%_18%,var(--color-fg)_45%,transparent_60%),radial-gradient(1px_1px_at_45%_78%,var(--color-cool)_60%,transparent_62%),radial-gradient(1px_1px_at_88%_62%,var(--color-fg)_40%,transparent_60%)] [background-size:270px_270px,410px_410px,350px_350px,520px_520px] motion-reduce:animate-none" />
       </m.div>
 
       {/* Individual stars have independent brightness cycles. */}
@@ -132,9 +147,9 @@ export default function AmbientBackground() {
         <StarField />
       </m.div>
 
-      {/* Rare enough to feel incidental rather than like a looping effect. */}
+      {/* Skills become named comets instead of generic shooting stars. */}
       <m.div style={{ x: nearX, y: nearY }} className="absolute inset-0">
-        <ShootingStars />
+        <SkillComets />
       </m.div>
 
       {/* Tiny orbital dust systems add slow movement between meteor events. */}
@@ -160,7 +175,7 @@ export default function AmbientBackground() {
       {/* A faint constellation / navigation motif. */}
       <svg
         viewBox="0 0 1000 700"
-        className="absolute top-[8%] right-[-8%] w-[min(64rem,70vw)] opacity-[0.07] motion-reduce:opacity-[0.04]"
+        className="absolute top-[8%] right-[-8%] w-[min(64rem,70vw)] opacity-[0.16] mix-blend-screen motion-reduce:opacity-[0.08]"
         fill="none"
       >
         <path
@@ -191,7 +206,7 @@ export default function AmbientBackground() {
       <div className="absolute -right-72 bottom-[-20rem] size-[46rem] animate-nebula rounded-full opacity-[0.07] blur-[150px] [background:radial-gradient(circle,var(--color-cool),transparent_64%)] motion-reduce:animate-none" />
 
       {/* The vignette protects text contrast at every viewport size. */}
-      <div className="absolute inset-0 [background:radial-gradient(120%_100%_at_50%_8%,transparent_32%,color-mix(in_oklab,var(--color-bg)_72%,transparent)_72%,var(--color-bg)_100%)]" />
+      <div className="absolute inset-0 [background:radial-gradient(120%_100%_at_50%_8%,transparent_48%,color-mix(in_oklab,var(--color-bg)_38%,transparent)_82%,color-mix(in_oklab,var(--color-bg)_68%,transparent)_100%)]" />
     </div>
   );
 }

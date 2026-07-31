@@ -6,8 +6,9 @@ import { useCan3D } from "@/hooks/useCan3D";
 
 import HeroFallback from "./HeroFallback";
 
-/** `ssr: false` plus a gate that runs before the import means a phone never
- *  downloads the Three.js chunk at all — it is not deferred, it is absent. */
+/** `ssr: false` keeps WebGL client-only. The capability gate runs before the
+ *  import, so constrained devices never download the Three.js chunk; capable
+ *  phones receive the responsive low-quality scene. */
 const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
   ssr: false,
   loading: () => <HeroFallback />,

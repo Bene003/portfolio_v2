@@ -7,11 +7,12 @@ import { useEffect, useRef, useState } from "react";
 
 import { useActiveSection } from "@/hooks/useActiveSection";
 import Button from "@/components/ui/Button";
-import { nav, sectionIds, site } from "@/lib/site";
+import { nav, sectionIds } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 import CommandPalette from "./CommandPalette";
 import MobileMenu from "./MobileMenu";
+import ShatterName from "./ShatterName";
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -59,13 +60,7 @@ export default function SiteHeader() {
         )}
       >
         <div className="shell flex min-h-16 items-center justify-between gap-6 pt-[max(0px,env(safe-area-inset-top))] sm:min-h-20">
-          <Link
-            href="/"
-            className="font-display text-lg font-semibold tracking-tight sm:text-xl"
-          >
-            {site.name.split(" ")[0]}
-            <span className="text-accent">{site.name.split(" ")[1]}</span>
-          </Link>
+          <ShatterName />
 
           <nav aria-label="Primary" className="hidden lg:block">
             <ul ref={listRef} className="relative flex items-center gap-1">

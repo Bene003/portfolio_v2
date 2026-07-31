@@ -13,8 +13,8 @@ export const projects: Project[] = [
     status: "Live",
     liveUrl: null,
     cover: {
-      src: "/images/work/elyra/cover.svg",
-      alt: "Elyra storefront homepage",
+      src: "/images/work/elyra/cover.webp",
+      alt: "Elyra beauty-tech storefront homepage featuring an LED skincare mask",
     },
     stack: [
       "Next.js 16",
@@ -172,8 +172,8 @@ export const projects: Project[] = [
     status: "Live",
     liveUrl: null,
     cover: {
-      src: "/images/work/capitalhype/cover.svg",
-      alt: "CapitalHype landing page",
+      src: "/images/work/capitalhype/cover.webp",
+      alt: "CapitalHype Studio landing page for notaries and accounting experts",
     },
     stack: [
       "Next.js 16",

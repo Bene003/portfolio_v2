@@ -62,15 +62,30 @@ export default function About() {
           <div className="lg:col-span-5">
             <Reveal delay={0.1}>
               <div className="relative mx-auto max-w-sm lg:max-w-none">
-                <Halo className="-top-8 -right-8 size-56 opacity-45" />
-                <div className="glass relative overflow-hidden p-3 shadow-lift">
-                  <div className="relative aspect-4/5 overflow-hidden rounded-[1.1rem] bg-surface-2">
+                <div className="portrait-card glass relative cursor-pointer p-3 shadow-lift touch-manipulation">
+                  <span
+                    aria-hidden
+                    className="portrait-halo absolute inset-[12%] rounded-full bg-accent/45 blur-[52px]"
+                  />
+                  <span
+                    aria-hidden
+                    className="portrait-orbit absolute -inset-4 rounded-[2rem] border border-accent/25"
+                  />
+                  <div className="relative aspect-4/5 overflow-hidden rounded-[1.1rem] bg-[radial-gradient(circle_at_65%_32%,color-mix(in_oklab,var(--color-accent)_15%,transparent),var(--color-surface-2)_62%)]">
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 opacity-35 [background-image:linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] [background-size:36px_36px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]"
+                    />
                     <Image
-                      src="/images/portrait.svg"
+                      src="/images/portrait.webp"
                       alt="Portrait of Eben Kwete"
                       fill
                       sizes="(max-width: 1024px) 22rem, 28rem"
-                      className="object-cover"
+                      className="portrait-cutout object-contain object-bottom"
+                    />
+                    <span
+                      aria-hidden
+                      className="portrait-flare absolute right-[22%] bottom-[18%] size-2 rounded-full bg-accent-2 shadow-[0_0_18px_5px_var(--color-accent)]"
                     />
                   </div>
                 </div>

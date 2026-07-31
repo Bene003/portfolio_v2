@@ -88,7 +88,6 @@
   --animate-drift: drift 26s ease-in-out infinite;
   --animate-breathe: breathe 9s var(--ease-soft) infinite;
   --animate-star-pulse: star-pulse 8s var(--ease-soft) infinite;
-  --animate-shooting-star: shooting-star 16s linear infinite;
   --animate-dust-orbit: dust-orbit 28s linear infinite;
   --animate-cosmic-drift: cosmic-drift 70s ease-in-out infinite alternate;
   --animate-nebula: nebula 24s var(--ease-soft) infinite alternate;
@@ -484,41 +483,197 @@
 @keyframes star-pulse {
   0%,
   100% {
-    opacity: 0.05;
-    transform: scale(0.55);
+    opacity: 0.22;
+    transform: scale(0.7);
   }
   18% {
-    opacity: 0.18;
+    opacity: 0.4;
   }
   48% {
-    opacity: 0.85;
-    transform: scale(1);
+    opacity: 1;
+    transform: scale(1.15);
   }
   63% {
-    opacity: 0.28;
+    opacity: 0.48;
   }
   78% {
-    opacity: 0.62;
-    transform: scale(0.8);
+    opacity: 0.78;
+    transform: scale(0.92);
   }
 }
 
-@keyframes shooting-star {
+@keyframes skill-comet-se {
   0%,
-  76% {
+  8% {
     opacity: 0;
-    transform: translate3d(-18vw, -10vw, 0) rotate(-32deg) scaleX(0.2);
+    transform: translate3d(-8vw, -8vh, 0);
   }
-  78% {
-    opacity: 0.9;
+  11% {
+    opacity: 1;
   }
-  84% {
-    opacity: 0;
-    transform: translate3d(58vw, 32vw, 0) rotate(-32deg) scaleX(1.15);
+  18% {
+    opacity: 0.94;
   }
+  22%,
   100% {
     opacity: 0;
-    transform: translate3d(58vw, 32vw, 0) rotate(-32deg) scaleX(1.15);
+    transform: translate3d(125vw, 52vh, 0);
+  }
+}
+
+@keyframes skill-comet-sw {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translate3d(8vw, -8vh, 0);
+  }
+  11% {
+    opacity: 1;
+  }
+  18% {
+    opacity: 0.94;
+  }
+  22%,
+  100% {
+    opacity: 0;
+    transform: translate3d(-125vw, 52vh, 0);
+  }
+}
+
+@keyframes skill-comet-ne {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translate3d(-6vw, 8vh, 0);
+  }
+  11% {
+    opacity: 1;
+  }
+  18% {
+    opacity: 0.94;
+  }
+  22%,
+  100% {
+    opacity: 0;
+    transform: translate3d(110vw, -120vh, 0);
+  }
+}
+
+@keyframes skill-comet-nw {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translate3d(6vw, 8vh, 0);
+  }
+  11% {
+    opacity: 1;
+  }
+  18% {
+    opacity: 0.94;
+  }
+  22%,
+  100% {
+    opacity: 0;
+    transform: translate3d(-110vw, -120vh, 0);
+  }
+}
+
+.skill-comet {
+  z-index: 2;
+  width: 1px;
+  height: 1px;
+  filter: drop-shadow(0 0 7px color-mix(in oklab, currentColor 65%, transparent));
+  will-change: transform, opacity;
+}
+
+.skill-comet--se {
+  animation: skill-comet-se 28s linear infinite;
+}
+
+.skill-comet--sw {
+  animation: skill-comet-sw 28s linear infinite;
+}
+
+.skill-comet--ne {
+  animation: skill-comet-ne 28s linear infinite;
+}
+
+.skill-comet--nw {
+  animation: skill-comet-nw 28s linear infinite;
+}
+
+.skill-comet__trail {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: clamp(6rem, 13vw, 11rem);
+  height: 1.5px;
+  transform-origin: right center;
+  background: linear-gradient(90deg, transparent, currentColor 72%, white);
+  opacity: 0.72;
+  mask-image: linear-gradient(90deg, transparent, black 28%, black);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 28%, black);
+}
+
+.skill-comet__core {
+  position: absolute;
+  inset: -4px;
+  display: grid;
+  width: 9px;
+  height: 9px;
+  place-items: center;
+  border-radius: 9999px;
+  color: white;
+  background: currentColor;
+  box-shadow:
+    0 0 8px 2px white,
+    0 0 24px 7px currentColor;
+}
+
+.skill-comet__spark {
+  width: 17px;
+  height: 17px;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.5;
+}
+
+.skill-comet__label {
+  position: absolute;
+  top: 14px;
+  left: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: max-content;
+  padding: 0.38rem 0.65rem;
+  border: 1px solid color-mix(in oklab, currentColor 32%, transparent);
+  border-radius: 9999px;
+  color: color-mix(in oklab, currentColor 72%, white);
+  background: color-mix(in oklab, var(--color-bg) 76%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.07),
+    0 8px 28px rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  max-width: min(18rem, 70vw);
+}
+
+@media (max-width: 639px) {
+  .skill-comet__trail {
+    width: 5.5rem;
+  }
+
+  .skill-comet__label {
+    top: 11px;
+    left: 10px;
+    padding: 0.32rem 0.52rem;
+    font-size: 0.55rem;
   }
 }
 
@@ -551,5 +706,299 @@
   to {
     transform: translate3d(5%, -4%, 0) scale(1.08);
     opacity: 0.09;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Interactive portrait                                               */
+/* ------------------------------------------------------------------ */
+
+.portrait-card {
+  isolation: isolate;
+  transition:
+    border-color 500ms var(--ease-soft),
+    box-shadow 500ms var(--ease-soft),
+    transform 500ms var(--ease-expo);
+}
+
+/* The WebGL canvas becomes a soft, full-bleed layer on phones. The mask is
+   applied to its composite result, so stars and orbit lines fade naturally. */
+.hero-world {
+  mask-image: radial-gradient(
+    ellipse 78% 72% at 58% 48%,
+    black 42%,
+    rgb(0 0 0 / 0.78) 66%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 78% 72% at 58% 48%,
+    black 42%,
+    rgb(0 0 0 / 0.78) 66%,
+    transparent 100%
+  );
+}
+
+@media (min-width: 1024px) {
+  .hero-world {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
+
+.portrait-halo {
+  z-index: -1;
+  opacity: 0.24;
+  transform: scale(0.84);
+  transition:
+    opacity 600ms var(--ease-soft),
+    transform 700ms var(--ease-expo),
+    filter 600ms var(--ease-soft);
+}
+
+.portrait-orbit {
+  z-index: -1;
+  opacity: 0;
+  transform: rotate(-7deg) scale(0.94);
+  transition:
+    opacity 500ms var(--ease-soft),
+    transform 800ms var(--ease-expo);
+}
+
+.portrait-cutout {
+  filter: drop-shadow(0 12px 22px rgb(0 0 0 / 0.55));
+  transform: scale(0.96);
+  transform-origin: 58% 68%;
+  transition:
+    filter 600ms var(--ease-soft),
+    transform 800ms var(--ease-expo);
+}
+
+.portrait-flare {
+  opacity: 0;
+  transform: scale(0.35);
+  transition:
+    opacity 450ms var(--ease-soft),
+    transform 650ms var(--ease-expo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portrait-card:hover {
+    border-color: color-mix(in oklab, var(--color-accent) 42%, var(--color-line));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 34px 90px -32px color-mix(in oklab, var(--color-accent) 42%, transparent);
+    transform: translateY(-5px);
+  }
+
+  .portrait-card:hover .portrait-halo,
+  .portrait-card:hover .portrait-orbit,
+  .portrait-card:hover .portrait-flare {
+    opacity: 1;
+  }
+
+  .portrait-card:hover .portrait-halo {
+    filter: saturate(135%);
+    transform: scale(1.14);
+  }
+
+  .portrait-card:hover .portrait-orbit {
+    transform: rotate(4deg) scale(1);
+  }
+
+  .portrait-card:hover .portrait-cutout {
+    filter:
+      drop-shadow(0 0 9px rgb(255 177 92 / 0.9))
+      drop-shadow(0 0 24px rgb(255 106 43 / 0.68))
+      drop-shadow(0 22px 30px rgb(0 0 0 / 0.55));
+    transform: scale(0.99);
+  }
+
+  .portrait-card:hover .portrait-flare {
+    transform: scale(1);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .portrait-card:active {
+    border-color: color-mix(in oklab, var(--color-accent) 52%, var(--color-line));
+    box-shadow: 0 22px 72px -26px color-mix(in oklab, var(--color-accent) 52%, transparent);
+    transform: scale(0.985);
+  }
+
+  .portrait-card:active .portrait-halo,
+  .portrait-card:active .portrait-orbit,
+  .portrait-card:active .portrait-flare {
+    opacity: 1;
+  }
+
+  .portrait-card:active .portrait-halo {
+    transform: scale(1.16);
+  }
+
+  .portrait-card:active .portrait-orbit {
+    transform: rotate(4deg) scale(1);
+  }
+
+  .portrait-card:active .portrait-cutout {
+    filter:
+      drop-shadow(0 0 9px rgb(255 177 92 / 0.92))
+      drop-shadow(0 0 25px rgb(255 106 43 / 0.72));
+    transform: scale(0.985);
+  }
+
+  .portrait-card:active .portrait-flare {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait-card,
+  .portrait-halo,
+  .portrait-orbit,
+  .portrait-cutout,
+  .portrait-flare {
+    transition-duration: 0.01ms;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Shatterable header signature                                       */
+/* ------------------------------------------------------------------ */
+
+.shatter-name {
+  display: inline-flex;
+  align-items: baseline;
+  isolation: isolate;
+  white-space: nowrap;
+}
+
+.shatter-letter {
+  position: relative;
+  display: inline-block;
+  cursor: crosshair;
+  line-height: 1;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shatter-letter__glyph {
+  display: inline-block;
+  transition:
+    color 250ms var(--ease-soft),
+    text-shadow 250ms var(--ease-soft);
+}
+
+.shatter-letter__piece {
+  position: absolute;
+  inset: 0;
+  display: block;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform, opacity, filter;
+}
+
+.shatter-letter__piece--1 {
+  clip-path: polygon(0 0, 58% 0, 46% 52%, 0 42%);
+}
+
+.shatter-letter__piece--2 {
+  clip-path: polygon(58% 0, 100% 0, 100% 48%, 46% 52%);
+}
+
+.shatter-letter__piece--3 {
+  clip-path: polygon(0 42%, 46% 52%, 58% 100%, 0 100%);
+}
+
+.shatter-letter__piece--4 {
+  clip-path: polygon(46% 52%, 100% 48%, 100% 100%, 58% 100%);
+}
+
+.shatter-letter.is-shattered .shatter-letter__glyph {
+  visibility: hidden;
+}
+
+.shatter-letter.is-shattered .shatter-letter__piece {
+  visibility: visible;
+  filter: drop-shadow(0 0 5px color-mix(in oklab, currentColor 68%, transparent));
+}
+
+.shatter-letter.is-shattered .shatter-letter__piece--1 {
+  animation: letter-fragment-1 1.05s var(--ease-expo) both;
+}
+
+.shatter-letter.is-shattered .shatter-letter__piece--2 {
+  animation: letter-fragment-2 1.05s var(--ease-expo) both;
+}
+
+.shatter-letter.is-shattered .shatter-letter__piece--3 {
+  animation: letter-fragment-3 1.05s var(--ease-expo) both;
+}
+
+.shatter-letter.is-shattered .shatter-letter__piece--4 {
+  animation: letter-fragment-4 1.05s var(--ease-expo) both;
+}
+
+@keyframes letter-fragment-1 {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  34%,
+  62% {
+    opacity: 0.72;
+    transform: translate3d(-10px, -8px, 0) rotate(-18deg) scale(0.92);
+  }
+}
+
+@keyframes letter-fragment-2 {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  34%,
+  62% {
+    opacity: 0.78;
+    transform: translate3d(11px, -10px, 0) rotate(21deg) scale(0.9);
+  }
+}
+
+@keyframes letter-fragment-3 {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  34%,
+  62% {
+    opacity: 0.68;
+    transform: translate3d(-12px, 10px, 0) rotate(16deg) scale(0.88);
+  }
+}
+
+@keyframes letter-fragment-4 {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  34%,
+  62% {
+    opacity: 0.75;
+    transform: translate3d(12px, 9px, 0) rotate(-22deg) scale(0.9);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .shatter-letter:hover .shatter-letter__glyph {
+    color: var(--color-accent-2);
+    text-shadow: 0 0 12px color-mix(in oklab, var(--color-accent) 55%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shatter-letter.is-shattered .shatter-letter__piece {
+    animation-duration: 0.01ms;
   }
 }

@@ -10,7 +10,7 @@ export const site = {
     "Web developer based in Montréal. I design and ship complete products — e-commerce, B2B SaaS and real-time interfaces — with Next.js, TypeScript and PostgreSQL.",
   location: "Montréal, QC",
   timezone: "America/Toronto",
-  email: "kwete85@gmail.com",
+  email: "kweteeben@gmail.com",
   available: true,
   availabilityLabel: "Available for new projects",
   socials: {

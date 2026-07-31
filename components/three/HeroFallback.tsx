@@ -1,8 +1,8 @@
 "use client";
 
-import { m, useTransform } from "motion/react";
+import { m, useMotionValue, useSpring, useTransform } from "motion/react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 
-import { usePointerParallax } from "@/hooks/usePointerParallax";
 import { cn } from "@/lib/utils";
 
 /** One tilted orbital plane: a ring, plus a carrier that spins around it
@@ -85,7 +85,20 @@ function Mote({
  *  scene in its own right, not a degraded placeholder. It occupies exactly the
  *  same box as the WebGL canvas, so swapping between them shifts nothing. */
 export default function HeroFallback() {
-  const { x, y } = usePointerParallax();
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const x = useSpring(rawX, { stiffness: 80, damping: 24, mass: 0.7 });
+  const y = useSpring(rawY, { stiffness: 80, damping: 24, mass: 0.7 });
+
+  const interact = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    rawX.set(((event.clientX - rect.left) / rect.width) * 2 - 1);
+    rawY.set(((event.clientY - rect.top) / rect.height) * 2 - 1);
+  };
+  const reset = () => {
+    rawX.set(0);
+    rawY.set(0);
+  };
 
   // The whole system tips towards the cursor.
   const rotateY = useTransform(x, [-1, 1], [-16, 16]);
@@ -94,7 +107,7 @@ export default function HeroFallback() {
   const shiftY = useTransform(y, [-1, 1], [-12, 12]);
 
   return (
-    <div aria-hidden className="absolute inset-0 grid place-items-center">
+    <div aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center">
       <m.div
         style={{ x: shiftX, y: shiftY }}
         className="relative aspect-square w-[min(86vw,32rem)] [perspective:1400px] sm:w-[min(72vw,38rem)] lg:w-[min(46vw,42rem)]"
@@ -156,7 +169,15 @@ export default function HeroFallback() {
           />
 
           {/* ── the core ──────────────────────────────────────────── */}
-          <div className="absolute inset-[34%] [transform-style:preserve-3d]">
+          <div
+            onPointerEnter={interact}
+            onPointerMove={interact}
+            onPointerLeave={reset}
+            onPointerDown={interact}
+            onPointerUp={reset}
+            onPointerCancel={reset}
+            className="pointer-events-auto absolute inset-[34%] touch-pan-y [transform-style:preserve-3d]"
+          >
             {/* rim glow */}
             <div className="absolute -inset-4 animate-breathe rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-accent)_55%,transparent),transparent_70%)] blur-xl motion-reduce:animate-none" />
             {/* body */}

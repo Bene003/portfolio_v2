@@ -9,6 +9,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import SplitText from "@/components/ui/SplitText";
 import { site } from "@/lib/site";
 
+import ContactForm from "./ContactForm";
+
 export default function Contact() {
   const time = useMontrealTime();
 
@@ -48,13 +50,26 @@ export default function Contact() {
           </p>
         </Reveal>
 
-        <Reveal delay={0.18}>
-          <div className="mt-10">
-            <CopyEmail />
-          </div>
-        </Reveal>
+        <div className="mt-12 grid items-start gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(17rem,0.65fr)] lg:gap-12">
+          <Reveal delay={0.16}>
+            <ContactForm />
+          </Reveal>
 
-        <Reveal delay={0.24}>
+          <Reveal delay={0.22}>
+            <div className="lg:pt-3">
+              <p className="eyebrow">Prefer email?</p>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                Send a note directly or copy the address. Either way, it lands
+                in the same inbox.
+              </p>
+              <div className="mt-6">
+                <CopyEmail />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal delay={0.28}>
           <div className="mt-12 flex flex-col gap-6 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
             <p className="flex items-center gap-3 text-sm text-muted">
               <span

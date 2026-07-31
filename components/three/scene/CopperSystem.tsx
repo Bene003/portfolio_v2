@@ -2,7 +2,7 @@
 
 import { Float, Sparkles, Stars } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
   BackSide,
@@ -12,8 +12,12 @@ import {
   Group,
   MathUtils,
   Mesh,
+  MeshBasicMaterial,
   ShaderMaterial,
+  Vector3,
 } from "three";
+
+import type { SceneQuality } from "../HeroCanvas";
 
 const COPPER = "#ff6a2b";
 const GOLD = "#ffb15c";
@@ -39,6 +43,7 @@ const fragmentShader = /* glsl */ `
   uniform vec3 uCopper;
   uniform vec3 uGold;
   uniform vec3 uNight;
+  uniform float uInteraction;
   varying vec3 vNormal;
   varying vec3 vWorldPosition;
   varying vec2 vUv;
@@ -91,12 +96,23 @@ const fragmentShader = /* glsl */ `
     float cityMask = step(.965, hash(floor(p * 24.0))) * continents;
     base += uGold * cityMask * (1.0 - diffuse) * 3.5;
     base += uCopper * rim * 1.35;
+    base += uGold * rim * uInteraction * 1.15;
+    base += uCopper * continents * uInteraction * .18;
 
     gl_FragColor = vec4(base, 1.0);
   }
 `;
 
-function World() {
+function World({
+  quality,
+  interactive,
+  onInteractionChange,
+}: {
+  quality: SceneQuality;
+  interactive: boolean;
+  onInteractionChange: (active: boolean) => void;
+}) {
+  const group = useRef<Group>(null);
   const world = useRef<Mesh>(null);
   const cloud = useRef<Mesh>(null);
   const material = useRef<ShaderMaterial>(null);
@@ -106,20 +122,57 @@ function World() {
       uCopper: { value: new Color(COPPER) },
       uGold: { value: new Color(GOLD) },
       uNight: { value: new Color(NIGHT) },
+      uInteraction: { value: 0 },
     }),
     [],
   );
+  const segments = quality === "high" ? 128 : quality === "medium" ? 80 : 48;
+  const shellSegments = quality === "high" ? 64 : quality === "medium" ? 48 : 32;
 
   useFrame(({ clock }, delta) => {
-    if (material.current) material.current.uniforms.uTime.value = clock.elapsedTime;
+    if (material.current) {
+      material.current.uniforms.uTime.value = clock.elapsedTime;
+      material.current.uniforms.uInteraction.value = MathUtils.lerp(
+        material.current.uniforms.uInteraction.value,
+        interactive ? 1 : 0,
+        1 - Math.pow(0.002, delta),
+      );
+    }
+    if (group.current) {
+      const scale = MathUtils.lerp(
+        group.current.scale.x,
+        interactive ? 1.045 : 1,
+        1 - Math.pow(0.004, delta),
+      );
+      group.current.scale.setScalar(scale);
+    }
     if (world.current) world.current.rotation.y += delta * 0.055;
     if (cloud.current) cloud.current.rotation.y -= delta * 0.018;
   });
 
   return (
-    <group rotation={[0.12, 0, -0.16]}>
-      <mesh ref={world}>
-        <sphereGeometry args={[1.72, 128, 128]} />
+    <group ref={group} rotation={[0.12, 0, -0.16]}>
+      <mesh
+        ref={world}
+        onPointerEnter={(event) => {
+          event.stopPropagation();
+          onInteractionChange(true);
+        }}
+        onPointerMove={(event) => {
+          event.stopPropagation();
+          onInteractionChange(true);
+        }}
+        onPointerLeave={() => onInteractionChange(false)}
+        onPointerDown={(event) => {
+          event.stopPropagation();
+          onInteractionChange(true);
+        }}
+        onPointerUp={(event) => {
+          if (event.pointerType !== "mouse") onInteractionChange(false);
+        }}
+        onPointerCancel={() => onInteractionChange(false)}
+      >
+        <sphereGeometry args={[1.72, segments, segments]} />
         <shaderMaterial
           ref={material}
           vertexShader={vertexShader}
@@ -129,7 +182,7 @@ function World() {
       </mesh>
 
       <mesh ref={cloud} scale={1.018}>
-        <sphereGeometry args={[1.72, 64, 64]} />
+        <sphereGeometry args={[1.72, shellSegments, shellSegments]} />
         <meshStandardMaterial
           color="#ffd7b6"
           wireframe
@@ -140,7 +193,7 @@ function World() {
       </mesh>
 
       <mesh scale={1.11}>
-        <sphereGeometry args={[1.72, 64, 64]} />
+        <sphereGeometry args={[1.72, shellSegments, shellSegments]} />
         <meshBasicMaterial
           color={COPPER}
           transparent
@@ -154,10 +207,11 @@ function World() {
   );
 }
 
-function DataRing({ radius, tilt, speed, dash = false }: {
+function DataRing({ radius, tilt, speed, quality, dash = false }: {
   radius: number;
   tilt: [number, number, number];
   speed: number;
+  quality: SceneQuality;
   dash?: boolean;
 }) {
   const ring = useRef<Mesh<BufferGeometry>>(null);
@@ -166,11 +220,110 @@ function DataRing({ radius, tilt, speed, dash = false }: {
   });
   return (
     <mesh ref={ring} rotation={tilt}>
-      <torusGeometry args={[radius, dash ? 0.012 : 0.006, 8, dash ? 48 : 220]} />
+      <torusGeometry
+        args={[
+          radius,
+          dash ? 0.012 : 0.006,
+          quality === "low" ? 4 : 8,
+          dash ? (quality === "low" ? 28 : 48) : quality === "high" ? 220 : 120,
+        ]}
+      />
       <meshBasicMaterial
         color={dash ? GOLD : COOL}
         transparent
         opacity={dash ? 0.44 : 0.22}
+        blending={AdditiveBlending}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+}
+
+function Moon() {
+  const carrier = useRef<Group>(null);
+  const moon = useRef<Mesh>(null);
+  useFrame(({ clock }, delta) => {
+    if (carrier.current) carrier.current.rotation.y = clock.elapsedTime * -0.12 + 1.7;
+    if (moon.current) moon.current.rotation.y += delta * 0.2;
+  });
+
+  return (
+    <group rotation={[-0.22, 0, 0.42]}>
+      <group ref={carrier}>
+        <group position={[4.05, 0, 0]}>
+          <mesh ref={moon}>
+            <icosahedronGeometry args={[0.22, 2]} />
+            <meshStandardMaterial color="#aab4c8" roughness={0.74} metalness={0.18} />
+          </mesh>
+          <mesh scale={1.3}>
+            <sphereGeometry args={[0.22, 20, 20]} />
+            <meshBasicMaterial
+              color={COOL}
+              transparent
+              opacity={0.11}
+              side={BackSide}
+              blending={AdditiveBlending}
+              depthWrite={false}
+            />
+          </mesh>
+        </group>
+      </group>
+    </group>
+  );
+}
+
+const SIGNALS = [
+  [0.54, 1.42, 0.78],
+  [-1.2, 0.65, 1.0],
+  [1.34, -0.42, 0.95],
+  [-0.46, -1.38, 0.9],
+  [1.08, 0.88, -0.95],
+] as const;
+
+function SignalNodes({ quality }: { quality: SceneQuality }) {
+  const nodes = useRef<Group>(null);
+  useFrame(({ clock }) => {
+    if (!nodes.current) return;
+    nodes.current.children.forEach((node, index) => {
+      const pulse = 0.75 + Math.sin(clock.elapsedTime * 2.1 + index * 1.7) * 0.25;
+      node.scale.setScalar(pulse);
+    });
+  });
+
+  const visibleSignals = quality === "low" ? SIGNALS.slice(0, 3) : SIGNALS;
+  return (
+    <group ref={nodes}>
+      {visibleSignals.map(([x, y, z], index) => {
+        const position = new Vector3(x, y, z).normalize().multiplyScalar(1.78);
+        return (
+          <mesh key={index} position={position}>
+            <sphereGeometry args={[0.026, 10, 10]} />
+            <meshBasicMaterial color={GOLD} blending={AdditiveBlending} depthWrite={false} />
+          </mesh>
+        );
+      })}
+    </group>
+  );
+}
+
+function TransmissionPulse() {
+  const pulse = useRef<Mesh>(null);
+  const material = useRef<MeshBasicMaterial>(null);
+  useFrame(({ clock }) => {
+    const cycle = (clock.elapsedTime * 0.16) % 1;
+    if (pulse.current) pulse.current.scale.setScalar(0.55 + cycle * 1.7);
+    if (material.current) material.current.opacity = Math.sin(cycle * Math.PI) * 0.22;
+  });
+
+  return (
+    <mesh ref={pulse} rotation={[Math.PI / 2, 0, 0]}>
+      <ringGeometry args={[1.82, 1.85, 96]} />
+      <meshBasicMaterial
+        ref={material}
+        color={GOLD}
+        transparent
+        opacity={0}
+        side={DoubleSide}
         blending={AdditiveBlending}
         depthWrite={false}
       />
@@ -204,33 +357,53 @@ function Satellite() {
   );
 }
 
-function PointerRig({ children }: { children: React.ReactNode }) {
+function PointerRig({
+  active,
+  children,
+}: {
+  active: boolean;
+  children: React.ReactNode;
+}) {
   const rig = useRef<Group>(null);
   useFrame((state, delta) => {
     if (!rig.current) return;
     const damping = 1 - Math.pow(0.002, delta);
-    rig.current.rotation.y = MathUtils.lerp(rig.current.rotation.y, state.pointer.x * 0.34, damping);
-    rig.current.rotation.x = MathUtils.lerp(rig.current.rotation.x, -state.pointer.y * 0.2, damping);
-    rig.current.position.x = MathUtils.lerp(rig.current.position.x, state.pointer.x * 0.14, damping);
+    const pointerX = active ? state.pointer.x : 0;
+    const pointerY = active ? state.pointer.y : 0;
+    rig.current.rotation.y = MathUtils.lerp(rig.current.rotation.y, pointerX * 0.34, damping);
+    rig.current.rotation.x = MathUtils.lerp(rig.current.rotation.x, -pointerY * 0.2, damping);
+    rig.current.position.x = MathUtils.lerp(rig.current.position.x, pointerX * 0.14, damping);
   });
   return <group ref={rig}>{children}</group>;
 }
 
-export default function CopperSystem() {
+export default function CopperSystem({ quality }: { quality: SceneQuality }) {
+  const [interactive, setInteractive] = useState(false);
+  const scale = quality === "high" ? 0.92 : quality === "medium" ? 0.83 : 0.78;
+  const starCount = quality === "high" ? 700 : quality === "medium" ? 420 : 280;
+  const sparkleCount = quality === "high" ? 54 : quality === "medium" ? 34 : 18;
+
   return (
     <>
-      <Stars radius={45} depth={22} count={700} factor={1.6} saturation={0.35} fade speed={0.18} />
-      <PointerRig>
+      <Stars radius={45} depth={22} count={starCount} factor={1.6} saturation={0.35} fade speed={0.18} />
+      <PointerRig active={interactive}>
         <Float speed={0.8} rotationIntensity={0.08} floatIntensity={0.28}>
-          <group scale={0.92}>
-            <World />
-            <DataRing radius={2.35} tilt={[1.18, 0.16, 0.24]} speed={0.025} />
-            <DataRing radius={2.72} tilt={[1.42, -0.18, -0.36]} speed={-0.04} dash />
-            <DataRing radius={3.4} tilt={[1.28, 0.45, 0.14]} speed={0.018} />
+          <group scale={scale} position={[0, quality === "low" ? -0.18 : 0, 0]}>
+            <World
+              quality={quality}
+              interactive={interactive}
+              onInteractionChange={setInteractive}
+            />
+            <SignalNodes quality={quality} />
+            <TransmissionPulse />
+            <DataRing quality={quality} radius={2.35} tilt={[1.18, 0.16, 0.24]} speed={0.025} />
+            <DataRing quality={quality} radius={2.72} tilt={[1.42, -0.18, -0.36]} speed={-0.04} dash />
+            <DataRing quality={quality} radius={3.4} tilt={[1.28, 0.45, 0.14]} speed={0.018} />
             <Satellite />
+            {quality !== "low" && <Moon />}
           </group>
         </Float>
-        <Sparkles count={54} scale={[8, 6, 5]} size={2.2} speed={0.22} opacity={0.48} color={GOLD} />
+        <Sparkles count={sparkleCount} scale={[8, 6, 5]} size={2.2} speed={0.22} opacity={0.48} color={GOLD} />
       </PointerRig>
     </>
   );

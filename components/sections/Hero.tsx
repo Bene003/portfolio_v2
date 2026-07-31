@@ -40,10 +40,21 @@ export default function Hero() {
       <m.div
         aria-hidden
         style={{ y: visualY, opacity: visualOpacity }}
-        className="pointer-events-none absolute -right-[22%] -bottom-[4%] left-[16%] z-0 h-[42%] opacity-90 sm:-right-[14%] sm:left-[30%] sm:h-[46%] lg:inset-0 lg:left-[44%] lg:h-auto lg:opacity-100"
+        className="hero-world pointer-events-auto absolute top-[22%] -right-[26%] left-[18%] z-0 h-[48%] opacity-100 sm:top-[25%] sm:-right-[12%] sm:left-[30%] sm:h-[52%] md:left-[36%] lg:inset-0 lg:left-[44%] lg:h-auto lg:opacity-100"
       >
         <HeroVisual />
       </m.div>
+
+      {/* On small screens the world sits behind the copy. These soft masks
+          merge it into the hero instead of letting the canvas read as a box. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(180deg,var(--color-bg)_5%,transparent_30%,transparent_68%,color-mix(in_oklab,var(--color-bg)_82%,transparent)_88%,var(--color-bg)_100%)] lg:hidden"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(90deg,color-mix(in_oklab,var(--color-bg)_94%,transparent)_0%,color-mix(in_oklab,var(--color-bg)_58%,transparent)_46%,transparent_82%)] sm:opacity-70 lg:hidden"
+      />
 
       <div
         aria-hidden
@@ -93,7 +104,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.9, ease: EASE_EXPO }}
-            className="mt-6 max-w-xl text-lead text-muted"
+            className="mt-6 max-w-[30rem] text-lead text-muted"
           >
             Web developer crafting fast, considered interfaces — from pixel to
             production. I design it, I build it, I ship it.
@@ -103,7 +114,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.62, duration: 0.9, ease: EASE_EXPO }}
-            className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center"
+            className="mt-[clamp(4rem,16vh,8rem)] flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-center lg:mt-10"
           >
             <MagneticButton className="w-full sm:w-auto">
               <Button href="/#work" className="w-full sm:w-auto">

@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 
-import { useIsDesktop, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+import { usePrefersReducedMotion } from "@/hooks/useMediaQuery";
 
 interface CapabilityNavigator extends Navigator {
   deviceMemory?: number;
@@ -40,13 +40,12 @@ function probe(): boolean {
 
 const noopSubscribe = () => () => {};
 
-/** The single decision point for WebGL. Every condition must hold, and the
- *  viewport and motion-preference parts stay live — shrinking the window
- *  below 1024px unmounts the canvas instead of just hiding it. */
+/** The single decision point for WebGL. Capable phones and tablets now receive
+ *  a deliberately lighter scene; only hardware, data-saving and accessibility
+ *  preferences fall back to the CSS version. */
 export function useCan3D() {
   const capable = useSyncExternalStore(noopSubscribe, probe, () => false);
-  const isDesktop = useIsDesktop();
   const reduced = usePrefersReducedMotion();
 
-  return capable && isDesktop && !reduced;
+  return capable && !reduced;
 }
