@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const RESEND_ENDPOINT = "https://api.resend.com/emails";
+const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_REQUESTS = 4;
 
@@ -85,9 +85,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey) {
-    console.error("Contact form: RESEND_API_KEY is not configured.");
+    console.error("Contact form: BREVO_API_KEY is not configured.");
     return Response.json(
       { message: "Email delivery is not configured yet. Please email me directly." },
       { status: 503 },
@@ -99,22 +99,23 @@ export async function POST(request: NextRequest) {
   const safeSubject = escapeHtml(subject);
   const safeMessage = escapeHtml(message).replaceAll("\n", "<br />");
   const destination = process.env.CONTACT_TO_EMAIL ?? "kweteeben@gmail.com";
-  const sender =
-    process.env.RESEND_FROM_EMAIL ?? "Eben Kwete Portfolio <onboarding@resend.dev>";
+  const senderEmail = process.env.BREVO_FROM_EMAIL ?? "kweteeben@gmail.com";
+  const senderName = process.env.BREVO_FROM_NAME ?? "Eben Kwete Portfolio";
 
-  const response = await fetch(RESEND_ENDPOINT, {
+  const response = await fetch(BREVO_ENDPOINT, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      "api-key": apiKey,
       "Content-Type": "application/json",
+      accept: "application/json",
     },
     body: JSON.stringify({
-      from: sender,
-      to: [destination],
-      reply_to: email,
+      sender: { name: senderName, email: senderEmail },
+      to: [{ email: destination }],
+      replyTo: { email, name },
       subject: `[Portfolio] ${subject}`,
-      text: `New portfolio enquiry\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`,
-      html: `
+      textContent: `New portfolio enquiry\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`,
+      htmlContent: `
         <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#18181b">
           <p style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#ff6a2b">New portfolio enquiry</p>
           <h1 style="font-size:26px;margin:12px 0 24px">${safeSubject}</h1>
@@ -130,7 +131,7 @@ export async function POST(request: NextRequest) {
 
   if (!response.ok) {
     const providerError = await response.text();
-    console.error("Contact form: Resend rejected the email.", providerError);
+    console.error("Contact form: Brevo rejected the email.", providerError);
     return Response.json(
       { message: "The message could not be delivered. Please try again." },
       { status: 502 },
