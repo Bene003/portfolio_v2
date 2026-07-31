@@ -1,1 +1,555 @@
 @import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* --- Colors ------------------------------------------------------ */
+  --color-bg: #07070a;
+  --color-surface: #0e0e13;
+  --color-surface-2: #15151c;
+  --color-line: #1f1f28;
+  --color-fg: #f5f3f0;
+  --color-muted: #8a8681;
+  --color-accent: #ff6a2b;
+  --color-accent-2: #ffa24c;
+  --color-accent-deep: #c85421;
+  /* decorative only — contrast is too low for text */
+  --color-cool: #6e7a94;
+
+  /* --- Fonts ------------------------------------------------------- */
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, SFMono-Regular, monospace;
+
+  /* --- Fluid type scale (320px -> 1920px, then frozen) ------------- */
+  --text-display: clamp(2.75rem, 1rem + 7.5vw, 8.5rem);
+  --text-display--line-height: 0.92;
+  --text-display--letter-spacing: -0.045em;
+
+  --text-h1: clamp(2.25rem, 1.2rem + 4.4vw, 5rem);
+  --text-h1--line-height: 1;
+  --text-h1--letter-spacing: -0.035em;
+
+  --text-h2: clamp(1.75rem, 1.1rem + 2.6vw, 3.25rem);
+  --text-h2--line-height: 1.06;
+  --text-h2--letter-spacing: -0.03em;
+
+  --text-h3: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.02em;
+
+  --text-lead: clamp(1.0625rem, 1rem + 0.5vw, 1.375rem);
+  --text-lead--line-height: 1.6;
+  --text-lead--letter-spacing: -0.01em;
+
+  --text-body: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --text-body--line-height: 1.7;
+
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.18em;
+
+  /* --- Spacing & containers ---------------------------------------- */
+  --spacing-section: clamp(5rem, 3rem + 8vw, 12rem);
+  --spacing-gutter: clamp(1.25rem, 0.75rem + 2.5vw, 3rem);
+  --container-shell: 88rem;
+  --container-prose: 42rem;
+
+  /* --- Breakpoints -------------------------------------------------- */
+  --breakpoint-xs: 22.5rem; /* 360px */
+  --breakpoint-3xl: 120rem; /* 1920px */
+  --breakpoint-4xl: 160rem; /* 2560px */
+
+  /* --- Radii, shadows, easings -------------------------------------- */
+  --radius-card: 1.5rem;
+  --radius-pill: 9999px;
+
+  --shadow-glow: 0 24px 80px -32px color-mix(in oklab, var(--color-accent) 45%, transparent);
+  --shadow-lift:
+    inset 0 1px 0 rgb(245 243 240 / 0.06),
+    0 32px 64px -32px rgb(0 0 0 / 0.85);
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-pulse-soft: pulse-soft 2.4s var(--ease-soft) infinite;
+  --animate-float-slow: float-slow 18s ease-in-out infinite;
+  --animate-scroll-cue: scroll-cue 2s var(--ease-soft) infinite;
+
+  /* Orbital system — the hero "solar system". Durations are deliberately
+     long and mutually prime so the planets never resync into a pattern. */
+  --animate-orbit: orbit 34s linear infinite;
+  --animate-orbit-rev: orbit-rev 41s linear infinite;
+  --animate-spin-slow: orbit 120s linear infinite;
+  --animate-twinkle: twinkle 4.5s var(--ease-soft) infinite;
+  --animate-drift: drift 26s ease-in-out infinite;
+  --animate-breathe: breathe 9s var(--ease-soft) infinite;
+  --animate-star-pulse: star-pulse 8s var(--ease-soft) infinite;
+  --animate-shooting-star: shooting-star 16s linear infinite;
+  --animate-dust-orbit: dust-orbit 28s linear infinite;
+  --animate-cosmic-drift: cosmic-drift 70s ease-in-out infinite alternate;
+  --animate-nebula: nebula 24s var(--ease-soft) infinite alternate;
+}
+
+/* ------------------------------------------------------------------ */
+/* Custom variants                                                     */
+/* ------------------------------------------------------------------ */
+
+/* Hover effects only on real pointers — no sticky states on touch. */
+@custom-variant hover-fine {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+@custom-variant group-hover-fine {
+  @media (hover: hover) and (pointer: fine) {
+    &:is(:where(.group):hover *) {
+      @slot;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* offset for the sticky header when jumping to an anchor */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+    color: var(--color-fg);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border-radius: 9999px;
+    border: 2px solid var(--color-bg);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--color-accent) 55%, var(--color-line));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilities                                                           */
+/* ------------------------------------------------------------------ */
+
+@utility shell {
+  width: 100%;
+  max-width: var(--container-shell);
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+}
+
+@utility prose-width {
+  max-width: var(--container-prose);
+}
+
+/* Frosted panel. Soft, diffuse — never a hard neon edge. */
+@utility glass {
+  position: relative;
+  isolation: isolate;
+  background: color-mix(in oklab, var(--color-surface) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  border: 1px solid color-mix(in oklab, var(--color-fg) 8%, transparent);
+  border-radius: var(--radius-card);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-fg) 5%, transparent),
+      transparent 42%
+    );
+    pointer-events: none;
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    background: var(--color-surface);
+  }
+}
+
+/* Pointer-tracked glow. Requires --mx / --my set from JS. */
+@utility glass-hover {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.45s var(--ease-soft);
+    background: radial-gradient(
+      320px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in oklab, var(--color-accent) 14%, transparent),
+      transparent 62%
+    );
+    pointer-events: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::after {
+      opacity: 1;
+    }
+  }
+}
+
+/* Large diffuse copper bloom. Decorative — always aria-hidden. */
+@utility halo {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+@utility halo-copper {
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--color-accent) 26%, transparent),
+    transparent
+  );
+  opacity: 0.55;
+}
+
+@utility halo-cool {
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--color-cool) 24%, transparent),
+    transparent
+  );
+  opacity: 0.4;
+}
+
+/* Film grain — kills gradient banding on near-black backgrounds. */
+@utility grain {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@utility text-gradient-copper {
+  background-image: linear-gradient(
+    96deg,
+    var(--color-accent-2),
+    var(--color-accent) 55%,
+    var(--color-accent-deep)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  /* keeps descenders from being clipped */
+  padding-bottom: 0.08em;
+}
+
+/* Vertical timeline rail. */
+@utility rail-line {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in oklab, var(--color-fg) 12%, transparent) 12%,
+    color-mix(in oklab, var(--color-fg) 12%, transparent) 88%,
+    transparent
+  );
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+@utility edge-fade {
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Keyframes                                                           */
+/* ------------------------------------------------------------------ */
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  33% {
+    transform: translate3d(2%, -3%, 0) rotate(120deg) scale(1.04);
+  }
+  66% {
+    transform: translate3d(-2%, 2%, 0) rotate(240deg) scale(0.97);
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Orbital system                                                      */
+/* ------------------------------------------------------------------ */
+
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* Motes that fade in, drift, and fade back out. */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  45%,
+  60% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-3%, 4%, 0);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.06);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Living space background                                            */
+/* ------------------------------------------------------------------ */
+
+@keyframes star-pulse {
+  0%,
+  100% {
+    opacity: 0.05;
+    transform: scale(0.55);
+  }
+  18% {
+    opacity: 0.18;
+  }
+  48% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  63% {
+    opacity: 0.28;
+  }
+  78% {
+    opacity: 0.62;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes shooting-star {
+  0%,
+  76% {
+    opacity: 0;
+    transform: translate3d(-18vw, -10vw, 0) rotate(-32deg) scaleX(0.2);
+  }
+  78% {
+    opacity: 0.9;
+  }
+  84% {
+    opacity: 0;
+    transform: translate3d(58vw, 32vw, 0) rotate(-32deg) scaleX(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(58vw, 32vw, 0) rotate(-32deg) scaleX(1.15);
+  }
+}
+
+@keyframes dust-orbit {
+  from {
+    transform: rotate(0deg) scale(0.85);
+  }
+  50% {
+    opacity: 0.65;
+  }
+  to {
+    transform: rotate(360deg) scale(0.85);
+  }
+}
+
+@keyframes cosmic-drift {
+  from {
+    transform: translate3d(-1.5%, -1%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(1.5%, 1%, 0) scale(1.025);
+  }
+}
+
+@keyframes nebula {
+  from {
+    transform: translate3d(-4%, 2%, 0) scale(0.92);
+    opacity: 0.045;
+  }
+  to {
+    transform: translate3d(5%, -4%, 0) scale(1.08);
+    opacity: 0.09;
+  }
+}

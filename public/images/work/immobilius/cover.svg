@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img" aria-label="Immobilius screenshot placeholder">
+  <defs>
+    <radialGradient id="g2" cx="28%" cy="18%" r="80%">
+      <stop offset="0%" stop-color="#FFA24C" stop-opacity="0.5"/>
+      <stop offset="60%" stop-color="#FFA24C" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#0E0E13" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="#0E0E13"/>
+  <rect width="1600" height="1000" fill="url(#g2)"/>
+  <rect x="120" y="240" width="520" height="600" rx="24" fill="#15151C" stroke="#F5F3F0" stroke-opacity="0.08"/>
+  <g fill="#F5F3F0" opacity="0.14">
+    <rect x="160" y="290" width="300" height="14" rx="7"/>
+    <rect x="160" y="340" width="420" height="10" rx="5"/>
+    <rect x="160" y="380" width="380" height="10" rx="5"/>
+    <rect x="160" y="470" width="300" height="14" rx="7"/>
+    <rect x="160" y="520" width="420" height="10" rx="5"/>
+    <rect x="160" y="560" width="360" height="10" rx="5"/>
+  </g>
+  <rect x="700" y="240" width="780" height="600" rx="24" fill="#101018" stroke="#F5F3F0" stroke-opacity="0.08"/>
+  <g stroke="#6E7A94" stroke-opacity="0.25" fill="none">
+    <path d="M700 440h780M700 640h780M940 240v600M1180 240v600"/>
+  </g>
+  <g fill="#FF6A2B">
+    <circle cx="880" cy="400" r="16" opacity="0.9"/>
+    <circle cx="1080" cy="560" r="24" opacity="0.75"/>
+    <circle cx="1300" cy="360" r="12" opacity="0.85"/>
+    <circle cx="1220" cy="700" r="18" opacity="0.6"/>
+    <circle cx="820" cy="700" r="10" opacity="0.7"/>
+  </g>
+  <text x="120" y="140" font-family="ui-sans-serif, system-ui" font-size="72" font-weight="600" fill="#F5F3F0">Immobilius</text>
+  <text x="120" y="920" font-family="ui-monospace, monospace" font-size="24" letter-spacing="5" fill="#8A8681">SCREENSHOT PLACEHOLDER</text>
+</svg>
