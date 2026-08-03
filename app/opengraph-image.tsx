@@ -96,7 +96,7 @@ export default function OpengraphImage() {
             color: "#8A8681",
           }}
         >
-          <div style={{ display: "flex" }}>ebenkwete.com</div>
+          <div style={{ display: "flex" }}>eben.live</div>
           <div style={{ display: "flex", color: "#FFA24C" }}>
             Available for new projects
           </div>
