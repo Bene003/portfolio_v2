@@ -68,7 +68,7 @@ export default function Timeline() {
                         right ? "lg:pl-16" : "lg:pr-16 lg:text-right",
                       )}
                     >
-                      <p className="font-mono text-sm tracking-[0.12em] text-accent">
+                      <p className="font-mono text-sm tracking-[0.12em] text-accent-text">
                         {entry.period}
                       </p>
                       <h3 className="mt-3 text-h3">{entry.title}</h3>

@@ -8,6 +8,8 @@ import ScrollProgress from "@/components/layout/ScrollProgress";
 import SiteFooter from "@/components/layout/SiteFooter";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SkipLink from "@/components/layout/SkipLink";
+import ThemeShockwave from "@/components/theme/ThemeShockwave";
+import WorldEffects from "@/components/theme/WorldEffects";
 import { SITE_URL, site } from "@/lib/site";
 
 import "./globals.css";
@@ -77,9 +79,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#07070A",
-  colorScheme: "dark",
 };
+
+const themeBootScript = `(function(){var t="fire",v=null;try{v=localStorage.getItem("portfolio-theme");if(v==="dark"||v==="copper")v="fire";if(v==="light"||v==="earth")v="storm";if(v==="fire"||v==="storm"||v==="ice"||v==="flora"){t=v;localStorage.setItem("portfolio-theme",t)}}catch(e){}var c={fire:"#07070a",storm:"#050914",ice:"#04111f",flora:"#06130c"};var r=document.documentElement,n=navigator,k=n.connection||{},q=window.matchMedia&&window.matchMedia("(pointer: coarse)").matches,l=!!k.saveData||(n.deviceMemory&&n.deviceMemory<=4)||(n.hardwareConcurrency&&n.hardwareConcurrency<=4)||q;r.dataset.theme=t;r.dataset.effects=l?"lite":"full";r.style.colorScheme="dark";var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",c[t])})()`;
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -112,9 +114,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="fire"
       data-scroll-behavior="smooth"
+      suppressHydrationWarning
       className={`${sora.variable} ${inter.variable} ${mono.variable}`}
     >
+      <head>
+        <meta name="theme-color" content="#07070a" />
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+      </head>
       <body className="bg-bg text-fg antialiased">
         <script
           type="application/ld+json"
@@ -122,7 +130,9 @@ export default function RootLayout({
         />
         <MotionProvider>
           <SkipLink />
+          <ThemeShockwave />
           <AmbientBackground />
+          <WorldEffects />
           <ScrollProgress />
           <CursorHalo />
           <SiteHeader />

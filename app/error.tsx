@@ -24,13 +24,13 @@ export default function GlobalError({
           <button
             type="button"
             onClick={reset}
-            className="inline-flex min-h-11 items-center justify-center rounded-pill bg-accent px-6 text-sm font-medium text-bg shadow-glow transition-colors duration-300 hover-fine:bg-accent-2"
+            className="inline-flex min-h-11 items-center justify-center rounded-pill bg-accent px-6 text-sm font-medium text-on-accent shadow-glow transition-colors duration-300 hover-fine:bg-accent-2"
           >
             Try again
           </button>
           <Link
             href="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-pill border border-line px-6 text-sm text-fg transition-colors duration-300 hover-fine:border-accent/45 hover-fine:text-accent-2"
+            className="inline-flex min-h-11 items-center justify-center rounded-pill border border-line px-6 text-sm text-fg transition-colors duration-300 hover-fine:border-accent/45 hover-fine:text-accent-text"
           >
             Back home
           </Link>

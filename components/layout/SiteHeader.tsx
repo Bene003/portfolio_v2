@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import CommandPalette from "./CommandPalette";
 import MobileMenu from "./MobileMenu";
 import ShatterName from "./ShatterName";
+import ThemeToggle from "./ThemeToggle";
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -102,6 +103,7 @@ export default function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <CommandPalette />
 
             <Button href="/#contact" className="hidden sm:inline-flex">

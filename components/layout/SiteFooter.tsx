@@ -11,7 +11,7 @@ export default function SiteFooter() {
         <div className="flex flex-col gap-3">
           <Link href="/" className="font-display text-xl font-semibold">
             {site.name.split(" ")[0]}
-            <span className="text-accent">{site.name.split(" ")[1]}</span>
+            <span className="text-accent-text">{site.name.split(" ")[1]}</span>
           </Link>
           <p className="text-sm text-muted">
             {site.role} · {site.location}

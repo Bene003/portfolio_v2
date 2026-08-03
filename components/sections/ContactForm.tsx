@@ -6,7 +6,7 @@ import { FormEvent, useState } from "react";
 type FormStatus = "idle" | "sending" | "success" | "error";
 
 const inputClass =
-  "min-h-12 w-full rounded-xl border border-line bg-bg/50 px-4 text-sm text-fg outline-none transition-[border-color,background-color,box-shadow] duration-300 placeholder:text-muted/55 hover-fine:border-fg/15 focus:border-accent/55 focus:bg-bg/75 focus:ring-4 focus:ring-accent/8";
+  "min-h-12 w-full rounded-xl border border-line bg-bg/50 px-4 text-sm text-fg outline-none transition-[border-color,background-color,box-shadow] duration-300 placeholder:text-muted/55 hover-fine:border-fg/15 focus:border-accent-text/55 focus:bg-bg/75 focus:ring-4 focus:ring-accent-text/8";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<FormStatus>("idle");
@@ -137,7 +137,7 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="group/btn relative inline-flex min-h-12 shrink-0 items-center justify-center gap-2 overflow-hidden rounded-pill bg-accent px-7 text-sm font-medium text-bg shadow-glow transition-colors duration-300 hover-fine:bg-accent-2 disabled:cursor-wait disabled:opacity-65"
+          className="group/btn relative inline-flex min-h-12 shrink-0 items-center justify-center gap-2 overflow-hidden rounded-pill bg-accent px-7 text-sm font-medium text-on-accent shadow-glow transition-colors duration-300 hover-fine:bg-accent-2 disabled:cursor-wait disabled:opacity-65"
         >
           <span className="absolute inset-y-0 -left-1/2 w-1/3 -translate-x-[120%] skew-x-[-18deg] bg-fg/25 blur-md transition-transform duration-700 group-hover-fine/btn:translate-x-[320%] motion-reduce:hidden" />
           <span className="relative z-10 inline-flex items-center gap-2">

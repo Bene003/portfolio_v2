@@ -55,7 +55,7 @@ export default function ShatterName() {
               event.preventDefault();
               shatter(index);
             }}
-            className={`shatter-letter ${accent ? "text-accent" : "text-fg"} ${
+            className={`shatter-letter ${accent ? "text-accent-text" : "text-fg"} ${
               shattered.has(index) ? "is-shattered" : ""
             }`}
           >

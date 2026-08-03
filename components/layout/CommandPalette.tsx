@@ -2,20 +2,32 @@
 
 import {
   ArrowUpRight,
+  CircleDot,
   Command,
   Download,
+  Flame,
+  Leaf,
   Mail,
   Search,
+  Snowflake,
   SquareArrowOutUpRight,
+  Zap,
 } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useScrollLock } from "@/hooks/useScrollLock";
+import { useTheme } from "@/hooks/useTheme";
 import { projects } from "@/lib/content/projects";
 import { EASE_EXPO } from "@/lib/motion";
 import { nav, site } from "@/lib/site";
+import {
+  THEME_LABELS,
+  THEME_ORDER,
+  toggleTheme,
+  type Theme,
+} from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 type Action = {
@@ -27,8 +39,16 @@ type Action = {
   run: () => void;
 };
 
+const THEME_ICONS = {
+  fire: Flame,
+  storm: Zap,
+  ice: Snowflake,
+  flora: Leaf,
+} satisfies Record<Theme, typeof CircleDot>;
+
 export default function CommandPalette() {
   const router = useRouter();
+  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
@@ -44,6 +64,10 @@ export default function CommandPalette() {
       setOpen(false);
       router.push(href);
     };
+
+    const currentThemeIndex = THEME_ORDER.indexOf(theme);
+    const nextTheme =
+      THEME_ORDER[(currentThemeIndex + 1) % THEME_ORDER.length];
 
     return [
       ...nav.map((item) => ({
@@ -70,6 +94,23 @@ export default function CommandPalette() {
         icon: ArrowUpRight,
         run: go(`/work/${p.slug}`),
       })),
+      {
+        id: "theme",
+        label: `Travel to ${THEME_LABELS[nextTheme]} planet`,
+        hint: `${THEME_LABELS[theme]} → ${THEME_LABELS[nextTheme]}`,
+        group: "Actions" as const,
+        icon: THEME_ICONS[nextTheme],
+        run: () => {
+          setOpen(false);
+          window.requestAnimationFrame(() => {
+            toggleTheme({
+              x: window.innerWidth / 2,
+              y: Math.min(window.innerHeight * 0.22, 180),
+              source: "command",
+            });
+          });
+        },
+      },
       {
         id: "copy-email",
         label: "Copy email address",
@@ -117,7 +158,7 @@ export default function CommandPalette() {
         },
       },
     ];
-  }, [router]);
+  }, [router, theme]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -262,7 +303,7 @@ export default function CommandPalette() {
                           aria-hidden
                           className={cn(
                             "size-4 shrink-0",
-                            i === active ? "text-accent" : "text-muted",
+                            i === active ? "text-accent-text" : "text-muted",
                           )}
                         />
                         <span className="min-w-0 flex-1 truncate text-sm">

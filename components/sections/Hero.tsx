@@ -76,7 +76,10 @@ export default function Hero() {
         className="pointer-events-none absolute inset-0 z-[5] hidden lg:block lg:bg-[linear-gradient(90deg,var(--color-bg)_14%,color-mix(in_oklab,var(--color-bg)_55%,transparent)_40%,transparent_60%)]"
       />
 
-      <m.div style={{ y: textY }} className="shell relative z-10">
+      <m.div
+        style={{ y: textY }}
+        className="shell pointer-events-none relative z-10"
+      >
         <div className="max-w-3xl lg:max-w-[46rem]">
           <m.p
             initial={{ opacity: 0, y: 12 }}
@@ -114,7 +117,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.62, duration: 0.9, ease: EASE_EXPO }}
-            className="mt-[clamp(4rem,16vh,8rem)] flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-center lg:mt-10"
+            className="pointer-events-auto mt-[clamp(4rem,16vh,8rem)] flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-center lg:mt-10"
           >
             <MagneticButton className="w-full sm:w-auto">
               <Button href="/#work" className="w-full sm:w-auto">
@@ -136,7 +139,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.9 }}
-            className="mt-10 flex items-center gap-3"
+            className="pointer-events-auto mt-10 flex items-center gap-3"
           >
             {[
               { href: site.socials.github, label: "GitHub", Icon: Github },
@@ -147,7 +150,7 @@ export default function Hero() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="grid size-11 place-items-center rounded-full border border-line text-muted transition-colors duration-300 hover-fine:border-accent/45 hover-fine:text-accent"
+                  className="grid size-11 place-items-center rounded-full border border-line text-muted transition-colors duration-300 hover-fine:border-accent/45 hover-fine:text-accent-text"
                 >
                   <Icon className="size-4" aria-hidden />
                   <span className="sr-only">

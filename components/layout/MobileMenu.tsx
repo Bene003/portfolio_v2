@@ -74,7 +74,7 @@ export default function MobileMenu({
           <div className="shell flex min-h-16 items-center justify-between pt-[max(1rem,env(safe-area-inset-top))] pb-4">
             <span className="font-display text-lg font-semibold">
               {site.name.split(" ")[0]}
-              <span className="text-accent">{site.name.split(" ")[1]}</span>
+              <span className="text-accent-text">{site.name.split(" ")[1]}</span>
             </span>
             <button
               type="button"
@@ -106,10 +106,10 @@ export default function MobileMenu({
                   onClick={onClose}
                   className="group flex items-baseline gap-4 py-2"
                 >
-                  <span className="eyebrow text-accent">
+                  <span className="eyebrow text-accent-text">
                     0{i + 1}
                   </span>
-                  <span className="text-h2 font-display transition-colors duration-300 group-hover-fine:text-accent">
+                  <span className="text-h2 font-display transition-colors duration-300 group-hover-fine:text-accent-text">
                     {item.label}
                   </span>
                 </Link>

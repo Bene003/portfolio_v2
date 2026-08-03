@@ -45,7 +45,7 @@ export default function Process() {
               <div className="flex items-center gap-4">
                 <span
                   aria-hidden
-                  className="relative grid size-7 shrink-0 place-items-center rounded-full border border-accent/45 bg-bg font-mono text-[0.625rem] text-accent"
+                  className="relative grid size-7 shrink-0 place-items-center rounded-full border border-accent/45 bg-bg font-mono text-[0.625rem] text-accent-text"
                 >
                   <span
                     className="absolute inset-0 animate-pulse-soft rounded-full bg-accent/20 motion-reduce:animate-none"

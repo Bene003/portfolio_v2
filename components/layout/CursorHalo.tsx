@@ -43,7 +43,7 @@ export default function CursorHalo() {
       style={{ x, y, opacity: visible ? 1 : 0 }}
       className="pointer-events-none fixed top-0 left-0 z-[55] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500"
     >
-      <div className="size-[22rem] rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-accent)_11%,transparent),transparent)] mix-blend-plus-lighter" />
+      <div className="cursor-halo size-[22rem] rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-accent)_11%,transparent),transparent)] mix-blend-plus-lighter" />
     </m.div>
   );
 }

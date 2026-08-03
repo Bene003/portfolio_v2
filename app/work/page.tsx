@@ -28,7 +28,7 @@ export default function WorkIndex() {
         <div className="shell relative z-10">
           <Reveal>
             <p className="eyebrow flex items-center gap-3">
-              <span className="text-accent">All</span>
+              <span className="text-accent-text">All</span>
               <span aria-hidden className="h-px w-8 bg-line sm:w-12" />
               <span>Selected work</span>
             </p>
@@ -80,13 +80,13 @@ export default function WorkIndex() {
 
                   <div className="flex flex-1 flex-col p-6 sm:p-8">
                     <p className="eyebrow flex items-center gap-3">
-                      <span className="text-accent">{pad(i + 1)}</span>
+                      <span className="text-accent-text">{pad(i + 1)}</span>
                       <span aria-hidden className="h-px w-6 bg-line" />
                       <span>{project.type}</span>
                     </p>
 
                     <h2 className="mt-5 text-h3">{project.name}</h2>
-                    <p className="mt-2 text-sm text-accent-2">
+                    <p className="mt-2 text-sm text-accent-text">
                       {project.tagline}
                     </p>
                     <p className="mt-4 flex-1 text-sm text-muted">

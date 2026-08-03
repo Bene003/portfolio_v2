@@ -77,7 +77,7 @@ export default async function CaseStudy({ params }: Params) {
 
           <Reveal delay={0.06}>
             <p className="eyebrow mt-8 flex items-center gap-3">
-              <span className="text-accent">{pad(index + 1)}</span>
+              <span className="text-accent-text">{pad(index + 1)}</span>
               <span aria-hidden className="h-px w-8 bg-line sm:w-12" />
               <span>{project.type}</span>
             </p>
@@ -116,7 +116,7 @@ export default async function CaseStudy({ params }: Params) {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-8 inline-flex min-h-11 items-center gap-2 text-sm text-fg transition-colors hover-fine:text-accent-2"
+                className="mt-8 inline-flex min-h-11 items-center gap-2 text-sm text-fg transition-colors hover-fine:text-accent-text"
               >
                 Visit the live site
                 <ArrowUpRight aria-hidden className="size-4 text-accent" />
@@ -202,7 +202,7 @@ export default async function CaseStudy({ params }: Params) {
                 <div className="grid gap-6 border-t border-line pt-8 lg:grid-cols-12 lg:gap-12">
                   <div className="lg:col-span-4">
                     <p className="eyebrow flex items-center gap-3">
-                      <span className="text-accent">{pad(i + 1)}</span>
+                      <span className="text-accent-text">{pad(i + 1)}</span>
                       <span aria-hidden className="h-px w-6 bg-line" />
                     </p>
                     <h3 className="mt-4 text-h3">{section.title}</h3>

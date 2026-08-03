@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
 import { useCan3D } from "@/hooks/useCan3D";
 
@@ -14,8 +15,32 @@ const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
   loading: () => <HeroFallback />,
 });
 
+type IdleWindow = Window & {
+  requestIdleCallback?: (
+    callback: () => void,
+    options?: { timeout: number },
+  ) => number;
+  cancelIdleCallback?: (handle: number) => void;
+};
+
 /** Single decision point for the hero visual. */
 export default function HeroVisual() {
   const can3D = useCan3D();
-  return can3D ? <HeroCanvas /> : <HeroFallback />;
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (!can3D) return;
+    const idleWindow = window as IdleWindow;
+    const activate = () => setReady(true);
+
+    if (idleWindow.requestIdleCallback) {
+      const handle = idleWindow.requestIdleCallback(activate, { timeout: 700 });
+      return () => idleWindow.cancelIdleCallback?.(handle);
+    }
+
+    const handle = window.setTimeout(activate, 120);
+    return () => window.clearTimeout(handle);
+  }, [can3D]);
+
+  return can3D && ready ? <HeroCanvas /> : <HeroFallback />;
 }

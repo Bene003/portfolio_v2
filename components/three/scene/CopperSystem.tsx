@@ -1,7 +1,7 @@
 "use client";
 
 import { Float, Sparkles, Stars } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
@@ -13,9 +13,14 @@ import {
   MathUtils,
   Mesh,
   MeshBasicMaterial,
+  MeshStandardMaterial,
+  PointLight,
   ShaderMaterial,
   Vector3,
 } from "three";
+
+import { useTheme } from "@/hooks/useTheme";
+import { toggleTheme, type Theme } from "@/lib/theme";
 
 import type { SceneQuality } from "../HeroCanvas";
 
@@ -23,6 +28,84 @@ const COPPER = "#ff6a2b";
 const GOLD = "#ffb15c";
 const NIGHT = "#09070b";
 const COOL = "#7790bd";
+const STORM_OCEAN = "#379fe8";
+const STORM_LAND = "#fff0a0";
+const STORM_NIGHT = "#020817";
+const STORM_CITY = "#ffffff";
+const STORM_ATMOSPHERE = "#75d7ff";
+const STORM_COOL = "#ffd84d";
+const ICE_OCEAN = "#269dcb";
+const ICE_LAND = "#d9f5ff";
+const ICE_NIGHT = "#031a2b";
+const ICE_CITY = "#80e5ff";
+const ICE_ATMOSPHERE = "#73dcff";
+const ICE_COOL = "#a9e9ff";
+const FLORA_OCEAN = "#07533e";
+const FLORA_LAND = "#57d36b";
+const FLORA_NIGHT = "#020d07";
+const FLORA_CITY = "#d6f57a";
+const FLORA_ATMOSPHERE = "#6ee7a0";
+const FLORA_COOL = "#5ba99a";
+
+const PLANET_PALETTES = {
+  fire: {
+    ocean: COPPER,
+    land: GOLD,
+    night: NIGHT,
+    city: GOLD,
+    cloud: "#ffd7b6",
+    atmosphere: COPPER,
+    cool: COOL,
+    baseStrength: 0.46,
+    stormStrength: 0,
+  },
+  storm: {
+    ocean: STORM_OCEAN,
+    land: STORM_LAND,
+    night: STORM_NIGHT,
+    city: STORM_CITY,
+    cloud: "#eefaff",
+    atmosphere: STORM_ATMOSPHERE,
+    cool: STORM_COOL,
+    baseStrength: 0.64,
+    stormStrength: 1,
+  },
+  ice: {
+    ocean: ICE_OCEAN,
+    land: ICE_LAND,
+    night: ICE_NIGHT,
+    city: ICE_CITY,
+    cloud: "#e8faff",
+    atmosphere: ICE_ATMOSPHERE,
+    cool: ICE_COOL,
+    baseStrength: 0.74,
+    stormStrength: 0,
+  },
+  flora: {
+    ocean: FLORA_OCEAN,
+    land: FLORA_LAND,
+    night: FLORA_NIGHT,
+    city: FLORA_CITY,
+    cloud: "#c8f7d4",
+    atmosphere: FLORA_ATMOSPHERE,
+    cool: FLORA_COOL,
+    baseStrength: 0.54,
+    stormStrength: 0,
+  },
+} satisfies Record<
+  Theme,
+  {
+    ocean: string;
+    land: string;
+    night: string;
+    city: string;
+    cloud: string;
+    atmosphere: string;
+    cool: string;
+    baseStrength: number;
+    stormStrength: number;
+  }
+>;
 
 const vertexShader = /* glsl */ `
   varying vec3 vNormal;
@@ -43,6 +126,9 @@ const fragmentShader = /* glsl */ `
   uniform vec3 uCopper;
   uniform vec3 uGold;
   uniform vec3 uNight;
+  uniform vec3 uCity;
+  uniform float uBaseStrength;
+  uniform float uStorm;
   uniform float uInteraction;
   varying vec3 vNormal;
   varying vec3 vWorldPosition;
@@ -88,13 +174,18 @@ const fragmentShader = /* glsl */ `
     float latitude = sin((vUv.y + fbm(p) * .08) * 55.0) * .5 + .5;
     float scan = smoothstep(.82, 1., latitude) * .15;
 
-    vec3 base = mix(uNight, uCopper * .46, diffuse);
+    vec3 base = mix(uNight, uCopper * uBaseStrength, diffuse);
     base = mix(base, uGold, continents * (.22 + diffuse * .72));
     base += uGold * ridges * diffuse * .7;
     base += uCopper * scan * diffuse;
 
     float cityMask = step(.965, hash(floor(p * 24.0))) * continents;
-    base += uGold * cityMask * (1.0 - diffuse) * 3.5;
+    base += uCity * cityMask * (1.0 - diffuse) * 3.5;
+
+    float stormNoise = noise(p * 11.0 + vec3(uTime * .9));
+    float stormBand = abs(sin((vUv.x + fbm(p * 1.8) * .2 + uTime * .08) * 74.0));
+    float lightning = smoothstep(.965, 1.0, stormBand) * smoothstep(.44, .8, stormNoise);
+    base += uCity * lightning * uStorm * (1.4 + (1.0 - diffuse) * 1.8);
     base += uCopper * rim * 1.35;
     base += uGold * rim * uInteraction * 1.15;
     base += uCopper * continents * uInteraction * .18;
@@ -107,37 +198,84 @@ function World({
   quality,
   interactive,
   onInteractionChange,
+  theme,
+  transitioning,
 }: {
   quality: SceneQuality;
   interactive: boolean;
   onInteractionChange: (active: boolean) => void;
+  theme: Theme;
+  transitioning: boolean;
 }) {
+  const { camera, gl } = useThree();
   const group = useRef<Group>(null);
   const world = useRef<Mesh>(null);
   const cloud = useRef<Mesh>(null);
   const material = useRef<ShaderMaterial>(null);
+  const cloudMaterial = useRef<MeshStandardMaterial>(null);
+  const atmosphereMaterial = useRef<MeshBasicMaterial>(null);
+  const projectedCenter = useMemo(() => new Vector3(), []);
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uCopper: { value: new Color(COPPER) },
       uGold: { value: new Color(GOLD) },
       uNight: { value: new Color(NIGHT) },
+      uCity: { value: new Color(GOLD) },
+      uBaseStrength: { value: 0.46 },
+      uStorm: { value: 0 },
       uInteraction: { value: 0 },
     }),
     [],
   );
-  const segments = quality === "high" ? 128 : quality === "medium" ? 80 : 48;
-  const shellSegments = quality === "high" ? 64 : quality === "medium" ? 48 : 32;
+  const segments = quality === "high" ? 96 : quality === "medium" ? 64 : 40;
+  const shellSegments = quality === "high" ? 48 : quality === "medium" ? 36 : 28;
+  const targets = useMemo(
+    () => {
+      const palette = PLANET_PALETTES[theme];
+      return {
+        ocean: new Color(palette.ocean),
+        land: new Color(palette.land),
+        night: new Color(palette.night),
+        city: new Color(palette.city),
+        cloud: new Color(palette.cloud),
+        atmosphere: new Color(palette.atmosphere),
+        baseStrength: palette.baseStrength,
+        stormStrength: palette.stormStrength,
+      };
+    },
+    [theme],
+  );
 
   useFrame(({ clock }, delta) => {
+    const themeDamping = 1 - Math.exp(-4 * delta);
     if (material.current) {
       material.current.uniforms.uTime.value = clock.elapsedTime;
+      material.current.uniforms.uCopper.value.lerp(targets.ocean, themeDamping);
+      material.current.uniforms.uGold.value.lerp(targets.land, themeDamping);
+      material.current.uniforms.uNight.value.lerp(targets.night, themeDamping);
+      material.current.uniforms.uCity.value.lerp(targets.city, themeDamping);
+      material.current.uniforms.uBaseStrength.value = MathUtils.lerp(
+        material.current.uniforms.uBaseStrength.value,
+        targets.baseStrength,
+        themeDamping,
+      );
+      material.current.uniforms.uStorm.value = MathUtils.lerp(
+        material.current.uniforms.uStorm.value,
+        targets.stormStrength,
+        themeDamping,
+      );
       material.current.uniforms.uInteraction.value = MathUtils.lerp(
         material.current.uniforms.uInteraction.value,
         interactive ? 1 : 0,
         1 - Math.pow(0.002, delta),
       );
     }
+    cloudMaterial.current?.color.lerp(targets.cloud, themeDamping);
+    atmosphereMaterial.current?.color.lerp(
+      targets.atmosphere,
+      themeDamping,
+    );
     if (group.current) {
       const scale = MathUtils.lerp(
         group.current.scale.x,
@@ -171,6 +309,18 @@ function World({
           if (event.pointerType !== "mouse") onInteractionChange(false);
         }}
         onPointerCancel={() => onInteractionChange(false)}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (!world.current || transitioning) return;
+
+          world.current.getWorldPosition(projectedCenter).project(camera);
+          const rect = gl.domElement.getBoundingClientRect();
+          toggleTheme({
+            x: rect.left + ((projectedCenter.x + 1) / 2) * rect.width,
+            y: rect.top + ((1 - projectedCenter.y) / 2) * rect.height,
+            source: "planet",
+          });
+        }}
       >
         <sphereGeometry args={[1.72, segments, segments]} />
         <shaderMaterial
@@ -184,6 +334,7 @@ function World({
       <mesh ref={cloud} scale={1.018}>
         <sphereGeometry args={[1.72, shellSegments, shellSegments]} />
         <meshStandardMaterial
+          ref={cloudMaterial}
           color="#ffd7b6"
           wireframe
           transparent
@@ -195,6 +346,7 @@ function World({
       <mesh scale={1.11}>
         <sphereGeometry args={[1.72, shellSegments, shellSegments]} />
         <meshBasicMaterial
+          ref={atmosphereMaterial}
           color={COPPER}
           transparent
           opacity={0.19}
@@ -207,16 +359,26 @@ function World({
   );
 }
 
-function DataRing({ radius, tilt, speed, quality, dash = false }: {
+function DataRing({ radius, tilt, speed, quality, theme, dash = false }: {
   radius: number;
   tilt: [number, number, number];
   speed: number;
   quality: SceneQuality;
+  theme: Theme;
   dash?: boolean;
 }) {
   const ring = useRef<Mesh<BufferGeometry>>(null);
+  const material = useRef<MeshBasicMaterial>(null);
+  const target = useMemo(
+    () => {
+      const palette = PLANET_PALETTES[theme];
+      return new Color(dash ? palette.atmosphere : palette.cool);
+    },
+    [dash, theme],
+  );
   useFrame((_, delta) => {
     if (ring.current) ring.current.rotation.z += delta * speed;
+    material.current?.color.lerp(target, 1 - Math.exp(-4 * delta));
   });
   return (
     <mesh ref={ring} rotation={tilt}>
@@ -229,6 +391,7 @@ function DataRing({ radius, tilt, speed, quality, dash = false }: {
         ]}
       />
       <meshBasicMaterial
+        ref={material}
         color={dash ? GOLD : COOL}
         transparent
         opacity={dash ? 0.44 : 0.22}
@@ -280,13 +443,19 @@ const SIGNALS = [
   [1.08, 0.88, -0.95],
 ] as const;
 
-function SignalNodes({ quality }: { quality: SceneQuality }) {
+function SignalNodes({ quality, theme }: { quality: SceneQuality; theme: Theme }) {
   const nodes = useRef<Group>(null);
-  useFrame(({ clock }) => {
+  const target = useMemo(
+    () => new Color(PLANET_PALETTES[theme].city),
+    [theme],
+  );
+  useFrame(({ clock }, delta) => {
     if (!nodes.current) return;
     nodes.current.children.forEach((node, index) => {
       const pulse = 0.75 + Math.sin(clock.elapsedTime * 2.1 + index * 1.7) * 0.25;
       node.scale.setScalar(pulse);
+      const nodeMaterial = (node as Mesh).material as MeshBasicMaterial;
+      nodeMaterial.color.lerp(target, 1 - Math.exp(-4 * delta));
     });
   });
 
@@ -306,13 +475,41 @@ function SignalNodes({ quality }: { quality: SceneQuality }) {
   );
 }
 
-function TransmissionPulse() {
+function TransmissionPulse({
+  theme,
+  revision,
+}: {
+  theme: Theme;
+  revision: number;
+}) {
   const pulse = useRef<Mesh>(null);
   const material = useRef<MeshBasicMaterial>(null);
-  useFrame(({ clock }) => {
-    const cycle = (clock.elapsedTime * 0.16) % 1;
-    if (pulse.current) pulse.current.scale.setScalar(0.55 + cycle * 1.7);
-    if (material.current) material.current.opacity = Math.sin(cycle * Math.PI) * 0.22;
+  const elapsed = useRef(Number.POSITIVE_INFINITY);
+  const seenRevision = useRef(revision);
+  const target = useMemo(
+    () => new Color(PLANET_PALETTES[theme].atmosphere),
+    [theme],
+  );
+
+  useFrame((_, delta) => {
+    if (seenRevision.current !== revision) {
+      seenRevision.current = revision;
+      elapsed.current = 0;
+    }
+
+    material.current?.color.lerp(target, 1 - Math.exp(-5 * delta));
+    if (elapsed.current > 1.2) {
+      if (material.current) material.current.opacity = 0;
+      return;
+    }
+
+    elapsed.current += delta;
+    const progress = Math.min(elapsed.current / 1.2, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    if (pulse.current) pulse.current.scale.setScalar(0.55 + eased * 2.45);
+    if (material.current) {
+      material.current.opacity = Math.sin(progress * Math.PI) * 0.42;
+    }
   });
 
   return (
@@ -331,10 +528,23 @@ function TransmissionPulse() {
   );
 }
 
-function Satellite() {
+function Satellite({ theme }: { theme: Theme }) {
   const carrier = useRef<Group>(null);
-  useFrame(({ clock }) => {
+  const bodyMaterial = useRef<MeshStandardMaterial>(null);
+  const light = useRef<PointLight>(null);
+  const bodyTarget = useMemo(
+    () => new Color(PLANET_PALETTES[theme].city),
+    [theme],
+  );
+  const lightTarget = useMemo(
+    () => new Color(PLANET_PALETTES[theme].atmosphere),
+    [theme],
+  );
+  useFrame(({ clock }, delta) => {
     if (carrier.current) carrier.current.rotation.y = clock.elapsedTime * 0.23;
+    const damping = 1 - Math.exp(-4 * delta);
+    bodyMaterial.current?.color.lerp(bodyTarget, damping);
+    light.current?.color.lerp(lightTarget, damping);
   });
   return (
     <group rotation={[0.45, 0, -0.2]}>
@@ -342,7 +552,12 @@ function Satellite() {
         <group position={[3.05, 0, 0]} rotation={[0.2, 0.5, 0]}>
           <mesh>
             <boxGeometry args={[0.16, 0.1, 0.12]} />
-            <meshStandardMaterial color={GOLD} metalness={0.85} roughness={0.25} />
+            <meshStandardMaterial
+              ref={bodyMaterial}
+              color={GOLD}
+              metalness={0.85}
+              roughness={0.25}
+            />
           </mesh>
           {[-0.21, 0.21].map((x) => (
             <mesh key={x} position={[x, 0, 0]}>
@@ -350,7 +565,7 @@ function Satellite() {
               <meshBasicMaterial color={COOL} side={DoubleSide} />
             </mesh>
           ))}
-          <pointLight color={GOLD} intensity={2} distance={1.2} />
+          <pointLight ref={light} color={GOLD} intensity={2} distance={1.2} />
         </group>
       </group>
     </group>
@@ -378,14 +593,23 @@ function PointerRig({
 }
 
 export default function CopperSystem({ quality }: { quality: SceneQuality }) {
+  const { theme, revision, transitioning } = useTheme();
   const [interactive, setInteractive] = useState(false);
   const scale = quality === "high" ? 0.92 : quality === "medium" ? 0.83 : 0.78;
-  const starCount = quality === "high" ? 700 : quality === "medium" ? 420 : 280;
-  const sparkleCount = quality === "high" ? 54 : quality === "medium" ? 34 : 18;
+  const starCount = quality === "high" ? 520 : quality === "medium" ? 320 : 190;
+  const sparkleCount = quality === "high" ? 40 : quality === "medium" ? 24 : 12;
 
   return (
     <>
-      <Stars radius={45} depth={22} count={starCount} factor={1.6} saturation={0.35} fade speed={0.18} />
+      <Stars
+        radius={45}
+        depth={22}
+        count={starCount}
+        factor={theme === "storm" ? 1.2 : theme === "flora" ? 1.2 : 1.6}
+        saturation={theme === "storm" ? 0.48 : theme === "ice" ? 0.18 : 0.35}
+        fade
+        speed={0.18}
+      />
       <PointerRig active={interactive}>
         <Float speed={0.8} rotationIntensity={0.08} floatIntensity={0.28}>
           <group scale={scale} position={[0, quality === "low" ? -0.18 : 0, 0]}>
@@ -393,17 +617,26 @@ export default function CopperSystem({ quality }: { quality: SceneQuality }) {
               quality={quality}
               interactive={interactive}
               onInteractionChange={setInteractive}
+              theme={theme}
+              transitioning={transitioning}
             />
-            <SignalNodes quality={quality} />
-            <TransmissionPulse />
-            <DataRing quality={quality} radius={2.35} tilt={[1.18, 0.16, 0.24]} speed={0.025} />
-            <DataRing quality={quality} radius={2.72} tilt={[1.42, -0.18, -0.36]} speed={-0.04} dash />
-            <DataRing quality={quality} radius={3.4} tilt={[1.28, 0.45, 0.14]} speed={0.018} />
-            <Satellite />
+            <SignalNodes quality={quality} theme={theme} />
+            <TransmissionPulse theme={theme} revision={revision} />
+            <DataRing quality={quality} theme={theme} radius={2.35} tilt={[1.18, 0.16, 0.24]} speed={0.025} />
+            <DataRing quality={quality} theme={theme} radius={2.72} tilt={[1.42, -0.18, -0.36]} speed={-0.04} dash />
+            <DataRing quality={quality} theme={theme} radius={3.4} tilt={[1.28, 0.45, 0.14]} speed={0.018} />
+            <Satellite theme={theme} />
             {quality !== "low" && <Moon />}
           </group>
         </Float>
-        <Sparkles count={sparkleCount} scale={[8, 6, 5]} size={2.2} speed={0.22} opacity={0.48} color={GOLD} />
+        <Sparkles
+          count={sparkleCount}
+          scale={[8, 6, 5]}
+          size={2.2}
+          speed={0.22}
+          opacity={theme === "storm" ? 0.54 : 0.48}
+          color={PLANET_PALETTES[theme].atmosphere}
+        />
       </PointerRig>
     </>
   );

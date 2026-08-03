@@ -29,7 +29,7 @@ export default function SectionHeading({
     >
       <Reveal>
         <p className="eyebrow flex items-center gap-3">
-          <span className="text-accent">{index}</span>
+          <span className="text-accent-text">{index}</span>
           <span aria-hidden className="h-px w-8 bg-line sm:w-12" />
           <span>{eyebrow}</span>
         </p>

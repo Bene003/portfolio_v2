@@ -25,7 +25,7 @@ export default function Contact() {
       <div className="shell relative z-10">
         <Reveal>
           <p className="eyebrow flex items-center gap-3">
-            <span className="text-accent">07</span>
+            <span className="text-accent-text">07</span>
             <span aria-hidden className="h-px w-8 bg-line sm:w-12" />
             <span>Contact</span>
           </p>

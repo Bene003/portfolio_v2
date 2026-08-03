@@ -3,6 +3,8 @@
 import { m, useMotionValue, useSpring, useTransform } from "motion/react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 
+import { useTheme } from "@/hooks/useTheme";
+import { toggleTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 /** One tilted orbital plane: a ring, plus a carrier that spins around it
@@ -85,6 +87,7 @@ function Mote({
  *  scene in its own right, not a degraded placeholder. It occupies exactly the
  *  same box as the WebGL canvas, so swapping between them shifts nothing. */
 export default function HeroFallback() {
+  const { transitioning } = useTheme();
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
   const x = useSpring(rawX, { stiffness: 80, damping: 24, mass: 0.7 });
@@ -176,16 +179,27 @@ export default function HeroFallback() {
             onPointerDown={interact}
             onPointerUp={reset}
             onPointerCancel={reset}
-            className="pointer-events-auto absolute inset-[34%] touch-pan-y [transform-style:preserve-3d]"
+            onClick={(event) => {
+              if (transitioning) return;
+              const rect = event.currentTarget.getBoundingClientRect();
+              toggleTheme({
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2,
+                source: "planet",
+              });
+            }}
+            className="hero-fallback-planet pointer-events-auto absolute inset-[34%] cursor-pointer touch-pan-y [transform-style:preserve-3d]"
           >
             {/* rim glow */}
-            <div className="absolute -inset-4 animate-breathe rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-accent)_55%,transparent),transparent_70%)] blur-xl motion-reduce:animate-none" />
+            <div className="hero-fallback-rim absolute -inset-4 animate-breathe rounded-full blur-xl motion-reduce:animate-none" />
             {/* body */}
-            <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_32%_26%,color-mix(in_oklab,var(--color-accent-2)_60%,transparent),color-mix(in_oklab,var(--color-accent-deep)_35%,transparent)_45%,var(--color-surface-2)_72%)] shadow-glow" />
+            <div className="hero-fallback-body absolute inset-0 overflow-hidden rounded-full shadow-glow">
+              <span className="hero-fallback-land absolute inset-0 rounded-full" />
+            </div>
             {/* specular highlight */}
-            <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_28%_22%,rgb(255_255_255/0.5),transparent_38%)] opacity-60 mix-blend-screen" />
+            <div className="hero-fallback-specular absolute inset-0 rounded-full opacity-60 mix-blend-screen" />
             {/* terminator */}
-            <div className="absolute inset-0 rounded-full bg-[linear-gradient(120deg,transparent_38%,rgb(0_0_0/0.55)_82%)]" />
+            <div className="hero-fallback-terminator absolute inset-0 rounded-full" />
           </div>
 
           {/* ── motes that appear and vanish ──────────────────────── */}

@@ -5,13 +5,13 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "outline" | "ghost";
 
 const base =
-  "group/btn relative inline-flex min-h-11 items-center justify-center gap-2 overflow-hidden rounded-pill px-6 text-sm font-medium transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent";
+  "group/btn relative inline-flex min-h-11 items-center justify-center gap-2 overflow-hidden rounded-pill px-6 text-sm font-medium transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent-text";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-accent text-bg shadow-glow hover-fine:bg-accent-2 active:scale-[0.98]",
+    "bg-accent text-on-accent shadow-glow hover-fine:bg-accent-2 active:scale-[0.98]",
   outline:
-    "border border-line text-fg hover-fine:border-accent/45 hover-fine:text-accent-2",
+    "border border-line text-fg hover-fine:border-accent/45 hover-fine:text-accent-text",
   ghost: "px-2 text-muted hover-fine:text-fg",
 };
 

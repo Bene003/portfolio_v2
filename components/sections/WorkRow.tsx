@@ -88,7 +88,7 @@ export default function WorkRow({
           variants={fadeUp}
         >
           <p className="eyebrow flex items-center gap-3">
-            <span className="text-accent">{pad(index + 1)}</span>
+            <span className="text-accent-text">{pad(index + 1)}</span>
             <span aria-hidden className="h-px w-8 bg-line" />
             <span>{project.type}</span>
           </p>
@@ -96,13 +96,13 @@ export default function WorkRow({
           <h3 className="mt-5 text-h2">
             <Link
               href={`/work/${project.slug}`}
-              className="transition-colors duration-300 hover-fine:text-accent"
+              className="transition-colors duration-300 hover-fine:text-accent-text"
             >
               {project.name}
             </Link>
           </h3>
 
-          <p className="mt-2 text-lead text-accent-2">{project.tagline}</p>
+          <p className="mt-2 text-lead text-accent-text">{project.tagline}</p>
           <p className="mt-5 text-muted">{project.summary}</p>
 
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-line pt-6 md:grid-cols-4 lg:grid-cols-2">

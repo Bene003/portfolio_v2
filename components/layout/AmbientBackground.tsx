@@ -3,6 +3,7 @@
 import { m, useScroll, useTransform } from "motion/react";
 
 import { usePointerParallax } from "@/hooks/usePointerParallax";
+import { KEY_SKILLS } from "@/lib/skills";
 
 type Star = {
   x: number;
@@ -25,16 +26,16 @@ const STARS: Star[] = Array.from({ length: 46 }, (_, index) => ({
 }));
 
 const SKILL_COMETS = [
-  { label: "Product Strategy", top: "6%", left: "-24%", delay: "0s", duration: "60s", angle: 20, scale: 1, path: "se" },
-  { label: "Entrepreneurial Thinking", top: "14%", left: "112%", delay: "-6s", duration: "60s", angle: 160, scale: 0.82, path: "sw" },
-  { label: "Digital Marketing", top: "108%", left: "-18%", delay: "-12s", duration: "60s", angle: -22, scale: 0.92, path: "ne" },
-  { label: "Business Strategy", top: "110%", left: "116%", delay: "-18s", duration: "60s", angle: -158, scale: 0.86, path: "nw" },
-  { label: "AI Product Design", top: "38%", left: "-32%", delay: "-24s", duration: "60s", angle: 17, scale: 0.9, path: "se" },
-  { label: "Full-Stack Product Development", top: "48%", left: "120%", delay: "-30s", duration: "60s", angle: 164, scale: 0.78, path: "sw" },
-  { label: "Systems Thinking", top: "114%", left: "12%", delay: "-36s", duration: "60s", angle: -18, scale: 0.84, path: "ne" },
-  { label: "Product Vision", top: "112%", left: "92%", delay: "-42s", duration: "60s", angle: -162, scale: 0.8, path: "nw" },
-  { label: "Strategic Decision Making", top: "76%", left: "-38%", delay: "-48s", duration: "60s", angle: 14, scale: 0.76, path: "se" },
-  { label: "Opportunity Identification", top: "73%", left: "116%", delay: "-54s", duration: "60s", angle: 166, scale: 0.74, path: "sw" },
+  { label: KEY_SKILLS[0], top: "6%", left: "-24%", delay: "0s", duration: "60s", angle: 20, scale: 1, path: "se" },
+  { label: KEY_SKILLS[1], top: "14%", left: "112%", delay: "-6s", duration: "60s", angle: 160, scale: 0.82, path: "sw" },
+  { label: KEY_SKILLS[2], top: "108%", left: "-18%", delay: "-12s", duration: "60s", angle: -22, scale: 0.92, path: "ne" },
+  { label: KEY_SKILLS[3], top: "110%", left: "116%", delay: "-18s", duration: "60s", angle: -158, scale: 0.86, path: "nw" },
+  { label: KEY_SKILLS[4], top: "38%", left: "-32%", delay: "-24s", duration: "60s", angle: 17, scale: 0.9, path: "se" },
+  { label: KEY_SKILLS[5], top: "48%", left: "120%", delay: "-30s", duration: "60s", angle: 164, scale: 0.78, path: "sw" },
+  { label: KEY_SKILLS[6], top: "114%", left: "12%", delay: "-36s", duration: "60s", angle: -18, scale: 0.84, path: "ne" },
+  { label: KEY_SKILLS[7], top: "112%", left: "92%", delay: "-42s", duration: "60s", angle: -162, scale: 0.8, path: "nw" },
+  { label: KEY_SKILLS[8], top: "76%", left: "-38%", delay: "-48s", duration: "60s", angle: 14, scale: 0.76, path: "se" },
+  { label: KEY_SKILLS[9], top: "73%", left: "116%", delay: "-54s", duration: "60s", angle: 166, scale: 0.74, path: "sw" },
 ] as const;
 
 const DUST = [
@@ -45,7 +46,7 @@ const DUST = [
 
 function StarField() {
   return (
-    <div className="absolute inset-0 mix-blend-screen">
+    <div className="ambient-stars absolute inset-0 mix-blend-screen">
       {STARS.map((star, index) => {
         const color =
           star.warmth === 0
@@ -80,7 +81,7 @@ function StarField() {
 
 function SkillComets() {
   return (
-    <div className="absolute inset-0 overflow-hidden motion-reduce:hidden">
+    <div className="skill-comets absolute inset-0 overflow-hidden motion-reduce:hidden">
       {SKILL_COMETS.map((skill, index) => (
         <span
           key={skill.label}
@@ -91,7 +92,12 @@ function SkillComets() {
             scale: skill.scale,
             animationDelay: skill.delay,
             animationDuration: skill.duration,
-            color: index % 3 === 1 ? "var(--color-accent-2)" : index % 3 === 2 ? "#aebbd4" : "var(--color-accent)",
+            color:
+              index % 3 === 1
+                ? "var(--color-accent-2)"
+                : index % 3 === 2
+                  ? "var(--color-comet-cool)"
+                  : "var(--color-accent)",
           }}
         >
           <span
@@ -134,7 +140,7 @@ export default function AmbientBackground() {
       {/* Deep star maps: dense but deliberately dim behind the content. */}
       <m.div
         style={{ x: farX, y: scrollFar }}
-        className="absolute -inset-24 opacity-65"
+        className="ambient-deep-field absolute -inset-24 opacity-65"
       >
         <div className="size-full animate-cosmic-drift [background-image:radial-gradient(1px_1px_at_20%_30%,var(--color-fg)_55%,transparent_60%),radial-gradient(1px_1px_at_72%_18%,var(--color-fg)_45%,transparent_60%),radial-gradient(1px_1px_at_45%_78%,var(--color-cool)_60%,transparent_62%),radial-gradient(1px_1px_at_88%_62%,var(--color-fg)_40%,transparent_60%)] [background-size:270px_270px,410px_410px,350px_350px,520px_520px] motion-reduce:animate-none" />
       </m.div>
@@ -153,7 +159,7 @@ export default function AmbientBackground() {
       </m.div>
 
       {/* Tiny orbital dust systems add slow movement between meteor events. */}
-      <div className="absolute inset-0 motion-reduce:hidden">
+      <div className="ambient-dust absolute inset-0 motion-reduce:hidden">
         {DUST.map((dust) => (
           <span
             key={`${dust.top}-${dust.left}`}
@@ -175,7 +181,7 @@ export default function AmbientBackground() {
       {/* A faint constellation / navigation motif. */}
       <svg
         viewBox="0 0 1000 700"
-        className="absolute top-[8%] right-[-8%] w-[min(64rem,70vw)] opacity-[0.16] mix-blend-screen motion-reduce:opacity-[0.08]"
+        className="ambient-constellation absolute top-[8%] right-[-8%] w-[min(64rem,70vw)] opacity-[0.16] mix-blend-screen motion-reduce:opacity-[0.08]"
         fill="none"
       >
         <path
@@ -187,13 +193,21 @@ export default function AmbientBackground() {
         {["92,172", "246,94", "388,214", "552,124", "716,246", "886,108", "462,398", "842,456", "564,584", "204,492"].map(
           (point) => {
             const [cx, cy] = point.split(",");
-            return <circle key={point} cx={cx} cy={cy} r="3" fill="#ff9a55" />;
+            return (
+              <circle
+                key={point}
+                cx={cx}
+                cy={cy}
+                r="3"
+                fill="var(--color-accent-2)"
+              />
+            );
           },
         )}
         <defs>
           <linearGradient id="constellation" x1="92" y1="94" x2="886" y2="584">
-            <stop stopColor="#ff6a2b" />
-            <stop offset="1" stopColor="#7790bd" />
+            <stop stopColor="var(--color-accent)" />
+            <stop offset="1" stopColor="var(--color-cool)" />
           </linearGradient>
         </defs>
       </svg>
@@ -201,9 +215,9 @@ export default function AmbientBackground() {
       {/* Warm nebulae keep the black from becoming visually dead. */}
       <m.div
         style={{ x: bloomX, y: bloomY }}
-        className="absolute top-[-22rem] left-1/2 size-[58rem] -translate-x-1/2 rounded-full opacity-[0.14] blur-[140px] [background:radial-gradient(circle,var(--color-accent),transparent_65%)]"
+        className="ambient-bloom absolute top-[-22rem] left-1/2 size-[58rem] -translate-x-1/2 rounded-full opacity-[0.14] blur-[140px] [background:radial-gradient(circle,var(--color-accent),transparent_65%)]"
       />
-      <div className="absolute -right-72 bottom-[-20rem] size-[46rem] animate-nebula rounded-full opacity-[0.07] blur-[150px] [background:radial-gradient(circle,var(--color-cool),transparent_64%)] motion-reduce:animate-none" />
+      <div className="ambient-nebula absolute -right-72 bottom-[-20rem] size-[46rem] animate-nebula rounded-full opacity-[0.07] blur-[150px] [background:radial-gradient(circle,var(--color-cool),transparent_64%)] motion-reduce:animate-none" />
 
       {/* The vignette protects text contrast at every viewport size. */}
       <div className="absolute inset-0 [background:radial-gradient(120%_100%_at_50%_8%,transparent_48%,color-mix(in_oklab,var(--color-bg)_38%,transparent)_82%,color-mix(in_oklab,var(--color-bg)_68%,transparent)_100%)]" />

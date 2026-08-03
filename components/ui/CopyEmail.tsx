@@ -62,7 +62,7 @@ export default function CopyEmail() {
         <span className="sr-only">Copy email address</span>
       </button>
 
-      <p aria-live="polite" className="eyebrow h-4 text-accent">
+      <p aria-live="polite" className="eyebrow h-4 text-accent-text">
         {copied ? "Copied to clipboard" : ""}
       </p>
     </div>
