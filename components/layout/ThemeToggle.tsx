@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleDot, Flame, Leaf, Snowflake, Zap } from "lucide-react";
+import { CircleDot, Earth, Flame, Leaf, Snowflake, Waves, Zap } from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { useTheme } from "@/hooks/useTheme";
@@ -16,6 +16,8 @@ const THEME_ICONS = {
   storm: Zap,
   ice: Snowflake,
   flora: Leaf,
+  terra: Earth,
+  water: Waves,
 } satisfies Record<Theme, typeof CircleDot>;
 
 const WORLD_COLORS: Record<Theme, { primary: string; secondary: string }> = {
@@ -23,6 +25,8 @@ const WORLD_COLORS: Record<Theme, { primary: string; secondary: string }> = {
   storm: { primary: "#ffd84d", secondary: "#4db8ff" },
   ice: { primary: "#73dcff", secondary: "#d9f5ff" },
   flora: { primary: "#57d36b", secondary: "#b7ef69" },
+  terra: { primary: "#c9783d", secondary: "#f1bd72" },
+  water: { primary: "#168cff", secondary: "#6ee7ff" },
 };
 
 type WorldStyle = CSSProperties & {
@@ -116,7 +120,7 @@ export default function ThemeToggle() {
         >
           <div className="flex items-center justify-between px-2.5 pt-1 pb-2">
             <span className="eyebrow text-[0.56rem] text-muted">Choose your world</span>
-            <span className="font-mono text-[0.55rem] tracking-[0.12em] text-fg/35">04 PLANETS</span>
+            <span className="font-mono text-[0.55rem] tracking-[0.12em] text-fg/35">06 PLANETS</span>
           </div>
 
           <div className="grid grid-cols-2 gap-1.5">

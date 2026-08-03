@@ -172,6 +172,52 @@ html[data-theme="flora"] {
     0 28px 70px -30px rgb(0 10 4 / 0.88);
 }
 
+html[data-theme="terra"] {
+  color-scheme: dark;
+  --color-bg: #160d08;
+  --color-surface: #24130c;
+  --color-surface-2: #321a10;
+  --color-line: #5a3020;
+  --color-fg: #fff6e9;
+  --color-muted: #b8a08d;
+  --color-accent: #c9783d;
+  --color-accent-2: #f1bd72;
+  --color-accent-deep: #7c351f;
+  --color-accent-text: #e99a5d;
+  --color-on-accent: #160d08;
+  --color-cool: #8f766c;
+  --color-specular: #fff4df;
+  --color-shadow: #080301;
+  --color-comet-cool: #d7a06f;
+  --shadow-glow: 0 24px 82px -28px rgb(201 120 61 / 0.48);
+  --shadow-lift:
+    inset 0 1px 0 rgb(255 246 233 / 0.08),
+    0 28px 70px -30px rgb(8 3 1 / 0.9);
+}
+
+html[data-theme="water"] {
+  color-scheme: dark;
+  --color-bg: #020b1d;
+  --color-surface: #06162d;
+  --color-surface-2: #092242;
+  --color-line: #123c64;
+  --color-fg: #effcff;
+  --color-muted: #88aec5;
+  --color-accent: #168cff;
+  --color-accent-2: #6ee7ff;
+  --color-accent-deep: #0752a8;
+  --color-accent-text: #5fdcff;
+  --color-on-accent: #020b1d;
+  --color-cool: #30b7d8;
+  --color-specular: #ffffff;
+  --color-shadow: #00040d;
+  --color-comet-cool: #91efff;
+  --shadow-glow: 0 24px 86px -27px rgb(22 140 255 / 0.52);
+  --shadow-lift:
+    inset 0 1px 0 rgb(239 252 255 / 0.09),
+    0 28px 72px -30px rgb(0 4 13 / 0.9);
+}
+
 html {
   --theme-wave-x: 50vw;
   --theme-wave-y: 50vh;
@@ -1008,6 +1054,22 @@ html[data-theme="flora"] .hero-fallback-planet {
   --planet-terminator: rgb(1 10 5 / 0.68);
 }
 
+html[data-theme="terra"] .hero-fallback-planet {
+  --planet-ocean: #4b2417;
+  --planet-land: #c9783d;
+  --planet-night: #100603;
+  --planet-atmosphere: #e89554;
+  --planet-terminator: rgb(12 4 1 / 0.68);
+}
+
+html[data-theme="water"] .hero-fallback-planet {
+  --planet-ocean: #0756b8;
+  --planet-land: #24b9dd;
+  --planet-night: #010817;
+  --planet-atmosphere: #36c9ff;
+  --planet-terminator: rgb(0 5 20 / 0.66);
+}
+
 .hero-fallback-rim {
   background: radial-gradient(
     circle,
@@ -1049,6 +1111,16 @@ html[data-theme="ice"] .hero-fallback-land {
 html[data-theme="flora"] .hero-fallback-land {
   opacity: 0.96;
   filter: saturate(1.2);
+}
+
+html[data-theme="terra"] .hero-fallback-land {
+  opacity: 0.98;
+  filter: contrast(1.12) saturate(0.9);
+}
+
+html[data-theme="water"] .hero-fallback-land {
+  opacity: 0.2;
+  filter: blur(2px) saturate(1.2);
 }
 
 .hero-fallback-specular {
@@ -1362,14 +1434,18 @@ html[data-theme="flora"] .hero-fallback-land {
 html[data-theme="fire"] .world-effect--fire,
 html[data-theme="storm"] .world-effect--storm,
 html[data-theme="ice"] .world-effect--ice,
-html[data-theme="flora"] .world-effect--flora {
+html[data-theme="flora"] .world-effect--flora,
+html[data-theme="terra"] .world-effect--terra,
+html[data-theme="water"] .world-effect--water {
   opacity: 1;
 }
 
 html[data-theme="fire"] .world-effect--fire *,
 html[data-theme="storm"] .world-effect--storm *,
 html[data-theme="ice"] .world-effect--ice *,
-html[data-theme="flora"] .world-effect--flora * {
+html[data-theme="flora"] .world-effect--flora *,
+html[data-theme="terra"] .world-effect--terra *,
+html[data-theme="water"] .world-effect--water * {
   animation-play-state: running !important;
 }
 
@@ -1985,29 +2061,298 @@ html[data-theme="flora"] .world-effect--flora * {
   }
 }
 
+/* Terra */
+.terra-horizon {
+  position: absolute;
+  right: -12%;
+  bottom: -15rem;
+  left: -12%;
+  height: 31rem;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgb(201 120 61 / 0.32), transparent 64%),
+    linear-gradient(to top, rgb(90 41 24 / 0.18), transparent 76%);
+  filter: blur(24px);
+  animation: terra-horizon-breathe 7.5s ease-in-out infinite alternate;
+}
+
+.terra-crack {
+  position: absolute;
+  top: -8vh;
+  width: 2px;
+  height: 48vh;
+  background: linear-gradient(to bottom, transparent, rgb(241 189 114 / 0.52), transparent);
+  box-shadow: 0 0 12px rgb(201 120 61 / 0.35);
+  opacity: 0.26;
+  transform-origin: top;
+  animation: terra-crack-pulse 6.8s steps(1, end) infinite;
+}
+
+.terra-crack::before,
+.terra-crack::after {
+  content: "";
+  position: absolute;
+  top: 42%;
+  width: 4.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(241 189 114 / 0.48), transparent);
+  transform-origin: left;
+}
+
+.terra-crack::before {
+  transform: rotate(34deg);
+}
+
+.terra-crack::after {
+  top: 68%;
+  transform: rotate(-28deg);
+}
+
+.terra-crack--left {
+  left: 11%;
+  transform: rotate(-9deg);
+  animation-delay: -1.6s;
+}
+
+.terra-crack--right {
+  right: 10%;
+  transform: rotate(11deg) scaleX(-1);
+  animation-delay: -4.4s;
+}
+
+.terra-rock {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--size);
+  height: calc(var(--size) * 0.78);
+  background: linear-gradient(135deg, #f1bd72, #7c351f 72%);
+  clip-path: polygon(24% 0, 82% 14%, 100% 65%, 63% 100%, 7% 78%, 0 31%);
+  box-shadow: 0 0 13px rgb(201 120 61 / 0.34);
+  opacity: 0;
+  animation: terra-rock-drift var(--duration) ease-in-out var(--delay) infinite;
+}
+
+.terra-skill {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform-origin: center;
+  animation: terra-skill-emerge 10.5s var(--ease-expo) var(--delay) infinite;
+}
+
+.terra-skill__stone {
+  width: 2.1rem;
+  height: 1.72rem;
+  background:
+    linear-gradient(145deg, rgb(255 220 166 / 0.42), transparent 42%),
+    linear-gradient(135deg, #c9783d, #542416 78%);
+  clip-path: polygon(19% 5%, 76% 0, 100% 42%, 81% 92%, 29% 100%, 0 63%);
+  box-shadow: 0 0 22px rgb(201 120 61 / 0.28);
+  transform: rotate(var(--rotation));
+}
+
+.terra-skill__label,
+.water-skill__label {
+  position: absolute;
+  left: 2.4rem;
+  width: max-content;
+  max-width: 10rem;
+  padding: 0.38rem 0.62rem;
+  border: 1px solid color-mix(in oklab, var(--color-accent) 34%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-bg) 88%, transparent);
+  box-shadow: 0 0 18px color-mix(in oklab, var(--color-accent) 18%, transparent);
+  color: var(--color-fg);
+  font-family: var(--font-mono-jb), monospace;
+  font-size: 0.58rem;
+  line-height: 1;
+  letter-spacing: 0.045em;
+  backdrop-filter: blur(10px);
+}
+
+.terra-skill--right .terra-skill__label,
+.water-skill--right .water-skill__label {
+  right: 2.4rem;
+  left: auto;
+  text-align: right;
+}
+
+@keyframes terra-horizon-breathe {
+  from { opacity: 0.5; transform: translateY(1rem) scaleX(0.94); }
+  to { opacity: 0.9; transform: translateY(-0.8rem) scaleX(1.05); }
+}
+
+@keyframes terra-crack-pulse {
+  0%, 7%, 12%, 100% { opacity: 0.12; }
+  8%, 10% { opacity: 0.62; }
+}
+
+@keyframes terra-rock-drift {
+  0%, 100% {
+    opacity: 0;
+    transform: translate3d(-8px, 18px, 0) rotate(var(--rotation)) scale(0.45);
+  }
+  28%, 72% {
+    opacity: 0.48;
+    transform: translate3d(10px, -14px, 0) rotate(calc(var(--rotation) + 28deg)) scale(1);
+  }
+}
+
+@keyframes terra-skill-emerge {
+  0%, 12%, 100% {
+    opacity: 0;
+    transform: translateY(1.25rem) scale(0.55) rotate(-5deg);
+  }
+  24%, 72% {
+    opacity: 0.94;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  88% {
+    opacity: 0;
+    transform: translateY(-1rem) scale(0.92) rotate(4deg);
+  }
+}
+
+/* Water */
+.water-caustics {
+  position: absolute;
+  inset: -18%;
+  background:
+    repeating-radial-gradient(ellipse at 28% 36%, transparent 0 25px, rgb(110 231 255 / 0.075) 28px 30px, transparent 34px 56px),
+    repeating-radial-gradient(ellipse at 74% 65%, transparent 0 34px, rgb(22 140 255 / 0.06) 38px 41px, transparent 45px 70px);
+  filter: blur(2px);
+  opacity: 0.72;
+  animation: water-caustics-drift 18s ease-in-out infinite alternate;
+}
+
+.water-surface {
+  position: absolute;
+  right: -8%;
+  bottom: -8rem;
+  left: -8%;
+  height: 17rem;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgb(22 140 255 / 0.3), transparent 66%),
+    repeating-radial-gradient(ellipse at 50% 110%, transparent 0 28px, rgb(110 231 255 / 0.14) 30px 32px, transparent 35px 58px);
+  filter: blur(7px);
+  animation: water-surface-breathe 5.8s ease-in-out infinite alternate;
+}
+
+.water-drop {
+  position: absolute;
+  top: calc(var(--size) * -3);
+  left: var(--x);
+  width: calc(var(--size) * 0.58);
+  height: calc(var(--size) * 1.35);
+  border-radius: 58% 42% 64% 36% / 72% 44% 56% 28%;
+  background: linear-gradient(155deg, rgb(230 253 255 / 0.9), rgb(22 140 255 / 0.5));
+  box-shadow: 0 0 13px rgb(54 201 255 / 0.4);
+  opacity: 0;
+  transform: rotate(24deg);
+  animation: water-drop-fall var(--duration) linear var(--delay) infinite;
+}
+
+.water-bubble {
+  position: absolute;
+  bottom: calc(var(--size) * -2);
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border: 1px solid rgb(110 231 255 / 0.48);
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.65), transparent 25%);
+  box-shadow: inset 0 0 7px rgb(22 140 255 / 0.22), 0 0 10px rgb(54 201 255 / 0.18);
+  opacity: 0;
+  animation: water-bubble-rise var(--duration) ease-in var(--delay) infinite;
+}
+
+.water-skill {
+  position: absolute;
+  top: -5rem;
+  left: var(--x);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  animation: water-skill-flow var(--duration) cubic-bezier(0.34, 0.02, 0.62, 0.98) var(--delay) infinite;
+}
+
+.water-skill__drop {
+  width: 2rem;
+  height: 2.45rem;
+  border: 1px solid rgb(186 246 255 / 0.64);
+  border-radius: 68% 32% 62% 38% / 76% 40% 60% 24%;
+  background:
+    radial-gradient(circle at 31% 26%, rgb(255 255 255 / 0.74), transparent 20%),
+    linear-gradient(150deg, rgb(110 231 255 / 0.78), rgb(7 82 168 / 0.74));
+  box-shadow: inset -5px -6px 11px rgb(2 11 29 / 0.28), 0 0 22px rgb(54 201 255 / 0.34);
+  transform: rotate(22deg);
+}
+
+@keyframes water-caustics-drift {
+  from { transform: translate3d(-2%, -1%, 0) rotate(-1deg) scale(0.98); }
+  to { transform: translate3d(3%, 2%, 0) rotate(2deg) scale(1.04); }
+}
+
+@keyframes water-surface-breathe {
+  from { opacity: 0.48; transform: translateY(0) scaleX(0.96); }
+  to { opacity: 0.86; transform: translateY(-1.3rem) scaleX(1.04); }
+}
+
+@keyframes water-drop-fall {
+  0% { opacity: 0; transform: translate3d(0, -6vh, 0) rotate(24deg) scale(0.55); }
+  12% { opacity: 0.72; }
+  88% { opacity: 0.55; }
+  100% { opacity: 0; transform: translate3d(var(--drift), 112vh, 0) rotate(24deg) scale(1); }
+}
+
+@keyframes water-bubble-rise {
+  0% { opacity: 0; transform: translate3d(0, 8vh, 0) scale(0.5); }
+  18% { opacity: 0.55; }
+  82% { opacity: 0.38; }
+  100% { opacity: 0; transform: translate3d(var(--drift), -112vh, 0) scale(1.12); }
+}
+
+@keyframes water-skill-flow {
+  0% { opacity: 0; transform: translate3d(0, -8vh, 0) scale(0.65) rotate(-4deg); }
+  12%, 74% { opacity: 0.94; }
+  100% { opacity: 0; transform: translate3d(var(--drift), 116vh, 0) scale(1) rotate(5deg); }
+}
+
 @media (max-width: 639px) {
   .fire-tongue:nth-of-type(even),
   .ice-hail:nth-of-type(3n),
-  .flora-leaf:nth-of-type(even) {
+  .flora-leaf:nth-of-type(even),
+  .terra-rock:nth-of-type(even),
+  .water-drop:nth-of-type(2n),
+  .water-bubble:nth-of-type(2n) {
     display: none;
   }
 
   .storm-skill,
   .ice-skill,
-  .flora-skill {
+  .flora-skill,
+  .terra-skill,
+  .water-skill {
     scale: 0.82;
   }
 
   .storm-skill__label,
   .ice-skill__label,
-  .flora-skill__label {
+  .flora-skill__label,
+  .terra-skill__label,
+  .water-skill__label {
     padding: 0.32rem 0.52rem;
     font-size: 0.52rem;
   }
 
   .storm-skill:nth-of-type(even),
   .ice-skill:nth-of-type(even),
-  .flora-skill:nth-of-type(even) {
+  .flora-skill:nth-of-type(even),
+  .terra-skill:nth-of-type(even),
+  .water-skill:nth-of-type(even) {
     animation-delay: calc(var(--delay) - 3s);
   }
 
@@ -2030,13 +2375,21 @@ html[data-theme="flora"] .world-effect--flora * {
   .flora-leaf,
   .flora-spore,
   .flora-skill,
-  .flora-growth {
+  .flora-growth,
+  .terra-rock,
+  .terra-skill,
+  .water-drop,
+  .water-bubble,
+  .water-skill {
     display: none;
   }
 
   .storm-cloud,
   .flora-vine__stem,
-  .flora-vine__leaf {
+  .flora-vine__leaf,
+  .terra-horizon,
+  .water-caustics,
+  .water-surface {
     animation: none;
   }
 
@@ -2084,8 +2437,34 @@ html[data-theme="flora"] .text-gradient-copper {
   );
 }
 
+html[data-theme="terra"] .text-gradient-copper {
+  background-image: linear-gradient(
+    96deg,
+    var(--color-accent-2),
+    var(--color-accent) 54%,
+    #8f766c
+  );
+}
+
+html[data-theme="water"] .text-gradient-copper {
+  background-image: linear-gradient(
+    96deg,
+    #baf6ff,
+    var(--color-accent-2) 48%,
+    var(--color-accent)
+  );
+}
+
 html[data-theme="storm"] .portrait-cutout {
   filter: drop-shadow(0 12px 28px rgb(77 184 255 / 0.3));
+}
+
+html[data-theme="terra"] .portrait-cutout {
+  filter: drop-shadow(0 12px 28px rgb(201 120 61 / 0.28));
+}
+
+html[data-theme="water"] .portrait-cutout {
+  filter: drop-shadow(0 12px 28px rgb(22 140 255 / 0.3));
 }
 
 /* ------------------------------------------------------------------ */
@@ -2180,6 +2559,8 @@ html[data-theme="storm"] .portrait-cutout {
     right: -3.25rem;
     width: calc(100vw - 2.5rem);
     max-width: 21.5rem;
+    max-height: calc(100dvh - 5.5rem);
+    overflow-y: auto;
   }
 }
 
@@ -2208,7 +2589,10 @@ html[data-effects="lite"] .ice-hail:nth-of-type(2n),
 html[data-effects="lite"] .flora-leaf:nth-of-type(2n),
 html[data-effects="lite"] .flora-spore:nth-of-type(2n),
 html[data-effects="lite"] .flora-growth:nth-of-type(2n),
-html[data-effects="lite"] .storm-cloud:nth-of-type(2n) {
+html[data-effects="lite"] .storm-cloud:nth-of-type(2n),
+html[data-effects="lite"] .terra-rock:nth-of-type(2n),
+html[data-effects="lite"] .water-drop:nth-of-type(2n),
+html[data-effects="lite"] .water-bubble:nth-of-type(2n) {
   display: none;
 }
 
@@ -2229,14 +2613,18 @@ html[data-effects="lite"] .ambient-bloom {
 html[data-effects="lite"] .skill-comet,
 html[data-effects="lite"] .storm-skill,
 html[data-effects="lite"] .ice-skill,
-html[data-effects="lite"] .flora-skill {
+html[data-effects="lite"] .flora-skill,
+html[data-effects="lite"] .terra-skill,
+html[data-effects="lite"] .water-skill {
   filter: none;
 }
 
 html[data-effects="lite"] .skill-comet__label,
 html[data-effects="lite"] .storm-skill__label,
 html[data-effects="lite"] .ice-skill__label,
-html[data-effects="lite"] .flora-skill__label {
+html[data-effects="lite"] .flora-skill__label,
+html[data-effects="lite"] .terra-skill__label,
+html[data-effects="lite"] .water-skill__label {
   box-shadow: none;
   background: color-mix(in oklab, var(--color-bg) 94%, transparent);
 }

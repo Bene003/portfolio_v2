@@ -46,6 +46,18 @@ const FLORA_NIGHT = "#020d07";
 const FLORA_CITY = "#d6f57a";
 const FLORA_ATMOSPHERE = "#6ee7a0";
 const FLORA_COOL = "#5ba99a";
+const TERRA_OCEAN = "#4b2417";
+const TERRA_LAND = "#c9783d";
+const TERRA_NIGHT = "#100603";
+const TERRA_CITY = "#ffd28a";
+const TERRA_ATMOSPHERE = "#e89554";
+const TERRA_COOL = "#8f766c";
+const WATER_OCEAN = "#0756b8";
+const WATER_LAND = "#24b9dd";
+const WATER_NIGHT = "#010817";
+const WATER_CITY = "#baf6ff";
+const WATER_ATMOSPHERE = "#36c9ff";
+const WATER_COOL = "#6ee7ff";
 
 const PLANET_PALETTES = {
   fire: {
@@ -57,7 +69,9 @@ const PLANET_PALETTES = {
     atmosphere: COPPER,
     cool: COOL,
     baseStrength: 0.46,
+    landStrength: 1,
     stormStrength: 0,
+    waterStrength: 0,
   },
   storm: {
     ocean: STORM_OCEAN,
@@ -68,7 +82,9 @@ const PLANET_PALETTES = {
     atmosphere: STORM_ATMOSPHERE,
     cool: STORM_COOL,
     baseStrength: 0.64,
+    landStrength: 1,
     stormStrength: 1,
+    waterStrength: 0,
   },
   ice: {
     ocean: ICE_OCEAN,
@@ -79,7 +95,9 @@ const PLANET_PALETTES = {
     atmosphere: ICE_ATMOSPHERE,
     cool: ICE_COOL,
     baseStrength: 0.74,
+    landStrength: 1,
     stormStrength: 0,
+    waterStrength: 0,
   },
   flora: {
     ocean: FLORA_OCEAN,
@@ -90,7 +108,35 @@ const PLANET_PALETTES = {
     atmosphere: FLORA_ATMOSPHERE,
     cool: FLORA_COOL,
     baseStrength: 0.54,
+    landStrength: 1,
     stormStrength: 0,
+    waterStrength: 0,
+  },
+  terra: {
+    ocean: TERRA_OCEAN,
+    land: TERRA_LAND,
+    night: TERRA_NIGHT,
+    city: TERRA_CITY,
+    cloud: "#edc49c",
+    atmosphere: TERRA_ATMOSPHERE,
+    cool: TERRA_COOL,
+    baseStrength: 0.62,
+    landStrength: 1.18,
+    stormStrength: 0,
+    waterStrength: 0,
+  },
+  water: {
+    ocean: WATER_OCEAN,
+    land: WATER_LAND,
+    night: WATER_NIGHT,
+    city: WATER_CITY,
+    cloud: "#dffbff",
+    atmosphere: WATER_ATMOSPHERE,
+    cool: WATER_COOL,
+    baseStrength: 0.78,
+    landStrength: 0.22,
+    stormStrength: 0,
+    waterStrength: 1,
   },
 } satisfies Record<
   Theme,
@@ -103,7 +149,9 @@ const PLANET_PALETTES = {
     atmosphere: string;
     cool: string;
     baseStrength: number;
+    landStrength: number;
     stormStrength: number;
+    waterStrength: number;
   }
 >;
 
@@ -128,7 +176,9 @@ const fragmentShader = /* glsl */ `
   uniform vec3 uNight;
   uniform vec3 uCity;
   uniform float uBaseStrength;
+  uniform float uLandStrength;
   uniform float uStorm;
+  uniform float uWater;
   uniform float uInteraction;
   varying vec3 vNormal;
   varying vec3 vWorldPosition;
@@ -175,9 +225,14 @@ const fragmentShader = /* glsl */ `
     float scan = smoothstep(.82, 1., latitude) * .15;
 
     vec3 base = mix(uNight, uCopper * uBaseStrength, diffuse);
-    base = mix(base, uGold, continents * (.22 + diffuse * .72));
-    base += uGold * ridges * diffuse * .7;
+    base = mix(base, uGold, continents * (.22 + diffuse * .72) * uLandStrength);
+    base += uGold * ridges * diffuse * .7 * uLandStrength;
     base += uCopper * scan * diffuse;
+
+    float waterBand = sin((vUv.y + fbm(p * 1.35) * .09) * 105.0 + uTime * 1.35) * .5 + .5;
+    float waterGlint = smoothstep(.82, 1.0, waterBand) * (.18 + diffuse * .58);
+    base += uCity * waterGlint * uWater;
+    base = mix(base, uCopper * (1.05 + diffuse * .42), uWater * .16);
 
     float cityMask = step(.965, hash(floor(p * 24.0))) * continents;
     base += uCity * cityMask * (1.0 - diffuse) * 3.5;
@@ -223,7 +278,9 @@ function World({
       uNight: { value: new Color(NIGHT) },
       uCity: { value: new Color(GOLD) },
       uBaseStrength: { value: 0.46 },
+      uLandStrength: { value: 1 },
       uStorm: { value: 0 },
+      uWater: { value: 0 },
       uInteraction: { value: 0 },
     }),
     [],
@@ -241,7 +298,9 @@ function World({
         cloud: new Color(palette.cloud),
         atmosphere: new Color(palette.atmosphere),
         baseStrength: palette.baseStrength,
+        landStrength: palette.landStrength,
         stormStrength: palette.stormStrength,
+        waterStrength: palette.waterStrength,
       };
     },
     [theme],
@@ -260,9 +319,19 @@ function World({
         targets.baseStrength,
         themeDamping,
       );
+      material.current.uniforms.uLandStrength.value = MathUtils.lerp(
+        material.current.uniforms.uLandStrength.value,
+        targets.landStrength,
+        themeDamping,
+      );
       material.current.uniforms.uStorm.value = MathUtils.lerp(
         material.current.uniforms.uStorm.value,
         targets.stormStrength,
+        themeDamping,
+      );
+      material.current.uniforms.uWater.value = MathUtils.lerp(
+        material.current.uniforms.uWater.value,
+        targets.waterStrength,
         themeDamping,
       );
       material.current.uniforms.uInteraction.value = MathUtils.lerp(
@@ -605,8 +674,8 @@ export default function CopperSystem({ quality }: { quality: SceneQuality }) {
         radius={45}
         depth={22}
         count={starCount}
-        factor={theme === "storm" ? 1.2 : theme === "flora" ? 1.2 : 1.6}
-        saturation={theme === "storm" ? 0.48 : theme === "ice" ? 0.18 : 0.35}
+        factor={theme === "storm" || theme === "flora" || theme === "water" ? 1.2 : 1.6}
+        saturation={theme === "storm" ? 0.48 : theme === "ice" || theme === "water" ? 0.18 : 0.35}
         fade
         speed={0.18}
       />

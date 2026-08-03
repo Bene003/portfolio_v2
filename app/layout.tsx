@@ -81,7 +81,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const themeBootScript = `(function(){var t="fire",v=null;try{v=localStorage.getItem("portfolio-theme");if(v==="dark"||v==="copper")v="fire";if(v==="light"||v==="earth")v="storm";if(v==="fire"||v==="storm"||v==="ice"||v==="flora"){t=v;localStorage.setItem("portfolio-theme",t)}}catch(e){}var c={fire:"#07070a",storm:"#050914",ice:"#04111f",flora:"#06130c"};var r=document.documentElement,n=navigator,k=n.connection||{},q=window.matchMedia&&window.matchMedia("(pointer: coarse)").matches,l=!!k.saveData||(n.deviceMemory&&n.deviceMemory<=4)||(n.hardwareConcurrency&&n.hardwareConcurrency<=4)||q;r.dataset.theme=t;r.dataset.effects=l?"lite":"full";r.style.colorScheme="dark";var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",c[t])})()`;
+const themeBootScript = `(function(){var t="fire",v=null;try{v=localStorage.getItem("portfolio-theme");if(v==="dark"||v==="copper")v="fire";if(v==="light"||v==="earth")v="storm";if(v==="fire"||v==="storm"||v==="ice"||v==="flora"||v==="terra"||v==="water"){t=v;localStorage.setItem("portfolio-theme",t)}}catch(e){}var c={fire:"#07070a",storm:"#050914",ice:"#04111f",flora:"#06130c",terra:"#160d08",water:"#020b1d"};var r=document.documentElement,n=navigator,k=n.connection||{},q=window.matchMedia&&window.matchMedia("(pointer: coarse)").matches,l=!!k.saveData||(n.deviceMemory&&n.deviceMemory<=4)||(n.hardwareConcurrency&&n.hardwareConcurrency<=4)||q;r.dataset.theme=t;r.dataset.effects=l?"lite":"full";r.style.colorScheme="dark";var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",c[t])})()`;
 
 const personJsonLd = {
   "@context": "https://schema.org",

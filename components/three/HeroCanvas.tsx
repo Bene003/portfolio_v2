@@ -46,6 +46,22 @@ const LIGHTING = {
     ambient: 0.42,
     intensity: 0.78,
   },
+  terra: {
+    key: "#ffd7a2",
+    fill: "#b95f32",
+    rim: "#f1bd72",
+    directional: "#ffe1b8",
+    ambient: 0.38,
+    intensity: 0.82,
+  },
+  water: {
+    key: "#d9fbff",
+    fill: "#168cff",
+    rim: "#6ee7ff",
+    directional: "#e8fdff",
+    ambient: 0.48,
+    intensity: 0.94,
+  },
 } satisfies Record<
   Theme,
   {

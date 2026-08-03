@@ -1,4 +1,4 @@
-export type Theme = "fire" | "storm" | "ice" | "flora";
+export type Theme = "fire" | "storm" | "ice" | "flora" | "terra" | "water";
 
 export type ThemeOrigin = {
   x: number;
@@ -24,13 +24,22 @@ export const THEME_STORAGE_KEY = "portfolio-theme";
 export const THEME_CHANGE_EVENT = "portfolio:theme-change";
 export const THEME_TRANSITION_MS = 1200;
 
-export const THEME_ORDER: Theme[] = ["fire", "storm", "ice", "flora"];
+export const THEME_ORDER: Theme[] = [
+  "fire",
+  "storm",
+  "ice",
+  "flora",
+  "terra",
+  "water",
+];
 
 export const THEME_LABELS: Record<Theme, string> = {
   fire: "Fire",
   storm: "Storm",
   ice: "Ice",
   flora: "Flora",
+  terra: "Terra",
+  water: "Water",
 };
 
 const THEME_COLORS: Record<Theme, string> = {
@@ -38,6 +47,8 @@ const THEME_COLORS: Record<Theme, string> = {
   storm: "#050914",
   ice: "#04111f",
   flora: "#06130c",
+  terra: "#160d08",
+  water: "#020b1d",
 };
 const listeners = new Set<() => void>();
 

@@ -70,6 +70,47 @@ const STORM_SKILLS = KEY_SKILLS.map((label, index) => ({
   angle: index % 2 === 0 ? -8 + (index % 3) * 8 : 8 - (index % 3) * 8,
 }));
 
+const TERRA_ROCKS = Array.from({ length: 26 }, (_, index) => ({
+  x: (index * 43 + (index % 5) * 7) % 100,
+  y: 6 + ((index * 31) % 90),
+  size: 5 + ((index * 17) % 13),
+  delay: -((index * 0.67) % 10),
+  duration: 8 + ((index * 19) % 52) / 10,
+  rotation: (index * 71) % 360,
+}));
+
+const TERRA_SKILLS = KEY_SKILLS.map((label, index) => ({
+  label,
+  x: index % 2 === 0 ? 4 + (index % 3) * 6 : 68 + (index % 3) * 7,
+  y: 8 + ((index * 21) % 82),
+  delay: -(index * 1.08),
+  rotation: -12 + (index % 5) * 6,
+}));
+
+const WATER_DROPS = Array.from({ length: 34 }, (_, index) => ({
+  x: (index * 37 + (index % 6) * 9) % 100,
+  size: 5 + ((index * 13) % 10),
+  delay: -((index * 0.43) % 8),
+  duration: 4.6 + ((index * 23) % 36) / 10,
+  drift: -28 + ((index * 17) % 56),
+}));
+
+const WATER_BUBBLES = Array.from({ length: 22 }, (_, index) => ({
+  x: (index * 47 + 11) % 100,
+  size: 4 + ((index * 19) % 16),
+  delay: -((index * 0.72) % 10),
+  duration: 7 + ((index * 29) % 54) / 10,
+  drift: -36 + ((index * 23) % 72),
+}));
+
+const WATER_SKILLS = KEY_SKILLS.map((label, index) => ({
+  label,
+  x: 5 + ((index * 31 + (index % 3) * 11) % 88),
+  delay: -(index * 1.32),
+  duration: 12 + (index % 4) * 1.7,
+  drift: -52 + (index % 5) * 26,
+}));
+
 function FireWorld() {
   return (
     <div className="world-effect world-effect--fire">
@@ -248,6 +289,95 @@ function FloraWorld() {
   );
 }
 
+function TerraWorld() {
+  return (
+    <div className="world-effect world-effect--terra">
+      <div className="terra-horizon" />
+      <div className="terra-crack terra-crack--left" />
+      <div className="terra-crack terra-crack--right" />
+      {TERRA_ROCKS.map((rock, index) => (
+        <span
+          key={`rock-${index}`}
+          className="terra-rock"
+          style={{
+            "--x": `${rock.x}%`,
+            "--y": `${rock.y}%`,
+            "--size": `${rock.size}px`,
+            "--delay": `${rock.delay}s`,
+            "--duration": `${rock.duration}s`,
+            "--rotation": `${rock.rotation}deg`,
+          } as EffectStyle}
+        />
+      ))}
+      {TERRA_SKILLS.map((skill) => (
+        <span
+          key={skill.label}
+          className={`terra-skill ${skill.x > 50 ? "terra-skill--right" : ""}`}
+          style={{
+            "--x": `${skill.x}%`,
+            "--y": `${skill.y}%`,
+            "--delay": `${skill.delay}s`,
+            "--rotation": `${skill.rotation}deg`,
+          } as EffectStyle}
+        >
+          <span className="terra-skill__stone" />
+          <span className="terra-skill__label">{skill.label}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function WaterWorld() {
+  return (
+    <div className="world-effect world-effect--water">
+      <div className="water-caustics" />
+      <div className="water-surface" />
+      {WATER_DROPS.map((drop, index) => (
+        <span
+          key={`drop-${index}`}
+          className="water-drop"
+          style={{
+            "--x": `${drop.x}%`,
+            "--size": `${drop.size}px`,
+            "--delay": `${drop.delay}s`,
+            "--duration": `${drop.duration}s`,
+            "--drift": `${drop.drift}px`,
+          } as EffectStyle}
+        />
+      ))}
+      {WATER_BUBBLES.map((bubble, index) => (
+        <span
+          key={`bubble-${index}`}
+          className="water-bubble"
+          style={{
+            "--x": `${bubble.x}%`,
+            "--size": `${bubble.size}px`,
+            "--delay": `${bubble.delay}s`,
+            "--duration": `${bubble.duration}s`,
+            "--drift": `${bubble.drift}px`,
+          } as EffectStyle}
+        />
+      ))}
+      {WATER_SKILLS.map((skill) => (
+        <span
+          key={skill.label}
+          className={`water-skill ${skill.x > 55 ? "water-skill--right" : ""}`}
+          style={{
+            "--x": `${skill.x}%`,
+            "--delay": `${skill.delay}s`,
+            "--duration": `${skill.duration}s`,
+            "--drift": `${skill.drift}px`,
+          } as EffectStyle}
+        >
+          <span className="water-skill__drop" />
+          <span className="water-skill__label">{skill.label}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function WorldEffects() {
   return (
     <div className="world-effects" aria-hidden>
@@ -255,6 +385,8 @@ export default function WorldEffects() {
       <StormWorld />
       <IceWorld />
       <FloraWorld />
+      <TerraWorld />
+      <WaterWorld />
     </div>
   );
 }

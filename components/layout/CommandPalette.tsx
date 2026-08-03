@@ -5,12 +5,14 @@ import {
   CircleDot,
   Command,
   Download,
+  Earth,
   Flame,
   Leaf,
   Mail,
   Search,
   Snowflake,
   SquareArrowOutUpRight,
+  Waves,
   Zap,
 } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
@@ -44,6 +46,8 @@ const THEME_ICONS = {
   storm: Zap,
   ice: Snowflake,
   flora: Leaf,
+  terra: Earth,
+  water: Waves,
 } satisfies Record<Theme, typeof CircleDot>;
 
 export default function CommandPalette() {

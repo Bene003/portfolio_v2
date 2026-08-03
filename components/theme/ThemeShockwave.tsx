@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import {
   THEME_CHANGE_EVENT,
+  type Theme,
   type ThemeChangeDetail,
 } from "@/lib/theme";
 
@@ -12,7 +13,9 @@ const WAVE_COLORS = {
   storm: "#ffd84d",
   ice: "#9cecff",
   flora: "#57d36b",
-} as const;
+  terra: "#c9783d",
+  water: "#168cff",
+} as const satisfies Record<Theme, string>;
 
 export default function ThemeShockwave() {
   const wave = useRef<HTMLDivElement>(null);
