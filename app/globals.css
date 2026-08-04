@@ -1569,8 +1569,17 @@ html[data-theme="nova"] .hero-fallback-land {
   transform-style: preserve-3d;
 }
 
-.hero-ring__char {
+/* The pivot owns the rotation, the letter owns the visibility. Splitting
+   them lets the swap between the two layers be a hard step while the
+   turn stays perfectly linear. */
+.hero-ring__flip {
   position: absolute;
+  animation: hero-ring-face var(--hero-ring-duration) linear infinite;
+  animation-delay: calc(var(--hero-ring-duration) * var(--seat-phase));
+}
+
+.hero-ring__char {
+  display: block;
   font-family: var(--font-mono);
   font-size: clamp(0.82rem, 4vw, 1.05rem);
   font-weight: 600;
@@ -1585,8 +1594,18 @@ html[data-theme="nova"] .hero-fallback-land {
     0 0 4px rgb(0 0 0 / 0.9),
     0 0 12px rgb(0 0 0 / 0.7),
     0 1px 2px rgb(0 0 0 / 0.9);
-  animation: hero-ring-face var(--hero-ring-duration) linear infinite;
+  animation: hero-ring-near var(--hero-ring-duration) step-end infinite;
   animation-delay: calc(var(--hero-ring-duration) * var(--seat-phase));
+}
+
+/* Aerial perspective: the far arc reads as further away, and it is the
+   half the atmosphere shines through. */
+.hero-ring--far {
+  opacity: 0.82;
+}
+
+.hero-ring--far .hero-ring__char {
+  animation-name: hero-ring-far;
 }
 
 @keyframes hero-ring-spin {
@@ -1598,25 +1617,41 @@ html[data-theme="nova"] .hero-fallback-land {
   }
 }
 
-/* Progress maps straight onto the letter's angle around the ring: 0% is
-   the near side of the band, 50% the far side behind the world. The far
-   side only dims — it must stay readable, otherwise half the name is
-   missing at any given moment. */
 @keyframes hero-ring-face {
-  0% {
-    opacity: 1;
+  from {
     transform: rotateY(0deg) rotateX(calc(var(--hero-ring-tilt) * -1))
       translate(-50%, -50%);
   }
-  50% {
-    opacity: 0.55;
-    transform: rotateY(-180deg) rotateX(calc(var(--hero-ring-tilt) * -1))
-      translate(-50%, -50%);
-  }
-  100% {
-    opacity: 1;
+  to {
     transform: rotateY(-360deg) rotateX(calc(var(--hero-ring-tilt) * -1))
       translate(-50%, -50%);
+  }
+}
+
+/* Progress maps straight onto the letter's angle around the ring: 0% is
+   the near point of the band, 25% and 75% the left and right edges of
+   the ellipse, 50% the point directly behind the world. */
+@keyframes hero-ring-near {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-ring-far {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0;
   }
 }
 
@@ -1624,6 +1659,7 @@ html[data-theme="nova"] .hero-fallback-land {
    ring keeps its shape instead of collapsing onto one letter. */
 @media (prefers-reduced-motion: reduce) {
   .hero-ring__band,
+  .hero-ring__flip,
   .hero-ring__char {
     animation-play-state: paused;
   }

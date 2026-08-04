@@ -700,7 +700,9 @@ export default function CopperSystem({ quality }: { quality: SceneQuality }) {
       />
       <PointerRig active={interactive}>
         <Float speed={0.8} rotationIntensity={0.08} floatIntensity={0.28}>
-          <group scale={scale} position={[0, quality === "low" ? -0.18 : 0, 0]}>
+          {/* Dead centre: the CSS name ring is centred on this container,
+              so any offset here would push the world off its own ring. */}
+          <group scale={scale}>
             <World
               quality={quality}
               interactive={interactive}

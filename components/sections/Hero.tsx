@@ -33,6 +33,50 @@ const RING_NAME = Array.from({ length: RING_SLOTS }, (_, index) => {
   };
 }).filter(({ char }) => char !== " ");
 
+/** Half of the ring, rendered as its own layer. A DOM node can never be
+ *  occluded by a WebGL canvas, so the band is drawn twice — once under
+ *  the canvas and once over it — and each letter is only painted in the
+ *  layer it belongs to. That is what makes the world sit *inside* the
+ *  ring instead of behind a flat band of text. The swap happens at the
+ *  two points where the letter is at the far edge of the ellipse, well
+ *  clear of the planet, so it cannot be seen. */
+function NameRing({ half }: { half: "near" | "far" }) {
+  return (
+    <div
+      className={`hero-ring pointer-events-none absolute inset-0 sm:hidden ${
+        half === "far" ? "hero-ring--far" : ""
+      }`}
+    >
+      <div className="hero-ring__band">
+        {RING_NAME.map(({ char, accent, angle, phase }) => (
+          <span
+            key={angle}
+            className="hero-ring__seat"
+            style={
+              {
+                "--seat-angle": `${angle}deg`,
+                "--seat-phase": phase,
+              } as React.CSSProperties
+            }
+          >
+            <span className="hero-ring__flip">
+              <span
+                className={
+                  accent
+                    ? "hero-ring__char text-accent-text"
+                    : "hero-ring__char text-fg"
+                }
+              >
+                {char}
+              </span>
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { theme } = useTheme();
@@ -67,40 +111,17 @@ export default function Hero() {
         style={{ y: visualY, opacity: visualOpacity }}
         className="pointer-events-auto absolute top-[2%] right-[4%] left-[4%] z-0 h-[clamp(10rem,27vh,20rem)] opacity-100 sm:top-[25%] sm:-right-[12%] sm:left-[30%] sm:h-[52%] md:left-[36%] lg:inset-0 lg:left-[44%] lg:h-auto lg:opacity-100"
       >
+        {/* The name spelled around the world as Saturn's ring, on phones
+            where the H1 is sr-only. Order matters and z-index is left
+            out on purpose: these three are positioned siblings, so they
+            paint in document order and the canvas hides the far half. */}
+        <NameRing half="far" />
+
         <div className="hero-world absolute inset-0">
           <HeroVisual />
         </div>
 
-        {/* The name spelled around the world as Saturn's ring, on phones
-            where the H1 is sr-only. Outside the masked layer so the
-            vignette never eats it, and inert so it can never swallow a
-            tap meant for the planet. */}
-        <div className="hero-ring pointer-events-none absolute inset-0 sm:hidden">
-          <div className="hero-ring__band">
-            {RING_NAME.map(({ char, accent, angle, phase }) => (
-              <span
-                key={angle}
-                className="hero-ring__seat"
-                style={
-                  {
-                    "--seat-angle": `${angle}deg`,
-                    "--seat-phase": phase,
-                  } as React.CSSProperties
-                }
-              >
-                <span
-                  className={
-                    accent
-                      ? "hero-ring__char text-accent-text"
-                      : "hero-ring__char text-fg"
-                  }
-                >
-                  {char}
-                </span>
-              </span>
-            ))}
-          </div>
-        </div>
+        <NameRing half="near" />
       </m.div>
 
       {/* Soft masks so the canvas melts into the hero instead of reading as a
