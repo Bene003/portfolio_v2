@@ -32,7 +32,7 @@ export default function Hero() {
       ref={ref}
       id="top"
       aria-labelledby="hero-title"
-      className="grain relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-20 sm:pt-32 lg:pt-24"
+      className="grain relative flex min-h-[100svh] items-center overflow-hidden pt-16 pb-12 sm:pt-32 sm:pb-20 lg:pt-24"
     >
       <Halo className="-top-32 -right-24 size-[28rem] sm:size-[38rem] lg:-right-40 lg:size-[46rem]" />
       <Halo
@@ -40,24 +40,27 @@ export default function Hero() {
         className="-bottom-40 -left-32 size-[24rem] sm:size-[32rem]"
       />
 
-      {/* Visual layer: full-bleed on small screens, right half on desktop. */}
+      {/* Visual layer. On a phone the world gets the top third to itself and
+          is shown whole — cropping it against the right edge made it read as
+          decoration. From sm it moves back behind the right of the copy. */}
       <m.div
         aria-hidden
         style={{ y: visualY, opacity: visualOpacity }}
-        className="hero-world pointer-events-auto absolute top-[22%] -right-[26%] left-[18%] z-0 h-[48%] opacity-100 sm:top-[25%] sm:-right-[12%] sm:left-[30%] sm:h-[52%] md:left-[36%] lg:inset-0 lg:left-[44%] lg:h-auto lg:opacity-100"
+        className="hero-world pointer-events-auto absolute top-[2%] right-[4%] left-[4%] z-0 h-[clamp(10rem,27vh,20rem)] opacity-100 sm:top-[25%] sm:-right-[12%] sm:left-[30%] sm:h-[52%] md:left-[36%] lg:inset-0 lg:left-[44%] lg:h-auto lg:opacity-100"
       >
         <HeroVisual />
       </m.div>
 
-      {/* On small screens the world sits behind the copy. These soft masks
-          merge it into the hero instead of letting the canvas read as a box. */}
+      {/* Soft masks so the canvas melts into the hero instead of reading as a
+          box. Below sm the fade only needs to cover the seam under the world;
+          from sm the copy sits on top of it, so the wash is much heavier. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(180deg,var(--color-bg)_5%,transparent_30%,transparent_68%,color-mix(in_oklab,var(--color-bg)_82%,transparent)_88%,var(--color-bg)_100%)] lg:hidden"
+        className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(180deg,transparent_0%,transparent_34%,color-mix(in_oklab,var(--color-bg)_55%,transparent)_46%,var(--color-bg)_62%)] sm:bg-[linear-gradient(180deg,var(--color-bg)_5%,transparent_30%,transparent_68%,color-mix(in_oklab,var(--color-bg)_82%,transparent)_88%,var(--color-bg)_100%)] lg:hidden"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-[4] bg-[linear-gradient(90deg,color-mix(in_oklab,var(--color-bg)_94%,transparent)_0%,color-mix(in_oklab,var(--color-bg)_58%,transparent)_46%,transparent_82%)] sm:opacity-70 lg:hidden"
+        className="pointer-events-none absolute inset-0 z-[4] hidden bg-[linear-gradient(90deg,color-mix(in_oklab,var(--color-bg)_94%,transparent)_0%,color-mix(in_oklab,var(--color-bg)_58%,transparent)_46%,transparent_82%)] sm:block sm:opacity-70 lg:hidden"
       />
 
       <div
@@ -82,7 +85,7 @@ export default function Hero() {
 
       <m.div
         style={{ y: textY }}
-        className="shell pointer-events-none relative z-10"
+        className="shell pointer-events-none relative z-10 pt-[clamp(11rem,29vh,22rem)] sm:pt-0"
       >
         <div className="max-w-3xl lg:max-w-[46rem]">
           <m.p
@@ -109,7 +112,13 @@ export default function Hero() {
             </m.span>
           </m.p>
 
-          <h1 id="hero-title" className="mt-6 text-display font-display">
+          {/* Hidden on phones — the header logo already carries the name, and
+              the room it frees is what lets the world be shown whole. Kept in
+              the DOM: it is the accessible name of the section, and the H1. */}
+          <h1
+            id="hero-title"
+            className="sr-only sm:not-sr-only sm:mt-6 sm:text-display sm:font-display"
+          >
             <SplitText text="Eben" delay={0.1} />{" "}
             <SplitText
               text="Kwete"
@@ -156,7 +165,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.62, duration: 0.9, ease: EASE_EXPO }}
-            className="pointer-events-auto mt-[clamp(2.5rem,10vh,5rem)] flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center lg:mt-9"
+            className="pointer-events-auto mt-[clamp(1.25rem,4vh,2.5rem)] flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center lg:mt-9"
           >
             <MagneticButton className="w-full sm:w-auto">
               <Button href="/#work" className="w-full sm:w-auto">
@@ -178,7 +187,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.9 }}
-            className="pointer-events-auto mt-10 flex items-center gap-3"
+            className="pointer-events-auto mt-[clamp(1.25rem,3vh,2.5rem)] flex items-center gap-3"
           >
             {[
               { href: site.socials.github, label: "GitHub", Icon: Github },
