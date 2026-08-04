@@ -2925,16 +2925,13 @@ html[data-theme="nova"] .world-effect--nova * {
     scale: 0.82;
   }
 
-  /* The hero already lists three skills for the current world, right under
-     the world itself, and the enlarged planet now sits where these floated.
-     Only the label goes: the bolt, the crystal, the stone and the drop are
-     the world's gesture and stay as ambience. */
   .storm-skill__label,
   .ice-skill__label,
   .flora-skill__label,
   .terra-skill__label,
   .water-skill__label {
-    display: none;
+    padding: 0.32rem 0.52rem;
+    font-size: 0.52rem;
   }
 
   .storm-skill:nth-of-type(even),
