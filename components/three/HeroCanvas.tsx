@@ -62,6 +62,14 @@ const LIGHTING = {
     ambient: 0.48,
     intensity: 0.94,
   },
+  nova: {
+    key: "#f2e4ff",
+    fill: "#7b3fd4",
+    rim: "#ffd9a0",
+    directional: "#fff3dd",
+    ambient: 0.34,
+    intensity: 1.04,
+  },
 } satisfies Record<
   Theme,
   {

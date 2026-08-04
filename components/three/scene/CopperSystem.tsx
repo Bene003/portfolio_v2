@@ -58,6 +58,12 @@ const WATER_NIGHT = "#010817";
 const WATER_CITY = "#baf6ff";
 const WATER_ATMOSPHERE = "#36c9ff";
 const WATER_COOL = "#6ee7ff";
+const NOVA_OCEAN = "#2a1259";
+const NOVA_LAND = "#b78bff";
+const NOVA_NIGHT = "#05010f";
+const NOVA_CITY = "#ffd9a0";
+const NOVA_ATMOSPHERE = "#9a6bff";
+const NOVA_COOL = "#e0c7ff";
 
 const PLANET_PALETTES = {
   fire: {
@@ -137,6 +143,19 @@ const PLANET_PALETTES = {
     landStrength: 0.22,
     stormStrength: 0,
     waterStrength: 1,
+  },
+  nova: {
+    ocean: NOVA_OCEAN,
+    land: NOVA_LAND,
+    night: NOVA_NIGHT,
+    city: NOVA_CITY,
+    cloud: "#e7d4ff",
+    atmosphere: NOVA_ATMOSPHERE,
+    cool: NOVA_COOL,
+    baseStrength: 0.7,
+    landStrength: 0.86,
+    stormStrength: 0,
+    waterStrength: 0,
   },
 } satisfies Record<
   Theme,

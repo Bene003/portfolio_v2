@@ -218,6 +218,32 @@ html[data-theme="water"] {
     0 28px 72px -30px rgb(0 4 13 / 0.9);
 }
 
+/* Nova — the reward world. Deliberately richer than the other six: it is
+   only reachable once every other planet has been visited. */
+html[data-theme="nova"] {
+  color-scheme: dark;
+  --color-bg: #0a0616;
+  --color-surface: #140c28;
+  --color-surface-2: #1d1239;
+  --color-line: #3a2566;
+  --color-fg: #f9f2ff;
+  --color-muted: #a596c4;
+  --color-accent: #b78bff;
+  --color-accent-2: #ffd9a0;
+  --color-accent-deep: #6a34c4;
+  --color-accent-text: #cbaaff;
+  --color-on-accent: #0a0616;
+  --color-cool: #7d6bd6;
+  --color-specular: #fffaf0;
+  --color-shadow: #030009;
+  --color-comet-cool: #d9c4ff;
+  --shadow-glow: 0 24px 90px -26px rgb(183 139 255 / 0.55);
+  --shadow-lift:
+    inset 0 1px 0 rgb(249 242 255 / 0.1),
+    0 28px 74px -30px rgb(3 0 9 / 0.92),
+    0 0 48px -26px rgb(255 217 160 / 0.4);
+}
+
 html {
   --theme-wave-x: 50vw;
   --theme-wave-y: 50vh;
@@ -342,6 +368,332 @@ html[data-effects="lite"] .theme-shockwave.is-active::before {
     opacity: 0;
     transform: translate(-50%, -50%) scale(76);
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* World pulse — every planet answers a tap in its own language        */
+/* ------------------------------------------------------------------ */
+
+.world-pulse-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.world-pulse {
+  position: absolute;
+  top: var(--py);
+  left: var(--px);
+  width: 0;
+  height: 0;
+}
+
+.world-pulse__ring,
+.world-pulse__core,
+.world-pulse__bolt,
+.world-pulse__shard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform, opacity;
+}
+
+/* Fire is the default language: a heat ring plus scattering embers. */
+.world-pulse__ring {
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border: 2px solid var(--color-accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: world-pulse-ring 760ms var(--ease-expo) both;
+}
+
+.world-pulse__core {
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--color-accent) 55%, transparent),
+    transparent 66%
+  );
+  filter: blur(6px);
+  opacity: 0;
+  animation: world-pulse-core 620ms var(--ease-soft) both;
+}
+
+.world-pulse__bolt {
+  display: none;
+}
+
+.world-pulse__shard {
+  --distance: 62px;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--color-accent-2);
+  box-shadow: 0 0 10px var(--color-accent);
+  opacity: 0;
+  animation: world-pulse-shard 820ms var(--ease-expo) both;
+  animation-delay: calc(var(--i) * 12ms);
+}
+
+@keyframes world-pulse-ring {
+  0% { opacity: 0.9; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(7); }
+}
+
+@keyframes world-pulse-core {
+  0% { opacity: 0.75; transform: scale(0.2); }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+
+@keyframes world-pulse-shard {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--angle)) translateX(6px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateX(var(--distance)) scale(0.3);
+  }
+}
+
+/* Storm — the bolt strikes from above and forks on impact. */
+html[data-theme="storm"] .world-pulse__bolt {
+  display: block;
+  width: 26px;
+  height: 34vh;
+  margin: 0 0 0 -13px;
+  bottom: 0;
+  top: auto;
+  transform: translateY(-100%);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in oklab, var(--color-accent) 70%, white) 70%,
+    #ffffff
+  );
+  clip-path: polygon(58% 0, 30% 46%, 52% 46%, 24% 100%, 74% 42%, 48% 42%, 76% 0);
+  opacity: 0;
+  animation: world-pulse-bolt 420ms steps(3, end) both;
+}
+
+html[data-theme="storm"] .world-pulse__core {
+  background: radial-gradient(circle, rgb(255 255 255 / 0.85), transparent 62%);
+  animation-duration: 360ms;
+}
+
+html[data-theme="storm"] .world-pulse__shard {
+  --distance: 44px;
+  width: 2px;
+  height: 16px;
+  margin: -8px 0 0 -1px;
+  border-radius: 0;
+  animation-duration: 520ms;
+}
+
+@keyframes world-pulse-bolt {
+  0% { opacity: 0; }
+  35% { opacity: 1; }
+  70% { opacity: 0.25; }
+  100% { opacity: 0; }
+}
+
+/* Ice — a crystal grows outward and holds before it fades. */
+html[data-theme="ice"] .world-pulse__ring {
+  clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  border-radius: 0;
+  animation-duration: 1000ms;
+  animation-name: world-pulse-ring-frost;
+}
+
+html[data-theme="ice"] .world-pulse__shard {
+  width: 2px;
+  height: 26px;
+  margin: -13px 0 0 -1px;
+  border-radius: 1px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-accent-2) 90%, white),
+    transparent
+  );
+  transform-origin: 50% 100%;
+  animation: world-pulse-spike 1000ms var(--ease-expo) both;
+}
+
+@keyframes world-pulse-ring-frost {
+  0% { opacity: 0.95; transform: rotate(0deg) scale(0.3); }
+  60% { opacity: 0.45; }
+  100% { opacity: 0; transform: rotate(45deg) scale(5.4); }
+}
+
+@keyframes world-pulse-spike {
+  0% { opacity: 0; transform: rotate(var(--angle)) translateY(-6px) scaleY(0); }
+  30% { opacity: 1; transform: rotate(var(--angle)) translateY(-20px) scaleY(1); }
+  70% { opacity: 0.8; }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateY(-26px) scaleY(1.1); }
+}
+
+/* Flora — stems sprout from the point and unfurl a leaf. */
+html[data-theme="flora"] .world-pulse__shard {
+  width: 2px;
+  height: 30px;
+  margin: -30px 0 0 -1px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--color-accent-2), var(--color-accent));
+  box-shadow: none;
+  transform-origin: 50% 100%;
+  animation: world-pulse-sprout 1080ms var(--ease-expo) both;
+}
+
+html[data-theme="flora"] .world-pulse__shard::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 12px;
+  height: 7px;
+  border-radius: 70% 30% 60% 40%;
+  background: var(--color-accent-2);
+  transform: translateX(-50%);
+}
+
+html[data-theme="flora"] .world-pulse__core {
+  filter: blur(10px);
+}
+
+@keyframes world-pulse-sprout {
+  0% { opacity: 0; transform: rotate(var(--angle)) scaleY(0) scaleX(0.6); }
+  40% { opacity: 1; transform: rotate(var(--angle)) scaleY(1) scaleX(1); }
+  100% { opacity: 0; transform: rotate(var(--angle)) scaleY(1.12) scaleX(1); }
+}
+
+/* Terra — the ground splits and throws up a puff of dust. */
+html[data-theme="terra"] .world-pulse__ring {
+  border-width: 1px;
+  border-color: color-mix(in oklab, var(--color-accent) 45%, transparent);
+  animation-duration: 900ms;
+}
+
+html[data-theme="terra"] .world-pulse__core {
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--color-accent) 60%, transparent) 0%,
+    transparent 68%
+  );
+  filter: blur(12px);
+  animation-duration: 1000ms;
+}
+
+html[data-theme="terra"] .world-pulse__shard {
+  width: 3px;
+  height: 34px;
+  margin: -34px 0 0 -1.5px;
+  border-radius: 0;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in oklab, var(--color-accent) 80%, black) 45%,
+    #000000
+  );
+  box-shadow: none;
+  transform-origin: 50% 100%;
+  clip-path: polygon(50% 0, 100% 58%, 50% 100%, 0 58%);
+  animation: world-pulse-crack 1080ms var(--ease-expo) both;
+}
+
+html[data-theme="terra"] .world-pulse__shard:nth-child(2n) {
+  height: 22px;
+  margin-top: -22px;
+}
+
+@keyframes world-pulse-crack {
+  0% { opacity: 0; transform: rotate(var(--angle)) scaleY(0); }
+  18% { opacity: 0.95; transform: rotate(var(--angle)) scaleY(1); }
+  62% { opacity: 0.8; }
+  100% { opacity: 0; transform: rotate(var(--angle)) scaleY(1.06); }
+}
+
+/* Water — concentric ripples, nothing thrown outward. */
+html[data-theme="water"] .world-pulse__shard {
+  display: none;
+}
+
+html[data-theme="water"] .world-pulse__ring {
+  border-width: 1.5px;
+  animation-duration: 1150ms;
+}
+
+html[data-theme="water"] .world-pulse__core {
+  border: 1px solid color-mix(in oklab, var(--color-accent-2) 70%, transparent);
+  background: none;
+  filter: none;
+  animation: world-pulse-ripple 1150ms var(--ease-expo) 130ms both;
+}
+
+html[data-theme="water"] .world-pulse__bolt {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border: 1px solid color-mix(in oklab, var(--color-accent) 60%, transparent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: world-pulse-ripple 1150ms var(--ease-expo) 280ms both;
+}
+
+@keyframes world-pulse-ripple {
+  0% { opacity: 0.85; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(6.2); }
+}
+
+/* Nova — a starburst with alternating ray lengths. */
+html[data-theme="nova"] .world-pulse__shard {
+  --distance: 52px;
+  width: 2px;
+  height: 22px;
+  margin: -11px 0 0 -1px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--color-accent-2),
+    transparent
+  );
+  box-shadow: 0 0 12px var(--color-accent);
+  animation: world-pulse-ray 900ms var(--ease-expo) both;
+}
+
+html[data-theme="nova"] .world-pulse__shard:nth-child(2n) {
+  --distance: 34px;
+  height: 14px;
+  margin-top: -7px;
+}
+
+html[data-theme="nova"] .world-pulse__core {
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--color-accent-2) 80%, white),
+    transparent 62%
+  );
+}
+
+@keyframes world-pulse-ray {
+  0% { opacity: 0; transform: rotate(var(--angle)) translateX(4px) scaleY(0.4); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateX(var(--distance)) scaleY(1); }
+}
+
+/* Constrained hardware keeps the ring only — the cheapest part of the burst. */
+html[data-effects="lite"] .world-pulse__core,
+html[data-effects="lite"] .world-pulse__shard:nth-child(2n) {
+  display: none;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1062,6 +1414,14 @@ html[data-theme="terra"] .hero-fallback-planet {
   --planet-terminator: rgb(12 4 1 / 0.68);
 }
 
+html[data-theme="nova"] .hero-fallback-planet {
+  --planet-ocean: #2a1259;
+  --planet-land: #b78bff;
+  --planet-night: #05010f;
+  --planet-atmosphere: #9a6bff;
+  --planet-terminator: rgb(4 0 12 / 0.7);
+}
+
 html[data-theme="water"] .hero-fallback-planet {
   --planet-ocean: #0756b8;
   --planet-land: #24b9dd;
@@ -1121,6 +1481,11 @@ html[data-theme="terra"] .hero-fallback-land {
 html[data-theme="water"] .hero-fallback-land {
   opacity: 0.2;
   filter: blur(2px) saturate(1.2);
+}
+
+html[data-theme="nova"] .hero-fallback-land {
+  opacity: 0.88;
+  filter: saturate(1.35) brightness(1.08);
 }
 
 .hero-fallback-specular {
@@ -1436,7 +1801,8 @@ html[data-theme="storm"] .world-effect--storm,
 html[data-theme="ice"] .world-effect--ice,
 html[data-theme="flora"] .world-effect--flora,
 html[data-theme="terra"] .world-effect--terra,
-html[data-theme="water"] .world-effect--water {
+html[data-theme="water"] .world-effect--water,
+html[data-theme="nova"] .world-effect--nova {
   opacity: 1;
 }
 
@@ -1445,7 +1811,8 @@ html[data-theme="storm"] .world-effect--storm *,
 html[data-theme="ice"] .world-effect--ice *,
 html[data-theme="flora"] .world-effect--flora *,
 html[data-theme="terra"] .world-effect--terra *,
-html[data-theme="water"] .world-effect--water * {
+html[data-theme="water"] .world-effect--water *,
+html[data-theme="nova"] .world-effect--nova * {
   animation-play-state: running !important;
 }
 
@@ -2321,6 +2688,71 @@ html[data-theme="water"] .world-effect--water * {
   100% { opacity: 0; transform: translate3d(var(--drift), 116vh, 0) scale(1) rotate(5deg); }
 }
 
+/* Nova — aurora curtains, a slow starfall and orbiting skill sigils. */
+.nova-aurora {
+  position: absolute;
+  top: -18%;
+  left: -14%;
+  width: 128%;
+  height: 62%;
+  background:
+    radial-gradient(ellipse 46% 60% at 26% 40%, rgb(183 139 255 / 0.34), transparent 68%),
+    radial-gradient(ellipse 38% 52% at 72% 30%, rgb(255 217 160 / 0.22), transparent 66%),
+    radial-gradient(ellipse 54% 40% at 50% 70%, rgb(122 63 212 / 0.28), transparent 70%);
+  filter: blur(42px);
+  animation: nova-aurora-drift 26s ease-in-out infinite alternate;
+}
+
+.nova-aurora--low {
+  top: auto;
+  bottom: -22%;
+  height: 52%;
+  animation-duration: 34s;
+  animation-direction: alternate-reverse;
+  opacity: 0.72;
+}
+
+.nova-star {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #fffaf0;
+  box-shadow: 0 0 var(--glow) rgb(255 217 160 / 0.9);
+  opacity: 0;
+  animation: nova-star-flare var(--duration) ease-in-out var(--delay) infinite;
+}
+
+.nova-shard {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--size);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(224 199 255 / 0.85), transparent);
+  opacity: 0;
+  transform: rotate(var(--angle));
+  animation: nova-shard-streak var(--duration) var(--ease-expo) var(--delay) infinite;
+}
+
+@keyframes nova-aurora-drift {
+  from { transform: translate3d(-3%, -2%, 0) scaleY(0.94) rotate(-2deg); opacity: 0.6; }
+  to { transform: translate3d(4%, 3%, 0) scaleY(1.08) rotate(3deg); opacity: 1; }
+}
+
+@keyframes nova-star-flare {
+  0%, 100% { opacity: 0.1; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes nova-shard-streak {
+  0% { opacity: 0; transform: rotate(var(--angle)) translateX(-6vw); }
+  16% { opacity: 0.9; }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateX(16vw); }
+}
+
 @media (max-width: 639px) {
   .fire-tongue:nth-of-type(even),
   .ice-hail:nth-of-type(3n),
@@ -2455,8 +2887,21 @@ html[data-theme="water"] .text-gradient-copper {
   );
 }
 
+html[data-theme="nova"] .text-gradient-copper {
+  background-image: linear-gradient(
+    96deg,
+    var(--color-accent-2),
+    #e0c7ff 46%,
+    var(--color-accent)
+  );
+}
+
 html[data-theme="storm"] .portrait-cutout {
   filter: drop-shadow(0 12px 28px rgb(77 184 255 / 0.3));
+}
+
+html[data-theme="nova"] .portrait-cutout {
+  filter: drop-shadow(0 12px 28px rgb(183 139 255 / 0.34));
 }
 
 html[data-theme="terra"] .portrait-cutout {
@@ -2541,6 +2986,40 @@ html[data-theme="water"] .portrait-cutout {
   box-shadow:
     inset -5px -5px 10px rgb(0 0 0 / 0.35),
     0 0 24px color-mix(in oklab, var(--world-color) 52%, transparent);
+}
+
+/* The reward world gets a full-width tile and a slow shimmer so it reads as
+   an achievement rather than just a seventh colour. */
+.theme-picker__option[data-secret="true"] {
+  min-height: 4.4rem;
+  border-color: color-mix(in oklab, var(--world-color) 46%, var(--color-line));
+  background:
+    radial-gradient(circle at 88% 12%, color-mix(in oklab, var(--world-color) 26%, transparent), transparent 46%),
+    linear-gradient(120deg, color-mix(in oklab, var(--world-color) 12%, transparent), transparent 62%),
+    color-mix(in oklab, var(--color-surface) 82%, transparent);
+}
+
+.theme-picker__option[data-secret="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    104deg,
+    transparent 38%,
+    color-mix(in oklab, var(--world-color-2) 26%, transparent) 50%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  animation: theme-picker-secret-sheen 4.6s var(--ease-soft) infinite;
+}
+
+@keyframes theme-picker-secret-sheen {
+  0%, 62% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
 }
 
 @keyframes theme-picker-enter {

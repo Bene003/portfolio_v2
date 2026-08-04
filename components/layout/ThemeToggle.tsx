@@ -1,9 +1,20 @@
 "use client";
 
-import { CircleDot, Earth, Flame, Leaf, Snowflake, Waves, Zap } from "lucide-react";
+import {
+  CircleDot,
+  Earth,
+  Flame,
+  Leaf,
+  Snowflake,
+  Sparkles,
+  Waves,
+  Zap,
+} from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
+import { useExplorer } from "@/hooks/useExplorer";
 import { useTheme } from "@/hooks/useTheme";
+import { visibleThemes } from "@/lib/explorer";
 import {
   setTheme,
   THEME_LABELS,
@@ -18,6 +29,7 @@ const THEME_ICONS = {
   flora: Leaf,
   terra: Earth,
   water: Waves,
+  nova: Sparkles,
 } satisfies Record<Theme, typeof CircleDot>;
 
 const WORLD_COLORS: Record<Theme, { primary: string; secondary: string }> = {
@@ -27,6 +39,7 @@ const WORLD_COLORS: Record<Theme, { primary: string; secondary: string }> = {
   flora: { primary: "#57d36b", secondary: "#b7ef69" },
   terra: { primary: "#c9783d", secondary: "#f1bd72" },
   water: { primary: "#168cff", secondary: "#6ee7ff" },
+  nova: { primary: "#b78bff", secondary: "#ffd9a0" },
 };
 
 type WorldStyle = CSSProperties & {
@@ -38,6 +51,8 @@ const HOVER_DELAY = 520;
 
 export default function ThemeToggle() {
   const { theme, transitioning } = useTheme();
+  const { visited, unlocked } = useExplorer();
+  const worlds = visibleThemes(unlocked);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const hoverTimer = useRef<number | null>(null);
@@ -120,14 +135,20 @@ export default function ThemeToggle() {
         >
           <div className="flex items-center justify-between px-2.5 pt-1 pb-2">
             <span className="eyebrow text-[0.56rem] text-muted">Choose your world</span>
-            <span className="font-mono text-[0.55rem] tracking-[0.12em] text-fg/35">06 PLANETS</span>
+            <span className="font-mono text-[0.55rem] tracking-[0.12em] text-fg/35">
+              {unlocked
+                ? "07 PLANETS"
+                : `${visited.length}/${THEME_ORDER.length} EXPLORED`}
+            </span>
           </div>
 
           <div className="grid grid-cols-2 gap-1.5">
-            {THEME_ORDER.map((world) => {
+            {worlds.map((world) => {
               const WorldIcon = THEME_ICONS[world];
               const colors = WORLD_COLORS[world];
               const active = world === theme;
+              const secret = !THEME_ORDER.includes(world);
+              const seen = visited.includes(world);
 
               return (
                 <button
@@ -145,9 +166,10 @@ export default function ThemeToggle() {
                       source: "header",
                     });
                   }}
-                  className="theme-picker__option group/world relative flex min-h-[5.25rem] items-end overflow-hidden rounded-2xl border p-3 text-left transition-[border-color,background-color,transform] duration-300 hover-fine:-translate-y-0.5"
+                  className={`theme-picker__option group/world relative flex min-h-[5.25rem] items-end overflow-hidden rounded-2xl border p-3 text-left transition-[border-color,background-color,transform] duration-300 hover-fine:-translate-y-0.5 ${secret ? "col-span-2" : ""}`}
                   data-active={active ? "true" : "false"}
                   data-world={world}
+                  data-secret={secret ? "true" : "false"}
                   style={{
                     "--world-color": colors.primary,
                     "--world-color-2": colors.secondary,
@@ -161,7 +183,13 @@ export default function ThemeToggle() {
                       {THEME_LABELS[world]}
                     </span>
                     <span className="mt-0.5 block font-mono text-[0.5rem] uppercase tracking-[0.12em] text-muted">
-                      {active ? "Current world" : "Enter world"}
+                      {active
+                        ? "Current world"
+                        : secret
+                          ? "Unlocked — all worlds visited"
+                          : seen
+                            ? "Visited"
+                            : "Enter world"}
                     </span>
                   </span>
                 </button>

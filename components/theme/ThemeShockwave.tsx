@@ -15,6 +15,7 @@ const WAVE_COLORS = {
   flora: "#57d36b",
   terra: "#c9783d",
   water: "#168cff",
+  nova: "#b78bff",
 } as const satisfies Record<Theme, string>;
 
 export default function ThemeShockwave() {

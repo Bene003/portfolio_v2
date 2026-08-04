@@ -1,4 +1,11 @@
-export type Theme = "fire" | "storm" | "ice" | "flora" | "terra" | "water";
+export type Theme =
+  | "fire"
+  | "storm"
+  | "ice"
+  | "flora"
+  | "terra"
+  | "water"
+  | "nova";
 
 export type ThemeOrigin = {
   x: number;
@@ -24,6 +31,8 @@ export const THEME_STORAGE_KEY = "portfolio-theme";
 export const THEME_CHANGE_EVENT = "portfolio:theme-change";
 export const THEME_TRANSITION_MS = 1200;
 
+/** The worlds anyone can reach. `nova` is deliberately absent: it only shows
+ *  up once every other world has been visited (see `lib/explorer.ts`). */
 export const THEME_ORDER: Theme[] = [
   "fire",
   "storm",
@@ -33,6 +42,8 @@ export const THEME_ORDER: Theme[] = [
   "water",
 ];
 
+export const SECRET_THEME: Theme = "nova";
+
 export const THEME_LABELS: Record<Theme, string> = {
   fire: "Fire",
   storm: "Storm",
@@ -40,6 +51,7 @@ export const THEME_LABELS: Record<Theme, string> = {
   flora: "Flora",
   terra: "Terra",
   water: "Water",
+  nova: "Nova",
 };
 
 const THEME_COLORS: Record<Theme, string> = {
@@ -49,6 +61,7 @@ const THEME_COLORS: Record<Theme, string> = {
   flora: "#06130c",
   terra: "#160d08",
   water: "#020b1d",
+  nova: "#0a0616",
 };
 const listeners = new Set<() => void>();
 
@@ -73,8 +86,10 @@ type ViewTransitionDocument = Document & {
   startViewTransition?: (update: () => void) => NativeViewTransition;
 };
 
+const ALL_THEMES: Theme[] = [...THEME_ORDER, SECRET_THEME];
+
 function isTheme(value: string | null): value is Theme {
-  return THEME_ORDER.includes(value as Theme);
+  return ALL_THEMES.includes(value as Theme);
 }
 
 function normalizeTheme(value: string | null): Theme {

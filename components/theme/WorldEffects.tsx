@@ -111,6 +111,24 @@ const WATER_SKILLS = KEY_SKILLS.map((label, index) => ({
   drift: -52 + (index % 5) * 26,
 }));
 
+const NOVA_STARS = Array.from({ length: 44 }, (_, index) => ({
+  x: (index * 41 + (index % 5) * 11) % 100,
+  y: (index * 67 + (index % 7) * 8) % 100,
+  size: 2 + ((index * 13) % 9) / 2,
+  glow: 10 + ((index * 17) % 22),
+  delay: -((index * 0.83) % 9),
+  duration: 3.4 + ((index * 23) % 42) / 10,
+}));
+
+const NOVA_SHARDS = Array.from({ length: 12 }, (_, index) => ({
+  x: (index * 53 + 7) % 96,
+  y: (index * 37 + 11) % 92,
+  size: 90 + ((index * 29) % 140),
+  angle: -32 + ((index * 17) % 64),
+  delay: -((index * 1.27) % 11),
+  duration: 6 + ((index * 19) % 44) / 10,
+}));
+
 function FireWorld() {
   return (
     <div className="world-effect world-effect--fire">
@@ -378,6 +396,43 @@ function WaterWorld() {
   );
 }
 
+function NovaWorld() {
+  return (
+    <div className="world-effect world-effect--nova">
+      <div className="nova-aurora" />
+      <div className="nova-aurora nova-aurora--low" />
+      {NOVA_STARS.map((star, index) => (
+        <span
+          key={`star-${index}`}
+          className="nova-star"
+          style={{
+            "--x": `${star.x}%`,
+            "--y": `${star.y}%`,
+            "--size": `${star.size}px`,
+            "--glow": `${star.glow}px`,
+            "--delay": `${star.delay}s`,
+            "--duration": `${star.duration}s`,
+          } as EffectStyle}
+        />
+      ))}
+      {NOVA_SHARDS.map((shard, index) => (
+        <span
+          key={`shard-${index}`}
+          className="nova-shard"
+          style={{
+            "--x": `${shard.x}%`,
+            "--y": `${shard.y}%`,
+            "--size": `${shard.size}px`,
+            "--angle": `${shard.angle}deg`,
+            "--delay": `${shard.delay}s`,
+            "--duration": `${shard.duration}s`,
+          } as EffectStyle}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function WorldEffects() {
   return (
     <div className="world-effects" aria-hidden>
@@ -387,6 +442,7 @@ export default function WorldEffects() {
       <FloraWorld />
       <TerraWorld />
       <WaterWorld />
+      <NovaWorld />
     </div>
   );
 }

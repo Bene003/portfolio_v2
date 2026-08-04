@@ -9,11 +9,15 @@ import Button from "@/components/ui/Button";
 import Halo from "@/components/ui/Halo";
 import MagneticButton from "@/components/ui/MagneticButton";
 import SplitText from "@/components/ui/SplitText";
+import { useTheme } from "@/hooks/useTheme";
 import { EASE_EXPO } from "@/lib/motion";
 import { site } from "@/lib/site";
+import { WORLD_STORY } from "@/lib/worlds";
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const { theme } = useTheme();
+  const story = WORLD_STORY[theme];
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -85,13 +89,24 @@ export default function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: EASE_EXPO }}
-            className="eyebrow flex items-center gap-3"
+            className="eyebrow flex flex-wrap items-center gap-x-3 gap-y-1"
           >
             <span
               aria-hidden
               className="size-1.5 animate-pulse-soft rounded-full bg-accent motion-reduce:animate-none"
             />
-            {site.location} — Available for work
+            <span>{site.location} — Available for work</span>
+            {/* Badge rather than plain text: on a narrow screen the location
+                already wraps, and a bare word would read as part of it. */}
+            <m.span
+              key={theme}
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: EASE_EXPO }}
+              className="rounded-pill border border-accent/35 bg-accent/8 px-2.5 py-0.5 text-accent-text"
+            >
+              {story.focus}
+            </m.span>
           </m.p>
 
           <h1 id="hero-title" className="mt-6 text-display font-display">
@@ -103,21 +118,45 @@ export default function Hero() {
             />
           </h1>
 
-          <m.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.9, ease: EASE_EXPO }}
-            className="mt-6 max-w-[30rem] text-lead text-muted"
-          >
-            Web developer crafting fast, considered interfaces — from pixel to
-            production. I design it, I build it, I ship it.
-          </m.p>
+          {/* Each world tells a different facet of the same profile — the copy
+              lives in `lib/worlds.ts`. Keying on the theme replays the reveal
+              on every trip; there is no exit animation because the shockwave
+              already covers the swap. */}
+          <div className="mt-6 max-w-[30rem]">
+            <m.p
+              key={theme}
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12, duration: 0.8, ease: EASE_EXPO }}
+              className="text-lead text-muted"
+            >
+              {story.line}
+            </m.p>
+
+            <ul key={`${theme}-skills`} className="mt-5 flex flex-wrap gap-2">
+              {story.skills.map((skill, index) => (
+                <m.li
+                  key={skill}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.34 + index * 0.07,
+                    duration: 0.6,
+                    ease: EASE_EXPO,
+                  }}
+                  className="rounded-full border border-line bg-surface/40 px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.1em] text-fg/60 uppercase"
+                >
+                  {skill}
+                </m.li>
+              ))}
+            </ul>
+          </div>
 
           <m.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.62, duration: 0.9, ease: EASE_EXPO }}
-            className="pointer-events-auto mt-[clamp(4rem,16vh,8rem)] flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-center lg:mt-10"
+            className="pointer-events-auto mt-[clamp(2.5rem,10vh,5rem)] flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center lg:mt-9"
           >
             <MagneticButton className="w-full sm:w-auto">
               <Button href="/#work" className="w-full sm:w-auto">

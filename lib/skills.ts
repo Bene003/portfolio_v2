@@ -10,3 +10,5 @@ export const KEY_SKILLS = [
   "Strategic Decision Making",
   "Opportunity Identification",
 ] as const;
+
+export type KeySkill = (typeof KEY_SKILLS)[number];

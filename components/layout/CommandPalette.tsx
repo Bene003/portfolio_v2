@@ -11,6 +11,7 @@ import {
   Mail,
   Search,
   Snowflake,
+  Sparkles,
   SquareArrowOutUpRight,
   Waves,
   Zap,
@@ -19,12 +20,15 @@ import { AnimatePresence, m } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useExplorer } from "@/hooks/useExplorer";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useTheme } from "@/hooks/useTheme";
 import { projects } from "@/lib/content/projects";
 import { EASE_EXPO } from "@/lib/motion";
 import { nav, site } from "@/lib/site";
 import {
+  SECRET_THEME,
+  setTheme,
   THEME_LABELS,
   THEME_ORDER,
   toggleTheme,
@@ -48,11 +52,13 @@ const THEME_ICONS = {
   flora: Leaf,
   terra: Earth,
   water: Waves,
+  nova: Sparkles,
 } satisfies Record<Theme, typeof CircleDot>;
 
 export default function CommandPalette() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { visited, unlocked } = useExplorer();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
@@ -115,6 +121,29 @@ export default function CommandPalette() {
           });
         },
       },
+      // Only reachable once every public world has been visited, so the
+      // palette never spoils the secret planet.
+      ...(unlocked && theme !== SECRET_THEME
+        ? [
+            {
+              id: "secret-theme",
+              label: `Travel to ${THEME_LABELS[SECRET_THEME]} planet`,
+              hint: "Unlocked — all worlds visited",
+              group: "Actions" as const,
+              icon: Sparkles,
+              run: () => {
+                setOpen(false);
+                window.requestAnimationFrame(() => {
+                  setTheme(SECRET_THEME, {
+                    x: window.innerWidth / 2,
+                    y: Math.min(window.innerHeight * 0.22, 180),
+                    source: "command",
+                  });
+                });
+              },
+            },
+          ]
+        : []),
       {
         id: "copy-email",
         label: "Copy email address",
@@ -162,7 +191,7 @@ export default function CommandPalette() {
         },
       },
     ];
-  }, [router, theme]);
+  }, [router, theme, unlocked]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -321,6 +350,22 @@ export default function CommandPalette() {
                   );
                 })}
               </ul>
+
+              <div className="flex items-center justify-between gap-3 border-t border-line/70 px-5 py-3">
+                <span className="font-mono text-[0.625rem] tracking-[0.12em] text-muted">
+                  ↑↓ to move · ↵ to select
+                </span>
+                <span
+                  className={cn(
+                    "font-mono text-[0.625rem] tracking-[0.12em]",
+                    unlocked ? "text-accent-text" : "text-fg/35",
+                  )}
+                >
+                  {unlocked
+                    ? "07 PLANETS"
+                    : `${visited.length}/${THEME_ORDER.length} EXPLORED`}
+                </span>
+              </div>
             </m.div>
           </m.div>
         )}
