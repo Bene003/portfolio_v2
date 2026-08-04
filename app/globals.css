@@ -1572,11 +1572,19 @@ html[data-theme="nova"] .hero-fallback-land {
 .hero-ring__char {
   position: absolute;
   font-family: var(--font-mono);
-  font-size: clamp(0.66rem, 3.2vw, 0.82rem);
-  letter-spacing: 0.08em;
+  font-size: clamp(0.82rem, 4vw, 1.05rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
   line-height: 1;
   text-transform: uppercase;
   white-space: pre;
+  /* The band crosses the lit face of the planet, where thin light type on
+     light pixels disappears. A tight dark halo keeps every letter legible
+     wherever it is on the circle. */
+  text-shadow:
+    0 0 4px rgb(0 0 0 / 0.9),
+    0 0 12px rgb(0 0 0 / 0.7),
+    0 1px 2px rgb(0 0 0 / 0.9);
   animation: hero-ring-face var(--hero-ring-duration) linear infinite;
   animation-delay: calc(var(--hero-ring-duration) * var(--seat-phase));
 }
@@ -1591,7 +1599,9 @@ html[data-theme="nova"] .hero-fallback-land {
 }
 
 /* Progress maps straight onto the letter's angle around the ring: 0% is
-   the near side of the band, 50% the far side behind the world. */
+   the near side of the band, 50% the far side behind the world. The far
+   side only dims — it must stay readable, otherwise half the name is
+   missing at any given moment. */
 @keyframes hero-ring-face {
   0% {
     opacity: 1;
@@ -1599,7 +1609,7 @@ html[data-theme="nova"] .hero-fallback-land {
       translate(-50%, -50%);
   }
   50% {
-    opacity: 0.14;
+    opacity: 0.55;
     transform: rotateY(-180deg) rotateX(calc(var(--hero-ring-tilt) * -1))
       translate(-50%, -50%);
   }

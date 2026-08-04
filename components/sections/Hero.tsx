@@ -92,7 +92,7 @@ export default function Hero() {
                   className={
                     accent
                       ? "hero-ring__char text-accent-text"
-                      : "hero-ring__char text-fg/80"
+                      : "hero-ring__char text-fg"
                   }
                 >
                   {char}
