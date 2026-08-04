@@ -93,8 +93,8 @@ export const projects: Project[] = [
     status: "Live",
     liveUrl: null,
     cover: {
-      src: "/images/work/immobilius/cover.svg",
-      alt: "Immobilius lead dashboard",
+      src: "/images/work/immobilius/cover.webp",
+      alt: "Immobilius landing page showing a real-time globe of tracked companies beside a live feed of detected funding and hiring signals",
     },
     stack: [
       "Next.js 16",
