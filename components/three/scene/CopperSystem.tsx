@@ -683,7 +683,7 @@ function PointerRig({
 export default function CopperSystem({ quality }: { quality: SceneQuality }) {
   const { theme, revision, transitioning } = useTheme();
   const [interactive, setInteractive] = useState(false);
-  const scale = quality === "high" ? 0.92 : quality === "medium" ? 0.83 : 0.78;
+  const scale = quality === "high" ? 1.12 : quality === "medium" ? 1.04 : 1.18;
   const starCount = quality === "high" ? 520 : quality === "medium" ? 320 : 190;
   const sparkleCount = quality === "high" ? 40 : quality === "medium" ? 24 : 12;
 

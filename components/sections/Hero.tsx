@@ -46,9 +46,26 @@ export default function Hero() {
       <m.div
         aria-hidden
         style={{ y: visualY, opacity: visualOpacity }}
-        className="hero-world pointer-events-auto absolute top-[2%] right-[4%] left-[4%] z-0 h-[clamp(10rem,27vh,20rem)] opacity-100 sm:top-[25%] sm:-right-[12%] sm:left-[30%] sm:h-[52%] md:left-[36%] lg:inset-0 lg:left-[44%] lg:h-auto lg:opacity-100"
+        className="pointer-events-auto absolute top-[2%] right-[4%] left-[4%] z-0 h-[clamp(10rem,27vh,20rem)] opacity-100 sm:top-[25%] sm:-right-[12%] sm:left-[30%] sm:h-[52%] md:left-[36%] lg:inset-0 lg:left-[44%] lg:h-auto lg:opacity-100"
       >
-        <HeroVisual />
+        <div className="hero-world absolute inset-0">
+          <HeroVisual />
+        </div>
+
+        {/* The name orbits the world on phones, where the H1 is sr-only.
+            Outside the masked layer so the vignette never eats it, and
+            inert so it can never swallow a tap meant for the planet. */}
+        <div className="hero-orbit pointer-events-none absolute inset-0 sm:hidden">
+          <div className="hero-orbit__ring">
+            <div className="hero-orbit__arm">
+              <div className="hero-orbit__label">
+                <span className="hero-orbit__text rounded-pill border border-line/70 bg-bg/55 px-3 py-1.5 font-display text-sm whitespace-nowrap backdrop-blur-sm">
+                  Eben <span className="text-gradient-copper">Kwete</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </m.div>
 
       {/* Soft masks so the canvas melts into the hero instead of reading as a

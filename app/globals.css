@@ -1504,10 +1504,90 @@ html[data-theme="nova"] .hero-fallback-land {
   );
 }
 
+/* On a phone the world is the hero, not a backdrop: the vignette is opened
+   up so the poles stay lit instead of dissolving into the background. */
+@media (max-width: 639px) {
+  .hero-world {
+    mask-image: radial-gradient(
+      ellipse 96% 98% at 50% 46%,
+      black 60%,
+      rgb(0 0 0 / 0.72) 80%,
+      transparent 100%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 96% 98% at 50% 46%,
+      black 60%,
+      rgb(0 0 0 / 0.72) 80%,
+      transparent 100%
+    );
+  }
+}
+
 @media (min-width: 1024px) {
   .hero-world {
     mask-image: none;
     -webkit-mask-image: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero name in orbit (phone only)                                     */
+/* ------------------------------------------------------------------ */
+
+/* The H1 is sr-only below sm; this is its visible echo, riding an orbit
+   tilted away from the viewer so it reads as a satellite of the world
+   rather than a caption under it. The ring carries the tilt, the arm the
+   spin, and the label undoes both so the name always stays flat and
+   upright — the two animations share a duration and a linear timing, so
+   they cannot drift apart. */
+.hero-orbit {
+  --hero-orbit-radius: clamp(6.75rem, 28vw, 9.5rem);
+  --hero-orbit-tilt: 68deg;
+  --hero-orbit-duration: 26s;
+  perspective: 640px;
+}
+
+.hero-orbit__ring {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform: rotateX(var(--hero-orbit-tilt));
+  transform-style: preserve-3d;
+}
+
+.hero-orbit__arm {
+  transform-style: preserve-3d;
+  animation: orbit var(--hero-orbit-duration) linear infinite;
+}
+
+.hero-orbit__label {
+  transform: translateX(var(--hero-orbit-radius));
+  transform-style: preserve-3d;
+}
+
+.hero-orbit__text {
+  display: block;
+  animation: hero-orbit-upright var(--hero-orbit-duration) linear infinite;
+}
+
+@keyframes hero-orbit-upright {
+  from {
+    transform: rotate(0deg) rotateX(calc(var(--hero-orbit-tilt) * -1));
+  }
+  to {
+    transform: rotate(-360deg) rotateX(calc(var(--hero-orbit-tilt) * -1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit__arm {
+    animation: none;
+  }
+
+  .hero-orbit__text {
+    animation: none;
+    transform: rotateX(calc(var(--hero-orbit-tilt) * -1));
   }
 }
 
