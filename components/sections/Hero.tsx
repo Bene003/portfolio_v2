@@ -14,6 +14,25 @@ import { EASE_EXPO } from "@/lib/motion";
 import { site } from "@/lib/site";
 import { WORLD_STORY } from "@/lib/worlds";
 
+/** The name written twice around the ring so the band reads as
+ *  continuous rather than as a necklace of stray letters. "Kwete" keeps
+ *  the accent it has in the header and in the H1. */
+const RING_UNIT = "EBEN KWETE · ";
+const RING_SLOTS = RING_UNIT.length * 3;
+const RING_NAME = Array.from({ length: RING_SLOTS }, (_, index) => {
+  const position = index % RING_UNIT.length;
+  return {
+    char: RING_UNIT[position],
+    accent: position >= 5 && position <= 9,
+    // Where the letter sits on the circle, and the phase that keeps its
+    // counter rotation in step with the band. Blanks still own a slot —
+    // they are the spacing — but there is nothing to paint, so they are
+    // dropped from the DOM.
+    angle: (index / RING_SLOTS) * 360,
+    phase: -(index / RING_SLOTS),
+  };
+}).filter(({ char }) => char !== " ");
+
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { theme } = useTheme();
@@ -52,18 +71,34 @@ export default function Hero() {
           <HeroVisual />
         </div>
 
-        {/* The name orbits the world on phones, where the H1 is sr-only.
-            Outside the masked layer so the vignette never eats it, and
-            inert so it can never swallow a tap meant for the planet. */}
-        <div className="hero-orbit pointer-events-none absolute inset-0 sm:hidden">
-          <div className="hero-orbit__ring">
-            <div className="hero-orbit__arm">
-              <div className="hero-orbit__label">
-                <span className="hero-orbit__text rounded-pill border border-line/70 bg-bg/55 px-3 py-1.5 font-display text-sm whitespace-nowrap backdrop-blur-sm">
-                  Eben <span className="text-gradient-copper">Kwete</span>
+        {/* The name spelled around the world as Saturn's ring, on phones
+            where the H1 is sr-only. Outside the masked layer so the
+            vignette never eats it, and inert so it can never swallow a
+            tap meant for the planet. */}
+        <div className="hero-ring pointer-events-none absolute inset-0 sm:hidden">
+          <div className="hero-ring__band">
+            {RING_NAME.map(({ char, accent, angle, phase }) => (
+              <span
+                key={angle}
+                className="hero-ring__seat"
+                style={
+                  {
+                    "--seat-angle": `${angle}deg`,
+                    "--seat-phase": phase,
+                  } as React.CSSProperties
+                }
+              >
+                <span
+                  className={
+                    accent
+                      ? "hero-ring__char text-accent-text"
+                      : "hero-ring__char text-fg/80"
+                  }
+                >
+                  {char}
                 </span>
-              </div>
-            </div>
+              </span>
+            ))}
           </div>
         </div>
       </m.div>

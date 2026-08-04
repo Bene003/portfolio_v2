@@ -1531,63 +1531,91 @@ html[data-theme="nova"] .hero-fallback-land {
 }
 
 /* ------------------------------------------------------------------ */
-/* Hero name in orbit (phone only)                                     */
+/* Hero name as a ring (phone only)                                    */
 /* ------------------------------------------------------------------ */
 
-/* The H1 is sr-only below sm; this is its visible echo, riding an orbit
-   tilted away from the viewer so it reads as a satellite of the world
-   rather than a caption under it. The ring carries the tilt, the arm the
-   spin, and the label undoes both so the name always stays flat and
-   upright — the two animations share a duration and a linear timing, so
-   they cannot drift apart. */
-.hero-orbit {
-  --hero-orbit-radius: clamp(6.75rem, 28vw, 9.5rem);
-  --hero-orbit-tilt: 68deg;
-  --hero-orbit-duration: 26s;
-  perspective: 640px;
+/* The H1 is sr-only below sm; this is its visible echo, spelled out
+   around the world as Saturn's ring. The band carries the tilt and the
+   spin; every letter sits on the circle with `rotateY(a) translateZ(r)`
+   and undoes both rotations so it stays flat and upright. Letters share
+   one keyframe and are phased apart by a negative delay, so the counter
+   rotation can never drift from the band. Perspective does the rest: the
+   near letters come forward and grow, the far ones fade behind the
+   planet — CSS cannot occlude a WebGL canvas, so the fade is what sells
+   the pass-behind. */
+.hero-ring {
+  --hero-ring-radius: clamp(7rem, 29vw, 9.5rem);
+  /* Shallow, like the real thing: the vertical spread of the ellipse is
+     radius x sin(tilt), so a small angle keeps the band flat and wide. */
+  --hero-ring-tilt: -21deg;
+  --hero-ring-duration: 28s;
+  perspective: 620px;
 }
 
-.hero-orbit__ring {
+.hero-ring__band {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
-  transform: rotateX(var(--hero-orbit-tilt));
+  transform-style: preserve-3d;
+  animation: hero-ring-spin var(--hero-ring-duration) linear infinite;
+}
+
+.hero-ring__seat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: rotateY(var(--seat-angle)) translateZ(var(--hero-ring-radius));
   transform-style: preserve-3d;
 }
 
-.hero-orbit__arm {
-  transform-style: preserve-3d;
-  animation: orbit var(--hero-orbit-duration) linear infinite;
+.hero-ring__char {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: clamp(0.66rem, 3.2vw, 0.82rem);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: pre;
+  animation: hero-ring-face var(--hero-ring-duration) linear infinite;
+  animation-delay: calc(var(--hero-ring-duration) * var(--seat-phase));
 }
 
-.hero-orbit__label {
-  transform: translateX(var(--hero-orbit-radius));
-  transform-style: preserve-3d;
-}
-
-.hero-orbit__text {
-  display: block;
-  animation: hero-orbit-upright var(--hero-orbit-duration) linear infinite;
-}
-
-@keyframes hero-orbit-upright {
+@keyframes hero-ring-spin {
   from {
-    transform: rotate(0deg) rotateX(calc(var(--hero-orbit-tilt) * -1));
+    transform: rotateX(var(--hero-ring-tilt)) rotateY(0deg);
   }
   to {
-    transform: rotate(-360deg) rotateX(calc(var(--hero-orbit-tilt) * -1));
+    transform: rotateX(var(--hero-ring-tilt)) rotateY(360deg);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-orbit__arm {
-    animation: none;
+/* Progress maps straight onto the letter's angle around the ring: 0% is
+   the near side of the band, 50% the far side behind the world. */
+@keyframes hero-ring-face {
+  0% {
+    opacity: 1;
+    transform: rotateY(0deg) rotateX(calc(var(--hero-ring-tilt) * -1))
+      translate(-50%, -50%);
   }
+  50% {
+    opacity: 0.14;
+    transform: rotateY(-180deg) rotateX(calc(var(--hero-ring-tilt) * -1))
+      translate(-50%, -50%);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(-360deg) rotateX(calc(var(--hero-ring-tilt) * -1))
+      translate(-50%, -50%);
+  }
+}
 
-  .hero-orbit__text {
-    animation: none;
-    transform: rotateX(calc(var(--hero-orbit-tilt) * -1));
+/* Paused rather than removed: a negative delay still resolves, so the
+   ring keeps its shape instead of collapsing onto one letter. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-ring__band,
+  .hero-ring__char {
+    animation-play-state: paused;
   }
 }
 
