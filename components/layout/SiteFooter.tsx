@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import SecretSpot from "@/components/easter/SecretSpot";
 import { nav, site } from "@/lib/site";
 
 export default function SiteFooter() {
@@ -13,13 +14,20 @@ export default function SiteFooter() {
             {site.name.split(" ")[0]}
             <span className="text-accent-text">{site.name.split(" ")[1]}</span>
           </Link>
+          {/* Four inert lines of this footer each hide one world's egg. They
+              are wrapped rather than made into buttons so the footer still
+              reads as a footer — see `components/easter/SecretSpot.tsx`. */}
           <p className="text-sm text-muted">
-            {site.role} · {site.location}
+            <SecretSpot spot="identity">
+              {site.role} · {site.location}
+            </SecretSpot>
           </p>
         </div>
 
         <nav aria-label="Footer" className="flex flex-col gap-3">
-          <p className="eyebrow">Navigate</p>
+          <p className="eyebrow">
+            <SecretSpot spot="navigate">Navigate</SecretSpot>
+          </p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {nav.map((item) => (
               <li key={item.href}>
@@ -35,7 +43,9 @@ export default function SiteFooter() {
         </nav>
 
         <div className="flex flex-col gap-3">
-          <p className="eyebrow">Elsewhere</p>
+          <p className="eyebrow">
+            <SecretSpot spot="elsewhere">Elsewhere</SecretSpot>
+          </p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             <li>
               <a
@@ -73,9 +83,15 @@ export default function SiteFooter() {
 
       <div className="shell flex flex-col gap-2 border-t border-line/60 py-6 font-mono text-[0.6875rem] tracking-[0.12em] text-muted uppercase sm:flex-row sm:items-center sm:justify-between">
         <p>
-          © {year} {site.name}
+          <SecretSpot spot="copyright">
+            © {year} {site.name}
+          </SecretSpot>
         </p>
-        <p>Built with Next.js · Deployed on Vercel</p>
+        <p>
+          <SecretSpot spot="built">
+            Built with Next.js · Deployed on Vercel
+          </SecretSpot>
+        </p>
       </div>
     </footer>
   );

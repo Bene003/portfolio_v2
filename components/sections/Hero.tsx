@@ -4,12 +4,14 @@ import { ArrowDownRight, Github, Linkedin } from "lucide-react";
 import { m, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 
+import SecretSpot from "@/components/easter/SecretSpot";
 import HeroVisual from "@/components/three/HeroVisual";
 import Button from "@/components/ui/Button";
 import Halo from "@/components/ui/Halo";
 import MagneticButton from "@/components/ui/MagneticButton";
 import SplitText from "@/components/ui/SplitText";
 import { useTheme } from "@/hooks/useTheme";
+import { playEasterEgg } from "@/lib/easter";
 import { EASE_EXPO } from "@/lib/motion";
 import { site } from "@/lib/site";
 import { WORLD_STORY } from "@/lib/worlds";
@@ -61,6 +63,9 @@ function NameRing({ half }: { half: "near" | "far" }) {
           >
             <span className="hero-ring__flip">
               <span
+                onClick={
+                  half === "near" ? () => playEasterEgg("title") : undefined
+                }
                 className={
                   accent
                     ? "hero-ring__char text-accent-text"
@@ -192,12 +197,14 @@ export default function Hero() {
             id="hero-title"
             className="sr-only sm:not-sr-only sm:mt-6 sm:text-display sm:font-display"
           >
-            <SplitText text="Eben" delay={0.1} />{" "}
-            <SplitText
-              text="Kwete"
-              delay={0.16}
-              wordClassName="text-gradient-copper"
-            />
+            <SecretSpot spot="title" className="pointer-events-auto">
+              <SplitText text="Eben" delay={0.1} />{" "}
+              <SplitText
+                text="Kwete"
+                delay={0.16}
+                wordClassName="text-gradient-copper"
+              />
+            </SecretSpot>
           </h1>
 
           {/* Each world tells a different facet of the same profile — the copy

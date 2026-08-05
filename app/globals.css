@@ -250,24 +250,49 @@ html {
   --theme-wave-radius: 150vmax;
 }
 
+/* The world you are leaving does not just sit there waiting to be covered:
+   it recedes and dims, so the trip has a departure as well as an arrival. */
 ::view-transition-old(root) {
-  animation: none;
   z-index: 1;
+  transform-origin: var(--theme-wave-x) var(--theme-wave-y);
+  animation: theme-wave-depart 1500ms var(--ease-expo) both;
 }
 
+/* The new world arrives *through* the hole rather than behind it: it comes
+   in slightly oversized and settles, and the drop-shadow rides the clip-path
+   outline, which turns the reveal edge into a lit shockwave front. */
 ::view-transition-new(root) {
   z-index: 2;
-  animation: theme-wave-reveal 1200ms var(--ease-expo) both;
+  transform-origin: var(--theme-wave-x) var(--theme-wave-y);
+  animation: theme-wave-reveal 1500ms var(--ease-expo) both;
+}
+
+@keyframes theme-wave-depart {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  100% {
+    transform: scale(0.92);
+    filter: brightness(0.55);
+  }
 }
 
 @keyframes theme-wave-reveal {
-  from {
+  0% {
     clip-path: circle(0 at var(--theme-wave-x) var(--theme-wave-y));
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 0 var(--color-accent)) brightness(1.5);
   }
-  to {
+  35% {
+    filter: drop-shadow(0 0 60px var(--color-accent)) brightness(1.22);
+  }
+  100% {
     clip-path: circle(
       var(--theme-wave-radius) at var(--theme-wave-x) var(--theme-wave-y)
     );
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 var(--color-accent)) brightness(1);
   }
 }
 
@@ -314,25 +339,16 @@ html {
 }
 
 .theme-shockwave.is-active::before {
-  animation: theme-shockwave-ring 1200ms var(--ease-expo) both;
+  animation: theme-shockwave-ring 1500ms var(--ease-expo) both;
 }
 
 .theme-shockwave.is-active::after {
-  animation: theme-shockwave-bloom 900ms var(--ease-expo) both;
+  animation: theme-shockwave-bloom 1150ms var(--ease-expo) both;
 }
 
-html[data-effects="lite"] .theme-shockwave::after {
-  display: none;
-}
-
-html[data-effects="lite"] .theme-shockwave::before {
-  box-shadow: 0 0 18px var(--wave-color);
-}
-
-html[data-effects="lite"] .theme-shockwave.is-active::before {
-  animation-name: theme-shockwave-ring-lite;
-  animation-duration: 720ms;
-}
+/* No lite variant here on purpose — see the note in lib/theme.ts. The
+   shockwave is two composited pseudo-elements for just over a second, which
+   every phone can afford; the effects tier is spent on what runs forever. */
 
 @keyframes theme-shockwave-ring {
   0% {
@@ -356,17 +372,6 @@ html[data-effects="lite"] .theme-shockwave.is-active::before {
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(95);
-  }
-}
-
-@keyframes theme-shockwave-ring-lite {
-  0% {
-    opacity: 0.82;
-    transform: translate(-50%, -50%) scale(0.2);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(76);
   }
 }
 
@@ -1587,6 +1592,8 @@ html[data-theme="nova"] .hero-fallback-land {
   line-height: 1;
   text-transform: uppercase;
   white-space: pre;
+  cursor: crosshair;
+  -webkit-tap-highlight-color: transparent;
   /* The band crosses the lit face of the planet, where thin light type on
      light pixels disappears. A tight dark halo keeps every letter legible
      wherever it is on the circle. */
@@ -1631,15 +1638,22 @@ html[data-theme="nova"] .hero-fallback-land {
 /* Progress maps straight onto the letter's angle around the ring: 0% is
    the near point of the band, 25% and 75% the left and right edges of
    the ellipse, 50% the point directly behind the world. */
+/* The near letters are the page title on a phone, so they carry the hero's
+   easter egg. `pointer-events` rides the same keyframes as the opacity:
+   a letter currently painted by the other layer is invisible here, and an
+   invisible letter must not swallow the tap meant for the planet. */
 @keyframes hero-ring-near {
   0% {
     opacity: 1;
+    pointer-events: auto;
   }
   25% {
     opacity: 0;
+    pointer-events: none;
   }
   75% {
     opacity: 1;
+    pointer-events: auto;
   }
 }
 
@@ -1920,6 +1934,650 @@ html[data-theme="nova"] .hero-fallback-land {
 @media (prefers-reduced-motion: reduce) {
   .shatter-letter.is-shattered .shatter-letter__piece {
     animation-duration: 0.01ms;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Easter eggs — one hidden reaction per world, each in its own spot   */
+/* ------------------------------------------------------------------ */
+
+/* Every egg draws itself in `--color-accent`, which the active world already
+   defines, so a gesture only has to be authored once to be correct in the
+   world it belongs to. Which egg plays, and from where, is decided in
+   `lib/easter.ts`. */
+
+.secret-spot {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Only the spot that is live right now shows the crosshair, so the tell
+   travels with you from world to world instead of exposing all seven at once.
+   These pairs must mirror `WORLD_SPOT` in `lib/easter.ts`. */
+html[data-theme="fire"] .secret-spot[data-spot="logo"],
+html[data-theme="storm"] .secret-spot[data-spot="title"],
+html[data-theme="ice"] .secret-spot[data-spot="built"],
+html[data-theme="flora"] .secret-spot[data-spot="identity"],
+html[data-theme="terra"] .secret-spot[data-spot="copyright"],
+html[data-theme="water"] .secret-spot[data-spot="navigate"],
+html[data-theme="nova"] .secret-spot[data-spot="elsewhere"] {
+  cursor: crosshair;
+}
+
+.easter-egg {
+  position: fixed;
+  inset: 0;
+  /* Above the shockwave, which already claims the top of the stack: an egg
+     is the one thing that should cover everything, including a trip. */
+  z-index: 2147483647;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.easter-egg > span {
+  position: absolute;
+  display: block;
+  will-change: transform, opacity;
+}
+
+/* --- fire · ember: the page catches, and the sparks go up --- */
+
+.easter-egg--ember .easter-egg__heat {
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    color-mix(in oklab, var(--color-accent) 85%, #000) 0%,
+    color-mix(in oklab, var(--color-accent) 45%, transparent) 34%,
+    transparent 72%
+  );
+  animation: easter-ember-heat 1500ms var(--ease-expo) both;
+}
+
+/* The ignition itself: one bloom of light from the bottom edge, gone almost
+   as fast as it arrives, so the embers are what the eye follows. */
+.easter-egg--ember .easter-egg__flare {
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 100%,
+    color-mix(in oklab, var(--color-accent) 55%, white) 0%,
+    color-mix(in oklab, var(--color-accent) 90%, transparent) 42%,
+    transparent 70%
+  );
+  animation: easter-ember-flare 1500ms var(--ease-soft) both;
+}
+
+.easter-egg--ember .easter-egg__ember {
+  bottom: -4vh;
+  left: var(--x);
+  width: calc(7px * var(--s));
+  height: calc(7px * var(--s));
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--color-accent) 65%, white);
+  box-shadow:
+    0 0 12px var(--color-accent),
+    0 0 28px var(--color-accent);
+  animation: easter-ember-rise 1500ms cubic-bezier(0.3, 0, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 26ms);
+}
+
+@keyframes easter-ember-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.4);
+  }
+  14% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--d) * 12vw), -108vh) scale(1.1);
+  }
+}
+
+@keyframes easter-ember-heat {
+  0% {
+    opacity: 0;
+  }
+  20%,
+  52% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes easter-ember-flare {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  10% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+/* --- storm · blackout: a bolt tears across, the world goes dark --- */
+
+.easter-egg--blackout .easter-egg__dark {
+  inset: 0;
+  background: #000;
+  animation: easter-blackout-dark 1400ms var(--ease-expo) both;
+}
+
+/* A long thin sheet raked across the screen. Skewing it and running it on
+   the diagonal is what reads as a strike rather than a wipe. */
+.easter-egg--blackout .easter-egg__bolt {
+  top: -60%;
+  left: -30%;
+  width: 12vmax;
+  height: 220%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgb(255 255 255 / 0.15) 12%,
+    #fff 46%,
+    #fff 54%,
+    rgb(255 255 255 / 0.15) 88%,
+    transparent
+  );
+  filter: blur(1px) drop-shadow(0 0 60px rgb(255 255 255 / 0.9));
+  transform: rotate(18deg) translateX(-40vw);
+  animation: easter-blackout-bolt 1400ms cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+
+.easter-egg--blackout .easter-egg__flash {
+  inset: 0;
+  background: #fff;
+  animation: easter-blackout-flash 1400ms linear both;
+}
+
+@keyframes easter-blackout-bolt {
+  0% {
+    opacity: 0;
+    transform: rotate(18deg) translateX(-40vw) scaleX(0.4);
+  }
+  6% {
+    opacity: 1;
+  }
+  26% {
+    opacity: 1;
+    transform: rotate(18deg) translateX(120vw) scaleX(1);
+  }
+  32% {
+    opacity: 0;
+    transform: rotate(18deg) translateX(150vw) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(18deg) translateX(150vw) scaleX(1);
+  }
+}
+
+/* Two short stabs of white rather than one: a single flash reads as a bug,
+   a stutter reads as lightning. */
+@keyframes easter-blackout-flash {
+  0%,
+  8% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.92;
+  }
+  14% {
+    opacity: 0.1;
+  }
+  17% {
+    opacity: 0.75;
+  }
+  24%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes easter-blackout-dark {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  30%,
+  62% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* --- ice · freeze: frost takes the screen from the rim inward --- */
+
+.easter-egg--freeze .easter-egg__frost {
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 16%,
+    color-mix(in oklab, var(--color-accent) 30%, transparent) 55%,
+    color-mix(in oklab, var(--color-accent) 68%, white) 100%
+  );
+  animation: easter-freeze-frost 1600ms var(--ease-expo) both;
+}
+
+.easter-egg--freeze .easter-egg__glare {
+  inset: 0;
+  background: color-mix(in oklab, var(--color-accent) 25%, white);
+  animation: easter-freeze-glare 1600ms linear both;
+}
+
+/* Each needle is anchored by its *outer* tip: `transform-origin` sits at the
+   top of the bar, the bar is pushed out to the rim, and growing it therefore
+   pushes the free end toward the centre. That inward direction is the whole
+   difference between frost creeping in and light rushing out. */
+.easter-egg--freeze .easter-egg__shard {
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: calc(38vmax * var(--s));
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-accent) 35%, white),
+    color-mix(in oklab, var(--color-accent) 60%, white) 40%,
+    transparent
+  );
+  transform-origin: 50% 0;
+  transform: translate(-50%, 0) rotate(var(--angle)) translateY(-48vmax)
+    scaleY(0);
+  animation: easter-freeze-shard 1600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 22ms);
+}
+
+@keyframes easter-freeze-shard {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) rotate(var(--angle)) translateY(-48vmax)
+      scaleY(0);
+  }
+  16% {
+    opacity: 0.9;
+  }
+  58%,
+  74% {
+    opacity: 0.9;
+    transform: translate(-50%, 0) rotate(var(--angle)) translateY(-48vmax)
+      scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0) rotate(var(--angle)) translateY(-48vmax)
+      scaleY(1);
+  }
+}
+
+@keyframes easter-freeze-frost {
+  0% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+  32%,
+  64% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes easter-freeze-glare {
+  0%,
+  10% {
+    opacity: 0;
+  }
+  16% {
+    opacity: 0.5;
+  }
+  36%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* --- flora · bloom: the page grows over --- */
+
+.easter-egg--bloom .easter-egg__wash {
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    color-mix(in oklab, var(--color-accent) 70%, #000) 0%,
+    color-mix(in oklab, var(--color-accent) 28%, transparent) 40%,
+    transparent 75%
+  );
+  animation: easter-bloom-wash 1600ms var(--ease-soft) both;
+}
+
+/* A stem rooted at the bottom edge, leaning by its own small amount, with the
+   leaf carried on `::after` so the tip travels with the growth for free. */
+.easter-egg--bloom .easter-egg__leaf {
+  bottom: 0;
+  left: var(--x);
+  width: 3px;
+  height: calc(56vh * var(--s));
+  border-radius: 999px;
+  background: linear-gradient(
+    0deg,
+    color-mix(in oklab, var(--color-accent) 80%, transparent),
+    color-mix(in oklab, var(--color-accent) 55%, white)
+  );
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) rotate(calc(var(--d) * 9deg)) scaleY(0);
+  animation: easter-bloom-grow 1600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 30ms);
+}
+
+.easter-egg--bloom .easter-egg__leaf::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 11px;
+  height: 22px;
+  /* Taller than it is wide, and only slightly turned: a square lens sitting
+     square on the stem reads as a mushroom cap rather than a leaf. */
+  border-radius: 100% 0 100% 0;
+  background: color-mix(in oklab, var(--color-accent) 55%, white);
+  box-shadow: 0 0 18px var(--color-accent);
+  transform: translate(-50%, -35%) rotate(22deg);
+}
+
+@keyframes easter-bloom-grow {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) rotate(calc(var(--d) * 9deg)) scaleY(0);
+  }
+  14% {
+    opacity: 1;
+  }
+  62%,
+  78% {
+    opacity: 1;
+    transform: translateX(-50%) rotate(calc(var(--d) * 9deg)) scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) rotate(calc(var(--d) * 9deg)) scaleY(1);
+  }
+}
+
+@keyframes easter-bloom-wash {
+  0% {
+    opacity: 0;
+  }
+  25%,
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* --- terra · quake: the ground gives way --- */
+
+.easter-egg--quake .easter-egg__crust {
+  inset: 0;
+  background: #000;
+  animation: easter-quake-crust 1500ms linear both;
+}
+
+.easter-egg--quake .easter-egg__dust {
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in oklab, var(--color-accent) 55%, #000) 0%,
+    color-mix(in oklab, var(--color-accent) 22%, transparent) 45%,
+    transparent 78%
+  );
+  animation: easter-quake-dust 1500ms var(--ease-soft) both;
+}
+
+/* Fault lines, not rays. Anything radiating from a single point reads as a
+   sunburst no matter how it is coloured; ground breaks along the horizontal,
+   so each fissure is a near-level seam that tears open from its middle.
+   `--x` places them up the screen, `--d` gives each one its own slight tilt.
+   They also *hold* before fading — light snaps back instantly, broken ground
+   does not, and that pause is what sells the weight. */
+.easter-egg--quake .easter-egg__crack {
+  top: var(--x);
+  left: 0;
+  width: 100%;
+  height: calc(2px + 4px * var(--s));
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--color-accent) 85%, #000) 12%,
+    color-mix(in oklab, var(--color-accent) 60%, white) 50%,
+    color-mix(in oklab, var(--color-accent) 85%, #000) 88%,
+    transparent
+  );
+  box-shadow: 0 0 26px color-mix(in oklab, var(--color-accent) 45%, transparent);
+  transform-origin: 50% 50%;
+  transform: rotate(calc(var(--d) * 2.5deg)) scaleX(0);
+  animation: easter-quake-crack 1500ms cubic-bezier(0.15, 0.9, 0.25, 1) both;
+  animation-delay: calc(var(--i) * 55ms);
+}
+
+@keyframes easter-quake-crack {
+  0% {
+    opacity: 0;
+    transform: rotate(calc(var(--d) * 2.5deg)) scaleX(0);
+  }
+  12% {
+    opacity: 1;
+  }
+  45%,
+  72% {
+    opacity: 1;
+    transform: rotate(calc(var(--d) * 2.5deg)) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(calc(var(--d) * 2.5deg)) scaleX(1);
+  }
+}
+
+@keyframes easter-quake-crust {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 0.85;
+  }
+  22%,
+  62% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes easter-quake-dust {
+  0% {
+    opacity: 0;
+  }
+  18%,
+  58% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* --- water · flood: rings go out, the tide comes up --- */
+
+.easter-egg--flood .easter-egg__surge {
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    color-mix(in oklab, var(--color-accent) 75%, #000) 0%,
+    color-mix(in oklab, var(--color-accent) 38%, transparent) 45%,
+    transparent 80%
+  );
+  animation: easter-flood-surge 1500ms var(--ease-expo) both;
+}
+
+.easter-egg--flood .easter-egg__ring {
+  top: 50%;
+  left: 50%;
+  width: 20vmax;
+  height: 20vmax;
+  margin: -10vmax 0 0 -10vmax;
+  border: 2px solid color-mix(in oklab, var(--color-accent) 65%, white);
+  border-radius: 50%;
+  box-shadow:
+    0 0 30px color-mix(in oklab, var(--color-accent) 55%, transparent),
+    inset 0 0 30px color-mix(in oklab, var(--color-accent) 35%, transparent);
+  animation: easter-flood-ring 1500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  /* Spaced well apart rather than staggered by a few frames: overlapping
+     rings read as noise, spaced ones read as a single impact spreading. */
+  animation-delay: calc(var(--i) * 110ms);
+}
+
+@keyframes easter-flood-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.05);
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(7);
+  }
+}
+
+@keyframes easter-flood-surge {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  18% {
+    opacity: 1;
+  }
+  45%,
+  70% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-12%);
+  }
+}
+
+/* --- nova · warp: the world jumps to light speed --- */
+
+.easter-egg--warp .easter-egg__dark {
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 6%,
+    color-mix(in oklab, var(--color-bg) 78%, transparent) 62%,
+    var(--color-bg) 100%
+  );
+  animation: easter-warp-dark 1300ms var(--ease-expo) both;
+}
+
+.easter-egg--warp .easter-egg__core {
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 30px var(--color-accent),
+    0 0 90px var(--color-accent);
+  transform: translate(-50%, -50%) scale(0);
+  animation: easter-warp-core 1300ms var(--ease-expo) both;
+}
+
+/* Each streak is a bar pinned to the centre and rotated to its own bearing,
+   so growing its length is what makes it rush outward. `--i` staggers the
+   start, otherwise all eighteen leave as a single ring. */
+.easter-egg--warp .easter-egg__streak {
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 60vmax;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in oklab, var(--color-accent) 85%, white) 60%,
+    #fff
+  );
+  transform-origin: 50% 0;
+  transform: translate(-50%, 0) rotate(var(--angle)) scaleY(0);
+  animation: easter-warp-streak 1300ms cubic-bezier(0.6, 0, 0.15, 1) both;
+  animation-delay: calc(var(--i) * 14ms);
+}
+
+@keyframes easter-warp-streak {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) rotate(var(--angle)) scaleY(0);
+  }
+  12% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 1;
+    transform: translate(-50%, 0) rotate(var(--angle)) scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0) rotate(var(--angle)) scaleY(1);
+  }
+}
+
+@keyframes easter-warp-core {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  14% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  55% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(14);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(46);
+  }
+}
+
+@keyframes easter-warp-dark {
+  0% {
+    opacity: 0;
+  }
+  22%,
+  58% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 

@@ -29,7 +29,7 @@ export type ThemeChangeDetail = ThemeOrigin & {
 
 export const THEME_STORAGE_KEY = "portfolio-theme";
 export const THEME_CHANGE_EVENT = "portfolio:theme-change";
-export const THEME_TRANSITION_MS = 1200;
+export const THEME_TRANSITION_MS = 1500;
 
 /** The worlds anyone can reach. `nova` is deliberately absent: it only shows
  *  up once every other world has been visited (see `lib/explorer.ts`). */
@@ -222,9 +222,12 @@ export function setTheme(theme: Theme, suppliedOrigin?: ThemeOrigin) {
     "(prefers-reduced-motion: reduce)",
   ).matches;
   const viewTransitionDocument = document as ViewTransitionDocument;
+  // Deliberately not gated on `data-effects`: the trip between worlds is the
+  // one moment the site is *about*, and it has to feel the same everywhere.
+  // The lite tier exists for what runs continuously — particle counts, 3D
+  // geometry — not for a single 1.2s reveal.
   const canUseNativeTransition =
     !reducedMotion &&
-    document.documentElement.dataset.effects !== "lite" &&
     typeof viewTransitionDocument.startViewTransition === "function";
   const revision = snapshot.revision + 1;
 
