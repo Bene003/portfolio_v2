@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { playEasterEgg } from "@/lib/easter";
 import { site } from "@/lib/site";
 
 const LETTERS = [...site.name];
@@ -51,9 +52,14 @@ export default function ShatterName() {
         return (
           <span
             key={`${letter}-${index}`}
-            onClick={(event) => {
-              event.preventDefault();
+            onClick={() => {
+              // The click is not swallowed: the letter breaks and the link
+              // still navigates home, so the easter egg never costs anyone
+              // the only way back from a case study.
               shatter(index);
+              // Fire hides its egg here: the letter breaks, and in that world
+              // the break catches. Every other world drops this silently.
+              playEasterEgg("logo");
             }}
             className={`shatter-letter ${accent ? "text-accent-text" : "text-fg"} ${
               shattered.has(index) ? "is-shattered" : ""
