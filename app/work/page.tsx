@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
+import SecretSpot from "@/components/easter/SecretSpot";
 import Halo from "@/components/ui/Halo";
+import ProjectCover from "@/components/ui/ProjectCover";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import Tag from "@/components/ui/Tag";
-import { projects } from "@/lib/content/projects";
+import { caseStudies, otherWork } from "@/lib/content/projects";
 import { pad } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Three products shipped end to end — a beauty e-commerce storefront, a B2B real-estate intelligence SaaS and a content agency site with a real-time 3D hero.",
+    "Case studies on products shipped end to end — e-commerce, B2B SaaS, booking, ticketing and patient journeys — plus the client platforms behind them.",
   alternates: { canonical: "/work" },
 };
 
@@ -36,40 +37,51 @@ export default function WorkIndex() {
 
           <Reveal delay={0.06}>
             <h1 id="work-index-title" className="mt-6 max-w-4xl text-h1">
-              Three products, shipped and{" "}
-              <span className="text-gradient-copper">running in production</span>
-              .
+              <SecretSpot spot="title">
+                Products, platforms and{" "}
+                <span className="text-gradient-copper">
+                  the businesses behind them
+                </span>
+                .
+              </SecretSpot>
             </h1>
           </Reveal>
 
           <Reveal delay={0.12}>
             <p className="prose-width mt-6 text-lead text-muted">
               Not concepts or dribbble shots — real codebases with real users,
-              real payments and real uptime. Each case study covers the problem,
-              what I built and the engineering decisions behind it.
+              real payments and real uptime. The case studies below cover the
+              problem, what I built and the engineering decisions behind it; the
+              rest covers what each platform actually removed from
+              someone&apos;s day.
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section aria-label="Case studies" className="pb-section">
+      {/* ── Case studies ───────────────────────────────────────── */}
+      <section aria-labelledby="case-studies-title" className="pb-section">
         <div className="shell">
+          <Reveal>
+            <h2 id="case-studies-title" className="eyebrow">
+              Case studies
+            </h2>
+          </Reveal>
+
           <RevealGroup
-            className="grid gap-8 lg:grid-cols-3 lg:gap-10"
-            stagger={0.1}
+            className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10"
+            stagger={0.08}
           >
-            {projects.map((project, i) => (
+            {caseStudies.map((project, i) => (
               <RevealItem key={project.slug}>
                 <Link
                   href={`/work/${project.slug}`}
                   className="group glass flex h-full flex-col overflow-hidden p-0 transition-[transform,border-color] duration-500 hover-fine:-translate-y-1.5 hover-fine:border-accent/30"
                 >
                   <div className="relative aspect-16/10 overflow-hidden border-b border-line/70 bg-surface-2/50">
-                    <Image
-                      src={project.cover.src}
-                      alt={project.cover.alt}
-                      fill
-                      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 90vw, 100vw"
+                    <ProjectCover
+                      project={project}
+                      sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
                       className="object-cover transition-transform duration-700 ease-[var(--ease-expo)] group-hover-fine:scale-[1.04]"
                     />
                     <span
@@ -82,10 +94,10 @@ export default function WorkIndex() {
                     <p className="eyebrow flex items-center gap-3">
                       <span className="text-accent-text">{pad(i + 1)}</span>
                       <span aria-hidden className="h-px w-6 bg-line" />
-                      <span>{project.type}</span>
+                      <span>{project.sector}</span>
                     </p>
 
-                    <h2 className="mt-5 text-h3">{project.name}</h2>
+                    <h3 className="mt-5 text-h3">{project.name}</h3>
                     <p className="mt-2 text-sm text-accent-text">
                       {project.tagline}
                     </p>
@@ -110,6 +122,95 @@ export default function WorkIndex() {
                     </span>
                   </div>
                 </Link>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+
+      {/* ── Also shipped ───────────────────────────────────────── */}
+      <section
+        aria-labelledby="other-work-title"
+        className="border-t border-line/70 py-section"
+      >
+        <div className="shell">
+          <Reveal>
+            <h2 id="other-work-title" className="eyebrow">
+              Also shipped
+            </h2>
+          </Reveal>
+
+          <Reveal delay={0.06}>
+            <p className="prose-width mt-4 text-muted">
+              Products of my own and platforms built for a client&apos;s
+              operation — the storefront, the booking, the automation and the
+              audience work that replaced whatever was being handled by hand.
+            </p>
+          </Reveal>
+
+          <RevealGroup
+            className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+            stagger={0.06}
+          >
+            {otherWork.map((project) => (
+              <RevealItem key={project.slug}>
+                {/* Not a link: these have no page of their own, and a card
+                    that looks clickable but is not is worse than a plain one. */}
+                <article className="glass flex h-full flex-col overflow-hidden p-0">
+                  <div className="relative aspect-16/10 overflow-hidden border-b border-line/70 bg-surface-2/50">
+                    <ProjectCover
+                      project={project}
+                      sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
+                      className="object-cover"
+                    />
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 bg-linear-to-t from-bg/80 via-transparent to-transparent"
+                    />
+                  </div>
+
+                  <div className="flex flex-1 flex-col p-6 sm:p-7">
+                    <p className="eyebrow flex items-center gap-3">
+                      <span
+                        aria-hidden
+                        className="size-1.5 rounded-full"
+                        style={{ background: project.accent }}
+                      />
+                      <span>{project.sector}</span>
+                    </p>
+
+                    <h3 className="mt-4 text-h3">{project.name}</h3>
+                    <p className="mt-2 text-sm text-accent-text">
+                      {project.tagline}
+                    </p>
+                    <p className="mt-4 text-sm text-muted">{project.summary}</p>
+
+                    {project.scope && (
+                      <ul className="mt-6 flex flex-1 flex-col gap-2.5 border-t border-line pt-5">
+                        {project.scope.map((item) => (
+                          <li
+                            key={item}
+                            className="flex gap-2.5 text-sm text-muted"
+                          >
+                            <span
+                              aria-hidden
+                              className="mt-2 size-1 shrink-0 rounded-full bg-accent"
+                            />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    <ul className="mt-6 flex flex-wrap gap-2">
+                      {project.stack.slice(0, 4).map((item) => (
+                        <li key={item}>
+                          <Tag>{item}</Tag>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
               </RevealItem>
             ))}
           </RevealGroup>

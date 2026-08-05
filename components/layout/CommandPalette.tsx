@@ -23,7 +23,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useExplorer } from "@/hooks/useExplorer";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useTheme } from "@/hooks/useTheme";
-import { projects } from "@/lib/content/projects";
+import { caseStudies } from "@/lib/content/projects";
 import { EASE_EXPO } from "@/lib/motion";
 import { nav, site } from "@/lib/site";
 import {
@@ -96,7 +96,9 @@ export default function CommandPalette() {
         icon: Search,
         run: go("/work"),
       },
-      ...projects.map((p) => ({
+      // Only case studies: the palette navigates, and client missions have
+      // nowhere to navigate to.
+      ...caseStudies.map((p) => ({
         id: `project-${p.slug}`,
         label: p.name,
         hint: p.tagline,

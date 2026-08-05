@@ -4,7 +4,7 @@ import Link from "next/link";
 import Halo from "@/components/ui/Halo";
 import { Reveal } from "@/components/ui/Reveal";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { projects } from "@/lib/content/projects";
+import { featuredProjects } from "@/lib/content/projects";
 
 import WorkRow from "./WorkRow";
 
@@ -24,12 +24,12 @@ export default function Work() {
           id="work-title"
           index="01"
           eyebrow="Selected work"
-          title="Three products, in production"
+          title="Products and platforms, in production"
           lead="Not concepts or class projects — live systems with real users, real payments and real data pipelines behind them."
         />
 
         <div className="mt-16 flex flex-col gap-24 lg:mt-24 lg:gap-40">
-          {projects.map((project, i) => (
+          {featuredProjects.map((project, i) => (
             <WorkRow
               key={project.slug}
               project={project}

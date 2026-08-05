@@ -2,11 +2,11 @@
 
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { m, useScroll, useTransform } from "motion/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 
 import BrowserFrame from "@/components/ui/BrowserFrame";
+import ProjectCover from "@/components/ui/ProjectCover";
 import Tag from "@/components/ui/Tag";
 import { fadeUp, viewportOnce } from "@/lib/motion";
 import type { Project } from "@/types/content";
@@ -61,10 +61,8 @@ export default function WorkRow({
         >
           <BrowserFrame url={displayUrl}>
             <div className="relative aspect-16/10 overflow-hidden">
-              <Image
-                src={project.cover.src}
-                alt={project.cover.alt}
-                fill
+              <ProjectCover
+                project={project}
                 priority={priority}
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 className="object-cover transition-transform duration-700 ease-[var(--ease-expo)] group-hover-fine:scale-[1.03]"

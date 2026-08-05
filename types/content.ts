@@ -1,30 +1,42 @@
-export type ProjectSlug = "elyra" | "immobilius" | "capitalhype";
-
 export interface ProjectSection {
   title: string;
   body: string[];
   image?: { src: string; alt: string };
 }
 
+/** Case studies earn a page of their own; everything else is listed but not
+ *  written up. Keeping both in one array — rather than two — means the work
+ *  page, the sitemap and the command palette all stay a single source. */
+export type ProjectTier = "case-study" | "listed";
+
 export interface Project {
-  slug: ProjectSlug;
+  slug: string;
   name: string;
   tagline: string;
   summary: string;
+  /** The industry, not the technology. What varies across the portfolio. */
+  sector: string;
   role: string;
   year: string;
   type: string;
   status: string;
   liveUrl: string | null;
-  cover: { src: string; alt: string };
+  /** Absent until a real screenshot exists — a placeholder is drawn instead,
+   *  because a fake screenshot is worse than an honest empty frame. */
+  cover?: { src: string; alt: string };
   stack: string[];
-  /** Short punchy facts rendered as a meta grid on the home page. */
-  highlights: string[];
+  tier: ProjectTier;
+  /** Pulled onto the home page. Chosen for sector spread, not recency. */
+  featured?: boolean;
+  /** What the engagement covered. Listed projects only. */
+  scope?: string[];
+  /** Short punchy facts rendered as a meta grid. Case studies only. */
+  highlights?: string[];
   /** Long-form case study content. */
-  problem: string[];
-  build: ProjectSection[];
-  technical: { title: string; body: string }[];
-  outcome: string[];
+  problem?: string[];
+  build?: ProjectSection[];
+  technical?: { title: string; body: string }[];
+  outcome?: string[];
   accent: string;
 }
 

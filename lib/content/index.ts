@@ -49,7 +49,7 @@ export const timeline: TimelineEntry[] = [
   {
     period: "2025 — now",
     title: "Shipping products",
-    body: "Three products in production: an e-commerce brand, a B2B real-estate SaaS and a content agency platform. Design, code and infrastructure, end to end.",
+    body: "Products of my own in production — an e-commerce brand, a B2B real-estate SaaS, a content agency platform — alongside client platforms for booking, ticketing and patient journeys. Design, code and infrastructure, end to end.",
     tags: ["Next.js", "PostgreSQL", "Product"],
   },
 ];
@@ -110,7 +110,7 @@ export const process: ProcessStep[] = [
 
 export const stats: Stat[] = [
   { value: 6, suffix: "+", label: "Years writing code" },
-  { value: 3, suffix: "", label: "Products in production" },
+  { value: 13, suffix: "", label: "Projects shipped" },
   { value: 2200, suffix: "+", label: "Source files authored" },
 ];
 
