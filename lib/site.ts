@@ -7,7 +7,7 @@ export const site = {
   role: "Web Developer",
   title: "Eben Kwete — Web Developer",
   description:
-    "Web developer based in Montréal. I design and ship complete products — e-commerce, B2B SaaS and real-time interfaces — with Next.js, TypeScript and PostgreSQL.",
+    "Web developer based in Montréal. I design and ship complete products: e-commerce, B2B SaaS and real-time interfaces, built with Next.js, TypeScript and PostgreSQL.",
   location: "Montréal, QC",
   timezone: "America/Toronto",
   email: "kweteeben@gmail.com",
@@ -26,6 +26,7 @@ export const nav = [
   { label: "About", href: "/#about" },
   { label: "Services", href: "/#services" },
   { label: "Journey", href: "/#journey" },
+  { label: "Lab", href: "/#lab" },
   { label: "Contact", href: "/#contact" },
 ] as const;
 
@@ -36,5 +37,6 @@ export const sectionIds = [
   "about",
   "services",
   "journey",
+  "lab",
   "contact",
 ] as const;

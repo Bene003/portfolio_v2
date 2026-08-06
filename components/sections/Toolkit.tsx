@@ -19,7 +19,7 @@ export default function Toolkit() {
       <div className="shell">
         <SectionHeading
           id="toolkit-title"
-          index="05"
+          index="06"
           eyebrow="Toolkit"
           title="What I reach for"
         />

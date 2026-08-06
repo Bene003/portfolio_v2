@@ -54,6 +54,21 @@ export interface TimelineEntry {
   tags: string[];
 }
 
+/** Something built for myself rather than for a client. Deliberately not a
+ *  `Project`: there is no engagement and no delivery to point at — the honest
+ *  unit here is what it does, why it exists and how far it has actually got. */
+export interface PersonalProject {
+  name: string;
+  tagline: string;
+  body: string;
+  /** Where it really stands. Never "Live" unless it is. */
+  status: string;
+  year: string;
+  stack: string[];
+  /** The itch it was built to scratch, not the feature list. */
+  why: string;
+}
+
 export interface StackGroup {
   label: string;
   items: string[];

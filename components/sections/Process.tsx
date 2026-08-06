@@ -17,7 +17,7 @@ export default function Process() {
       <div className="shell">
         <SectionHeading
           id="process-title"
-          index="06"
+          index="07"
           eyebrow="Process"
           title="Four steps, no mystery"
         />
