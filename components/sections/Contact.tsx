@@ -44,7 +44,7 @@ export default function Contact() {
 
         <Reveal delay={0.1}>
           <p className="mt-6 max-w-xl text-lead text-muted">
-            Freelance projects, product work or a full-time role — if you are
+            Freelance projects, product work or a full-time role. If you are
             building something that has to actually ship, I want to hear about
             it.
           </p>

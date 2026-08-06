@@ -7,7 +7,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import { stats } from "@/lib/content";
 
 const paragraphs = [
-  "I started building for the web in 2019, on my own, because I wanted to make things that existed outside my head. Five years later that instinct met formal training — a bachelor's degree in web development — and the two turned out to reinforce each other.",
+  "I started building for the web in 2019, on my own, because I wanted to make things that existed outside my head. Five years later that instinct met formal training: a bachelor's degree in web development. The two turned out to reinforce each other.",
   "Today I work across the whole stack. Design systems and motion on one end, PostgreSQL schemas and Stripe webhooks on the other. I like being the person who can take a product from a blank Figma file to a live URL without a handoff.",
   "I'm based in Montréal, work in English and French, and I care about the same three things on every project: it should be fast, it should be clear, and it should actually ship.",
 ];
@@ -28,7 +28,7 @@ export default function About() {
           eyebrow="About"
           title={
             <>
-              I build the whole thing —{" "}
+              I build the whole thing,{" "}
               <span className="text-gradient-copper">design included.</span>
             </>
           }

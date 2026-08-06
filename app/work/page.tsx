@@ -13,7 +13,7 @@ import { pad } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Case studies on products shipped end to end — e-commerce, B2B SaaS, booking, ticketing and patient journeys — plus the client platforms behind them.",
+    "Case studies on products shipped end to end: e-commerce, B2B SaaS, booking, ticketing and patient journeys, plus the client platforms behind them.",
   alternates: { canonical: "/work" },
 };
 
@@ -49,7 +49,7 @@ export default function WorkIndex() {
 
           <Reveal delay={0.12}>
             <p className="prose-width mt-6 text-lead text-muted">
-              Not concepts or dribbble shots — real codebases with real users,
+              Not concepts or dribbble shots. Real codebases with real users,
               real payments and real uptime. The case studies below cover the
               problem, what I built and the engineering decisions behind it; the
               rest covers what each platform actually removed from
@@ -143,7 +143,7 @@ export default function WorkIndex() {
           <Reveal delay={0.06}>
             <p className="prose-width mt-4 text-muted">
               Products of my own and platforms built for a client&apos;s
-              operation — the storefront, the booking, the automation and the
+              operation: the storefront, the booking, the automation and the
               audience work that replaced whatever was being handled by hand.
             </p>
           </Reveal>

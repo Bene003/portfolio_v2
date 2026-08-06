@@ -12,7 +12,7 @@ export default function NotFound() {
           <span className="text-gradient-copper">404</span>
         </h1>
         <p className="prose-width mx-auto mt-6 text-lead text-muted">
-          This page does not exist — or it shipped somewhere else. Let&apos;s get
+          This page does not exist, or it shipped somewhere else. Let&apos;s get
           you back to solid ground.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-3">

@@ -1955,7 +1955,7 @@ html[data-theme="nova"] .hero-fallback-land {
    These pairs must mirror `WORLD_SPOT` in `lib/easter.ts`. */
 html[data-theme="fire"] .secret-spot[data-spot="logo"],
 html[data-theme="storm"] .secret-spot[data-spot="title"],
-html[data-theme="ice"] .secret-spot[data-spot="built"],
+html[data-theme="ice"] .secret-spot[data-spot="wordmark"],
 html[data-theme="flora"] .secret-spot[data-spot="identity"],
 html[data-theme="terra"] .secret-spot[data-spot="copyright"],
 html[data-theme="water"] .secret-spot[data-spot="navigate"],

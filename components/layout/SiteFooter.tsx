@@ -11,12 +11,18 @@ export default function SiteFooter() {
       <div className="shell flex flex-col gap-10 py-12 pb-[max(3rem,env(safe-area-inset-bottom))] lg:flex-row lg:items-start lg:justify-between">
         <div className="flex flex-col gap-3">
           <Link href="/" className="font-display text-xl font-semibold">
-            {site.name.split(" ")[0]}
-            <span className="text-accent-text">{site.name.split(" ")[1]}</span>
+            <SecretSpot spot="wordmark">
+              {site.name.split(" ")[0]}
+              <span className="text-accent-text">
+                {site.name.split(" ")[1]}
+              </span>
+            </SecretSpot>
           </Link>
           {/* Four inert lines of this footer each hide one world's egg. They
               are wrapped rather than made into buttons so the footer still
-              reads as a footer — see `components/easter/SecretSpot.tsx`. */}
+              reads as a footer, see `components/easter/SecretSpot.tsx`. The
+              wordmark is the exception: it stays a link, and the egg rides
+              along without swallowing the click. */}
           <p className="text-sm text-muted">
             <SecretSpot spot="identity">
               {site.role} · {site.location}
@@ -81,15 +87,10 @@ export default function SiteFooter() {
         </div>
       </div>
 
-      <div className="shell flex flex-col gap-2 border-t border-line/60 py-6 font-mono text-[0.6875rem] tracking-[0.12em] text-muted uppercase sm:flex-row sm:items-center sm:justify-between">
+      <div className="shell border-t border-line/60 py-6 font-mono text-[0.6875rem] tracking-[0.12em] text-muted uppercase">
         <p>
           <SecretSpot spot="copyright">
             © {year} {site.name}
-          </SecretSpot>
-        </p>
-        <p>
-          <SecretSpot spot="built">
-            Built with Next.js · Deployed on Vercel
           </SecretSpot>
         </p>
       </div>

@@ -25,7 +25,7 @@ export default function Work() {
           index="01"
           eyebrow="Selected work"
           title="Products and platforms, in production"
-          lead="Not concepts or class projects — live systems with real users, real payments and real data pipelines behind them."
+          lead="Not concepts or class projects. Live systems with real users, real payments and real data pipelines behind them."
         />
 
         <div className="mt-16 flex flex-col gap-24 lg:mt-24 lg:gap-40">

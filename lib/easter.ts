@@ -20,7 +20,7 @@ export type EggSpot =
   | "navigate"
   | "elsewhere"
   | "copyright"
-  | "built";
+  | "wordmark";
 
 /** Where each world hides its egg. Nothing else on the page reacts, so a
  *  world is silent everywhere except its own spot — that silence is what
@@ -28,7 +28,7 @@ export type EggSpot =
 const WORLD_SPOT = {
   fire: "logo",
   storm: "title",
-  ice: "built",
+  ice: "wordmark",
   flora: "identity",
   terra: "copyright",
   water: "navigate",

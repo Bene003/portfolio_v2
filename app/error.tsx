@@ -17,7 +17,7 @@ export default function GlobalError({
           <span className="text-gradient-copper">as planned.</span>
         </h1>
         <p className="prose-width mx-auto mt-6 text-lead text-muted">
-          An unexpected error occurred while rendering this page. Try again — if
+          An unexpected error occurred while rendering this page. Try again. If
           it keeps happening, it is on me, not on you.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-3">

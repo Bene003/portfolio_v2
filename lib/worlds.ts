@@ -16,7 +16,7 @@ export type WorldStory = {
 export const WORLD_STORY = {
   fire: {
     focus: "Velocity",
-    line: "Web developer crafting fast, considered interfaces — from pixel to production. I design it, I build it, I ship it.",
+    line: "Web developer crafting fast, considered interfaces, from pixel to production. I design it, I build it, I ship it.",
     skills: [
       "Full-Stack Product Development",
       "Entrepreneurial Thinking",
@@ -25,7 +25,7 @@ export const WORLD_STORY = {
   },
   storm: {
     focus: "Real-time",
-    line: "I build products that stay alive under load — live data, moving parts, decisions that cannot wait for the next sprint.",
+    line: "I build products that stay alive under load: live data, moving parts, decisions that cannot wait for the next sprint.",
     skills: [
       "Strategic Decision Making",
       "Systems Thinking",
@@ -43,7 +43,7 @@ export const WORLD_STORY = {
   },
   flora: {
     focus: "Growth",
-    line: "Shipping is the start, not the finish. I grow products after launch — acquisition loops, retention, and the numbers that prove it worked.",
+    line: "Shipping is the start, not the finish. I grow products after launch: acquisition loops, retention, and the numbers that prove it worked.",
     skills: [
       "Digital Marketing",
       "Business Strategy",
@@ -66,7 +66,7 @@ export const WORLD_STORY = {
   },
   nova: {
     focus: "Vision",
-    line: "All of it at once — strategy, design, code and growth in one head. That is what I bring to a product team.",
+    line: "All of it at once: strategy, design, code and growth in one head. That is what I bring to a product team.",
     skills: ["Product Vision", "Product Strategy", "Entrepreneurial Thinking"],
   },
 } satisfies Record<Theme, WorldStory>;
