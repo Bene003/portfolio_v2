@@ -6,7 +6,7 @@ export const projects: Project[] = [
     name: "Elyra",
     tagline: "Beauty e-commerce, end to end",
     summary:
-      "A full direct-to-consumer storefront for an LED skincare brand — catalogue, checkout, editorial blog and an automated content pipeline. I own the design, the storefront, the admin and the infrastructure.",
+      "A full direct-to-consumer storefront for an LED skincare brand: catalogue, checkout, editorial blog and an automated content pipeline. I own the design, the storefront, the admin and the infrastructure.",
     sector: "Beauty & skincare",
     role: "Design & Full-stack",
     year: "2025 — 2026",
@@ -41,8 +41,8 @@ export const projects: Project[] = [
       "Drag-and-drop admin merchandising",
     ],
     problem: [
-      "The brand had a product but no way to sell it. Off-the-shelf platforms locked the storefront into a template, took a cut of every sale, and made the editorial side — the part that actually brings traffic — an afterthought.",
-      "The goal was a storefront I fully control: fast, indexable, multi-currency, and cheap to run — with content production that does not depend on someone remembering to write a blog post.",
+      "The brand had a product but no way to sell it. Off-the-shelf platforms locked the storefront into a template, took a cut of every sale, and made the editorial side, the part that actually brings traffic, an afterthought.",
+      "The goal was a storefront I fully control: fast, indexable, multi-currency, and cheap to run, with content production that does not depend on someone remembering to write a blog post.",
     ],
     build: [
       {
@@ -55,7 +55,7 @@ export const projects: Project[] = [
       {
         title: "Editorial engine",
         body: [
-          "The blog is MDX, so an article is a file — versioned, diffable, and renderable with real components instead of a WYSIWYG blob.",
+          "The blog is MDX, so an article is a file: versioned, diffable, and renderable with real components instead of a WYSIWYG blob.",
           "Scheduled jobs draft and publish content on a cadence, keeping the long-tail SEO surface growing without manual work.",
         ],
       },
@@ -77,7 +77,7 @@ export const projects: Project[] = [
       },
       {
         title: "Scheduled automation",
-        body: "Cron routes handle content generation, product sync and analytics cleanup — the site maintains itself between releases.",
+        body: "Cron routes handle content generation, product sync and analytics cleanup, so the site maintains itself between releases.",
       },
       {
         title: "Row-level security",
@@ -85,96 +85,9 @@ export const projects: Project[] = [
       },
     ],
     outcome: [
-      "A storefront the brand owns outright, with no platform fees and no template ceiling — around 400 source files covering the shop, the blog, the admin and the automation.",
+      "A storefront the brand owns outright, with no platform fees and no template ceiling. Around 400 source files covering the shop, the blog, the admin and the automation.",
     ],
     accent: "#FF6A2B",
-  },
-  {
-    slug: "immobilius",
-    name: "Immobilius",
-    tagline: "B2B real-estate intelligence",
-    summary:
-      "A SaaS that tells commercial real-estate teams which companies are about to need space. It watches funding rounds, headcount growth and executive hires, scores the signal, and drops the qualified lead on a map.",
-    sector: "Commercial real estate",
-    role: "Product & Full-stack",
-    year: "2025 — 2026",
-    type: "B2B SaaS",
-    status: "Live",
-    tier: "listed",
-    liveUrl: null,
-    scope: [
-      "Signal engine watching funding, hiring and leadership moves",
-      "AI lead scoring that states the reason behind every score",
-      "Clustered map of thousands of qualified leads",
-      "Subscription billing and daily digests",
-    ],
-    cover: {
-      src: "/images/work/immobilius/cover.webp",
-      alt: "Immobilius landing page showing a real-time globe of tracked companies beside a live feed of detected funding and hiring signals",
-    },
-    stack: [
-      "Next.js 16",
-      "TypeScript",
-      "PostgreSQL",
-      "Supabase",
-      "Leaflet",
-      "Anthropic API",
-      "Stripe",
-      "Vercel",
-    ],
-    highlights: [
-      "Signal engine: funding, hiring, leadership moves",
-      "AI lead scoring with explainable reasons",
-      "Clustered map of thousands of leads",
-      "Subscription billing & daily digests",
-    ],
-    problem: [
-      "Commercial brokers find deals by hearing about them late. By the time a company publicly looks for space, five other brokers already know.",
-      "The bet: the intent is visible earlier. A funding round, a spike in job postings, a new COO — these leak months before a lease search. The product had to collect those signals continuously, decide which ones actually matter, and put them somewhere a broker can act on in ten seconds.",
-    ],
-    build: [
-      {
-        title: "Signal engine",
-        body: [
-          "Ingestion routes pull company events on a schedule and normalise them into a single signal table in Postgres — funding rounds, headcount deltas, executive appointments, address changes.",
-          "Deduplication happens at write time, so one funding round reported by four sources becomes one signal rather than four leads.",
-        ],
-      },
-      {
-        title: "Scoring",
-        body: [
-          "Each lead gets a score from the combination of its signals, weighted by recency and by how predictive that signal type has been. The model returns a short written reason alongside the number — a score with no explanation is a score nobody trusts.",
-        ],
-      },
-      {
-        title: "The map",
-        body: [
-          "Leads render on a Leaflet map with marker clustering, so a dense downtown does not collapse into an unreadable pile of pins. Filters, the list view and the map stay in sync through a single URL-driven state.",
-        ],
-      },
-    ],
-    technical: [
-      {
-        title: "Idempotent ingestion",
-        body: "Every ingestion job can be replayed safely. Re-running yesterday's fetch produces no duplicates.",
-      },
-      {
-        title: "Explainable scoring",
-        body: "Every score carries the signals that produced it. Users can audit the reasoning instead of trusting a black box.",
-      },
-      {
-        title: "Clustered geospatial rendering",
-        body: "Marker clustering plus viewport-bounded queries keep the map responsive with thousands of leads in play.",
-      },
-      {
-        title: "Cron-backed digests",
-        body: "A daily job emails each user only the leads that crossed their threshold since the last run — no dashboard-checking required.",
-      },
-    ],
-    outcome: [
-      "The largest thing I have built: roughly 880 source files spanning the ingestion pipeline, the scoring layer, the dashboard, the map and subscription billing.",
-    ],
-    accent: "#FFA24C",
   },
   {
     slug: "capitalhype",
@@ -211,7 +124,7 @@ export const projects: Project[] = [
     ],
     problem: [
       "Notaries and accountants know they should publish. They do not have the time, and the agencies that serve them produce interchangeable filler.",
-      "The site had to sell a done-for-you service to a conservative, sceptical audience — which meant it had to look expensive without looking frivolous, and load instantly on a mid-range laptop in an office.",
+      "The site had to sell a done-for-you service to a conservative, sceptical audience, which meant it had to look expensive without looking frivolous, and load instantly on a mid-range laptop in an office.",
     ],
     build: [
       {
@@ -257,7 +170,7 @@ export const projects: Project[] = [
     name: "Ericeira Sense",
     tagline: "Surf lessons, booked and briefed",
     summary:
-      "A booking platform for a surf school in Ericeira. Students pick a level, a package, a coach and a slot, then pay online — and the waiver, the swell brief and the reminders fire on their own. Coaches run their groups from the same system.",
+      "A booking platform for a surf school in Ericeira. Students pick a level, a package, a coach and a slot, then pay online, and the waiver, the swell brief and the reminders fire on their own. Coaches run their groups from the same system.",
     sector: "Sport & tourism",
     role: "Product & Full-stack",
     year: "2026",
@@ -276,14 +189,13 @@ export const projects: Project[] = [
       alt: "Ericeira Sense beginner course page: two coaches in wetsuits holding surfboards beside a pricing table for one, three and five lessons, with what the level covers",
     },
     stack: [
-      "Next.js 16",
+      "Next.js",
       "TypeScript",
-      "Tailwind v4",
-      "PostgreSQL",
       "Supabase",
       "Stripe",
-      "Resend",
-      "Vercel",
+      "Brevo",
+      "Google Calendar API",
+      "WhatsApp Cloud API",
     ],
     highlights: [
       "Level, package, coach and slot selection",
@@ -293,7 +205,7 @@ export const projects: Project[] = [
     ],
     problem: [
       "A surf school sells a slot that depends on the ocean, the tide and how many coaches are free that morning. Run over messages, that means double bookings, waivers signed on paper at the beach, and a coach discovering their group size on arrival.",
-      "The booking flow had to know what is genuinely available before it takes money — and everything that used to happen by hand afterwards, from the waiver to the meeting point, had to fire by itself.",
+      "The booking flow had to know what is genuinely available before it takes money, and everything that used to happen by hand afterwards, from the waiver to the meeting point, had to fire by itself.",
     ],
     build: [
       {
@@ -313,7 +225,7 @@ export const projects: Project[] = [
       {
         title: "Coach space",
         body: [
-          "Coaches get their own view: the groups they have today, each student's level and history, and somewhere to log progression after the session — so a returning student is not assessed from scratch.",
+          "Coaches get their own view: the groups they have today, each student's level and history, and somewhere to log progression after the session, so a returning student is not assessed from scratch.",
         ],
       },
     ],
@@ -324,7 +236,7 @@ export const projects: Project[] = [
       },
       {
         title: "Webhook-confirmed bookings",
-        body: "A place is held at checkout and only confirmed by the Stripe event, so the seat count can never be wrong — in the school's favour or the student's.",
+        body: "A place is held at checkout and only confirmed by the Stripe event, so the seat count can never be wrong, in the school's favour or the student's.",
       },
       {
         title: "Session-relative messaging",
@@ -341,7 +253,7 @@ export const projects: Project[] = [
     name: "Black Cat Cinema",
     tagline: "Screenings, tickets and the weather",
     summary:
-      "Programming, ticketing, newsletter and private-hire requests for an open-air cinema, in one system. Audiences browse screenings by venue and buy a ticket — and when the sky cancels the night, the postponement, the notifications and the refunds run themselves.",
+      "Programming, ticketing, newsletter and private-hire requests for an open-air cinema, in one system. Audiences browse screenings by venue and buy a ticket, and when the sky cancels the night, the postponement, the notifications and the refunds run themselves.",
     sector: "Culture & events",
     role: "Product & Full-stack",
     year: "2026",
@@ -360,14 +272,14 @@ export const projects: Project[] = [
       alt: "Black Cat Cinema venues page: an audience seated in a floodlit Lisbon cloister facing an open-air screen at dusk",
     },
     stack: [
-      "Next.js 16",
+      "Next.js",
       "TypeScript",
-      "Tailwind v4",
-      "PostgreSQL",
+      "Tailwind CSS",
       "Supabase",
       "Stripe",
-      "Resend",
-      "Vercel",
+      "Brevo",
+      "Weather API",
+      "Vercel Cron",
     ],
     highlights: [
       "Screenings browsable by venue and date",
@@ -390,7 +302,7 @@ export const projects: Project[] = [
         title: "Weather, postponement & refunds",
         body: [
           "Each screening carries a weather watch scoped to its own venue. When a night is called off, a single action moves the screening, notifies every ticket holder, offers the new date and refunds anyone who declines it.",
-          "That replaced a spreadsheet of buyers and a series of manual refunds — the part of the job that used to cost an evening.",
+          "That replaced a spreadsheet of buyers and a series of manual refunds, the part of the job that used to cost an evening.",
         ],
       },
       {
@@ -411,7 +323,7 @@ export const projects: Project[] = [
       },
       {
         title: "Venue-scoped weather watch",
-        body: "Each location is watched independently — one site being rained out does not cancel a screening happening across town.",
+        body: "Each location is watched independently: one site being rained out does not cancel a screening happening across town.",
       },
     ],
     outcome: [
@@ -424,7 +336,7 @@ export const projects: Project[] = [
     name: "Castellana Clínica Dental",
     tagline: "From symptom to appointment",
     summary:
-      "A rebuilt patient journey for a dental clinic: patients find the treatment matching what they actually feel, and request an appointment without leaving the site. Forms, calendar and CRM are connected so qualification, confirmations and reminders happen on their own — inside GDPR constraints.",
+      "A rebuilt patient journey for a dental clinic: patients find the treatment matching what they actually feel, and request an appointment without leaving the site. The request form, the clinic's calendar and a purpose-built appointment system share one record, so qualification, confirmations and reminders happen on their own, inside GDPR constraints.",
     sector: "Healthcare",
     role: "Product & Full-stack",
     year: "2026",
@@ -438,35 +350,35 @@ export const projects: Project[] = [
       alt: "Castellana Clínica Dental contact page: clinical staff in scrubs beside an invitation to get in touch, above the treatment navigation",
     },
     stack: [
-      "Next.js 16",
+      "Next.js",
       "TypeScript",
-      "Tailwind v4",
+      "Django REST",
       "PostgreSQL",
-      "Supabase",
-      "CRM integration",
-      "Vercel",
+      "Brevo",
+      "Custom booking system",
     ],
     highlights: [
       "Symptom-first treatment discovery",
-      "Request form wired to calendar and CRM",
+      "Request form wired to the calendar and the appointment system",
       "Automated qualification, confirmation and follow-up",
       "GDPR-shaped data model",
     ],
     problem: [
-      "Patients do not search for implantology. They search for a broken tooth, a pain, a price. The site listed treatments the way the clinic thinks about them, so a visitor had to self-diagnose before finding anything — and then call during opening hours.",
+      "Patients do not search for implantology. They search for a broken tooth, a pain, a price. The site listed treatments the way the clinic thinks about them, so a visitor had to self-diagnose before finding anything, and then call during opening hours.",
       "Automating that is constrained: a dental enquiry is health data. The system had to qualify and route requests without quietly turning a medical concern into a marketing record.",
     ],
     build: [
       {
         title: "Treatment discovery",
         body: [
-          "Entry points are written from the patient's symptom and situation rather than the clinical name, each leading to the treatment page and, from there, straight into a request — with no detour through a generic contact page.",
+          "Entry points are written from the patient's symptom and situation rather than the clinical name, each leading to the treatment page and, from there, straight into a request, with no detour through a generic contact page.",
         ],
       },
       {
-        title: "Request, calendar & CRM",
+        title: "Request, calendar & appointments",
         body: [
-          "The request form, the clinic's calendar and the CRM write to one record. A submitted request arrives already qualified, then gets its confirmation, its reminder and a follow-up if it goes cold, without anyone re-typing it.",
+          "Rather than bolt a booking widget onto the site, the appointment system was built against a Django REST API the clinic owns: the request form, the calendar and the appointment record are one thing, not three that have to be kept in agreement.",
+          "A submitted request arrives already qualified, then gets its confirmation, its reminder and a follow-up if it goes cold, sent through Brevo, without anyone re-typing it.",
         ],
       },
       {
@@ -483,11 +395,11 @@ export const projects: Project[] = [
       },
       {
         title: "Single qualified record",
-        body: "Form, calendar and CRM share one record, so a confirmation and a reminder can never disagree about the appointment.",
+        body: "Form, calendar and appointment share one record in Postgres, so a confirmation and a reminder can never disagree about the appointment.",
       },
       {
         title: "Symptom-first information architecture",
-        body: "Routes are organised by the patient's problem and cross-linked to the clinical treatment — which is also what makes them findable in search.",
+        body: "Routes are organised by the patient's problem and cross-linked to the clinical treatment, which is also what makes them findable in search.",
       },
     ],
     outcome: [
@@ -515,14 +427,15 @@ export const projects: Project[] = [
       alt: "Wrong Sense storefront: a split editorial shot of two models wearing the Mediterraneo Vol.3 Mallorca collection, over a shop-now call to action",
     },
     stack: [
-      "Next.js",
+      "Shopify",
+      "Liquid",
       "TypeScript",
-      "Tailwind",
-      "PostgreSQL",
-      "Stripe",
-      "Resend",
-      "Automation",
-      "Vercel",
+      "JavaScript",
+      "CSS",
+      "Shopify APIs",
+      "Shopify Flow",
+      "Brevo",
+      "Node.js webhooks",
     ],
     highlights: [
       "Drop launches with queued restock alerts",
@@ -531,28 +444,29 @@ export const projects: Project[] = [
       "Editorial and UGC campaign strategy",
     ],
     problem: [
-      "A streetwear label lives on drops, and a drop is a spike: everything sells in an hour, then the questions arrive. Where is my order, when does it restock, can I collaborate — all of it landing in the same Instagram inbox as the sales.",
+      "A streetwear label lives on drops, and a drop is a spike: everything sells in an hour, then the questions arrive. Where is my order, when does it restock, can I collaborate: all of it landing in the same Instagram inbox as the sales.",
       "The VIP programme made that worse rather than better. Access was granted by hand, which meant someone had to open each order, check it was real, and remember who had been let in. The brand was spending its attention on verification instead of on the next collection.",
     ],
     build: [
       {
         title: "Storefront & drops",
         body: [
-          "One system holds the shop, the collections and the drops. A drop is scheduled rather than announced, so the release, the product going live and the countdown all come from the same record instead of being coordinated across three places.",
-          "Restock interest is captured on the product itself and queued. When stock returns, the alert goes out on its own — which is what turned the most repeated DM into something nobody has to answer.",
+          "The shop runs on Shopify, with the theme written in Liquid rather than assembled from an off-the-shelf one. The label's identity is the product, and a template that reads like every other streetwear store undoes it.",
+          "A drop is scheduled rather than announced, so the release, the product going live and the countdown all come from the same record instead of being coordinated across three places.",
+          "Restock interest is captured on the product itself and queued. When stock returns, the alert goes out on its own through Brevo, which is what turned the most repeated DM into something nobody has to answer.",
         ],
       },
       {
         title: "VIP & verification",
         body: [
-          "Order verification is derived from the order, not from a screenshot sent in a message. A completed purchase grants the access it earns, and the programme's tiers follow from purchase history rather than from someone's memory.",
+          "Order verification is derived from the order itself, not from a screenshot sent in a message: a Shopify webhook hands the paid order to a Node.js service that grants the access it earns, and the programme's tiers follow from purchase history rather than from someone's memory.",
           "Collaboration and ambassador requests get their own intake, so a creator pitch is a record with a status instead of a message that scrolls away.",
         ],
       },
       {
         title: "Community & content",
         body: [
-          "The editorial side — campaign shoots, UGC and the ambassador programme — was planned as part of the platform rather than bolted on, so a drop, its content and the creators pushing it share one calendar.",
+          "Campaign shoots, UGC and the ambassador programme were planned as part of the platform rather than bolted on, so a drop, its content and the creators pushing it share one calendar.",
         ],
       },
     ],
@@ -566,13 +480,13 @@ export const projects: Project[] = [
         body: "VIP status is read from paid orders rather than stored as a flag someone sets. There is no manual grant to get wrong or forget to revoke.",
       },
       {
-        title: "Queued notifications",
-        body: "Restock alerts are queued against the product and sent when stock changes, which keeps a sudden restock from turning into a send-storm the brand has to babysit.",
+        title: "Automation where it belongs",
+        body: "Routine reactions run in Shopify Flow, and only what Flow cannot express drops down to a Node.js webhook. The brand can read most of its own automation without opening an editor.",
       },
     ],
     outcome: [
       "A label that can run a drop without the drop running the inbox: orders verify themselves, restock alerts leave on their own, and creator requests arrive somewhere they can be answered.",
-      "The audience work was scoped through the first 10,000 qualified followers — a target the platform was built to support, not a number it has already delivered.",
+      "The audience work was scoped through the first 10,000 qualified followers, a target the platform was built to support, not a number it has already delivered.",
     ],
     accent: "#E0533F",
   },
@@ -599,7 +513,16 @@ export const projects: Project[] = [
       src: "/images/work/lisbon-by-design/cover.webp",
       alt: "Lisbon by Design site: an exhibition room with a stone side table, an upholstered chair and a sculptural bust, beside the fair's information navigation",
     },
-    stack: ["Next.js", "TypeScript", "Tailwind", "PostgreSQL", "Stripe"],
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Supabase",
+      "PostgreSQL",
+      "Stripe",
+      "Brevo",
+      "Supabase Storage",
+    ],
     scope: [
       "Application flow with portfolio submission and selection tracking",
       "Exhibitors, spaces and sponsors managed in one place",
@@ -625,10 +548,20 @@ export const projects: Project[] = [
       src: "/images/work/inside-marbella/cover.webp",
       alt: "Inside Marbella editorial: a guide to Marbella opening on a flower-lined old-town street, beside a sidebar of related articles",
     },
-    stack: ["Next.js", "TypeScript", "Tailwind", "CRM integration"],
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "MDX",
+      "Supabase",
+      "Brevo",
+      "Calendly API",
+      "PostHog",
+      "Node.js automation",
+    ],
     scope: [
       "B2B funnel: media kit, qualification, call booking, generated proposal",
-      "Site, CRM and social accounts connected to attribute bookings to campaigns",
+      "Site, analytics and social accounts connected to attribute bookings to campaigns",
       "Editorial support and performance reporting",
       "Audience work scoped through the first 10,000 engaged followers",
     ],
@@ -651,7 +584,15 @@ export const projects: Project[] = [
       src: "/images/work/ceramiche-de-simone/cover.webp",
       alt: "Ceramiche De Simone storefront: hand-painted red and white teapots and mugs on a laid table, over an invitation to find your mug",
     },
-    stack: ["Next.js", "TypeScript", "Tailwind", "Stripe", "MDX"],
+    stack: [
+      "Shopify",
+      "Liquid",
+      "TypeScript",
+      "Shopify APIs",
+      "Supabase",
+      "Brevo",
+      "Node.js automation",
+    ],
     scope: [
       "Editorial product pages covering origin and process",
       "Workshop booking alongside the shop",
@@ -677,7 +618,15 @@ export const projects: Project[] = [
       src: "/images/work/athens-food-on-foot/cover.webp",
       alt: "Athens Food on Foot homepage: a market stall stacked with vegetables behind the words Food Tours in Athens and a book-your-tour button",
     },
-    stack: ["Next.js", "TypeScript", "Tailwind", "Stripe", "i18n"],
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "Django REST",
+      "PostgreSQL",
+      "Stripe",
+      "Brevo",
+      "Google Maps API",
+    ],
     scope: [
       "Multilingual booking filtered by diet, language, group size and date",
       "Automated guide assignment and payment handling",
@@ -703,11 +652,19 @@ export const projects: Project[] = [
       src: "/images/work/caves-pere-auguste/cover.webp",
       alt: "Les Caves du Père Auguste homepage: vines at sunrise under the line six generations of winegrowers since 1875, beside tasting and stay navigation",
     },
-    stack: ["Next.js", "TypeScript", "Tailwind", "Stripe", "CRM"],
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "Shopify Storefront API",
+      "Supabase",
+      "Stripe",
+      "Shopify Payments",
+      "Brevo",
+    ],
     scope: [
       "Wine shop, tasting booking, accommodation and event requests unified",
       "Buy-what-you-tasted flow linking the visit to the cellar",
-      "CRM segmenting visitors and automating post-tasting follow-up",
+      "Segmented email flows automating post-tasting follow-up",
       "A club built for returning customers",
     ],
     accent: "#8E3B52",
@@ -717,7 +674,7 @@ export const projects: Project[] = [
     name: "Frédéric Rent a Bike",
     tagline: "Booking wired to real inventory",
     summary:
-      "A rental platform connected to the actual fleet. Visitors pick a bike, accessories, a duration and options, then pay a deposit — while the team tracks what is available, out or in maintenance from one dashboard.",
+      "A rental platform connected to the actual fleet. Visitors pick a bike, accessories, a duration and options, then pay a deposit, while the team tracks what is available, out or in maintenance from one dashboard.",
     sector: "Rental & mobility",
     role: "Design, build & growth",
     year: "2026",
@@ -729,7 +686,15 @@ export const projects: Project[] = [
       src: "/images/work/frederic-rent-a-bike/cover.webp",
       alt: "Frédéric Rent a Bike homepage: the shop's painted bicycle banner over the line bike rental, city tours, bike repairs and a rent-a-bike button",
     },
-    stack: ["Next.js", "TypeScript", "Tailwind", "PostgreSQL", "Stripe"],
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Supabase",
+      "Stripe",
+      "Brevo",
+      "Google Maps API",
+    ],
     scope: [
       "Booking bound to real inventory, with accessories, duration and options",
       "Deposit handling and digital rental contracts",
