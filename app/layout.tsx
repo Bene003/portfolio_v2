@@ -85,6 +85,9 @@ export const viewport: Viewport = {
 
 const themeBootScript = `(function(){var t="fire",v=null;try{v=localStorage.getItem("portfolio-theme");if(v==="dark"||v==="copper")v="fire";if(v==="light"||v==="earth")v="storm";if(v==="fire"||v==="storm"||v==="ice"||v==="flora"||v==="terra"||v==="water"||v==="nova"){t=v;localStorage.setItem("portfolio-theme",t)}}catch(e){}var c={fire:"#07070a",storm:"#050914",ice:"#04111f",flora:"#06130c",terra:"#160d08",water:"#020b1d",nova:"#0a0616"};var r=document.documentElement,n=navigator,k=n.connection||{},q=window.matchMedia&&window.matchMedia("(pointer: coarse)").matches,l=!!k.saveData||(n.deviceMemory&&n.deviceMemory<=4)||(n.hardwareConcurrency&&n.hardwareConcurrency<=4)||q;r.dataset.theme=t;r.dataset.effects=l?"lite":"full";r.style.colorScheme="dark";var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",c[t])})()`;
 
+const metaPixelId = "1720544602245319";
+const metaPixelScript = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${metaPixelId}');fbq('track','PageView');`;
+
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -124,8 +127,21 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#07070a" />
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+        {/* Meta Pixel */}
+        <script dangerouslySetInnerHTML={{ __html: metaPixelScript }} />
       </head>
       <body className="bg-bg text-fg antialiased">
+        {/* Meta Pixel noscript fallback */}
+        <noscript>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            alt=""
+            src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+          />
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
